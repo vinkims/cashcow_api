@@ -137,8 +137,8 @@ CREATE TABLE IF NOT EXISTS milking_sessions (
     "description" VARCHAR(80)
 );
 
--- milk collection: Hold milking information
-CREATE TABLE IF NOT EXISTS milk_collections (
+-- milk production: Hold milk production information
+CREATE TABLE IF NOT EXISTS milk_productions (
     "id" INTEGER PRIMARY KEY,
     "cow_id" INTEGER REFERENCES cows("id"),
     "session_id" INTEGER REFERENCES milking_sessions("id"),
