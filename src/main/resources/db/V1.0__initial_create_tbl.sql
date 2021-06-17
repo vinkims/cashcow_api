@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS cow_profiles (
 -- Create shops table
 CREATE TABLE IF NOT EXISTS shops (
     "id" SERIAL PRIMARY KEY,
+    "name" VARCHAR(20) NULL,
     "location" VARCHAR(100),
     "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
@@ -61,7 +62,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
 CREATE TABLE IF NOT EXISTS contact_types (
     "id" INTEGER PRIMARY KEY,
     "name" VARCHAR(20) NOT NULL,
-    "regex_value" VARCHAR NOT NULL
+    "description" VARCHAR(80)
 );
 
 --Create contacts table
