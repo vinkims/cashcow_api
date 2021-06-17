@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS cows (
 
 -- Create cow profiles table: Additional data about cows
 CREATE TABLE IF NOT EXISTS cow_profiles (
-    "cow_id" SERIAL PRIMARY KEY REFERENCES cows("id") ON DELETE CASCADE,
+    "cow_id" INTEGER PRIMARY KEY REFERENCES cows("id") ON DELETE CASCADE,
     "date_of_birth" DATE,
     "date_of_purchase" DATE,
     "date_of_death" DATE,
