@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS cows (
     "name" VARCHAR(40),
     "color" VARCHAR(20),
     "breed" VARCHAR(20),
-    "calf_id" INTEGER REFERENCES cows("id") ON DELETE SET U=NULL,
+    "calf_id" INTEGER REFERENCES cows("id") ON DELETE SET NULL,
     "cow_category_id" INTEGER REFERENCES cow_categories("id") ON DELETE SET NULL
 );
 
@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS roles (
 CREATE TABLE IF NOT EXISTS users (
     "id" SERIAL PRIMARY KEY,
     "first_name" VARCHAR(15) NOT NULL,
+    "middle_name" VARCHAR(15),
     "last_name" VARCHAR(15),
     "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     "role_id" INTEGER REFERENCES roles("id") ON DELETE SET NULL,
@@ -125,7 +126,7 @@ CREATE TABLE IF NOT EXISTS purchases (
     "name" VARCHAR(20),
     "supplier_id" INTEGER REFERENCES users("id"),
     "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    "price_per_unit" NUMERIC(11,4),
+    "unit_price" NUMERIC(11,4),
     "quantity" NUMERIC(11,4),
     "transport_cost" NUMERIC(11,4)
 );
