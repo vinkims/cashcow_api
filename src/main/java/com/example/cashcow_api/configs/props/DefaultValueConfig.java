@@ -15,4 +15,6 @@ public class DefaultValueConfig {
     private DefaultValueContactConfig contact;
 
     private DefaultValueRoleConfig role;
+
+    private DefaultValueSecurityConfig security;
 }

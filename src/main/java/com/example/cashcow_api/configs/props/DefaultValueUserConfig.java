@@ -11,4 +11,6 @@ public class DefaultValueUserConfig {
     private String adminPassword;
 
     private String adminEmail;
+
+    private String userApiClientName;
 }
