@@ -68,8 +68,8 @@ CREATE TABLE IF NOT EXISTS contact_types (
 
 --Create contacts table
 CREATE TABLE IF NOT EXISTS contacts (
-    "user_id" INTEGER REFERENCES users("id") ON DELETE CASCADE,
-    "value" VARCHAR(30) PRIMARY KEY UNIQUE,
+    "user_id" INTEGER NOT NULL REFERENCES users("id") ON DELETE CASCADE,
+    "value" VARCHAR(30) PRIMARY KEY NOT NULL UNIQUE,
     "contact_type_id" INTEGER REFERENCES contact_types("id") ON DELETE SET NULL
 );
 
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS milk_sales (
     "id" SERIAL PRIMARY KEY,
     "shop_id" INTEGER REFERENCES shops("id") ON DELETE SET NULL,
     "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    "quantity" NUMERIC(11,3)
+    "quantity" NUMERIC(11,3),
     "customer_id" INTEGER REFERENCES users("id") ON DELETE SET NULL,
     "amount" NUMERIC(11,4)
 );

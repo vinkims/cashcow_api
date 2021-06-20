@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,12 +16,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity(name = "users")
 @Data
-@NoArgsConstructor
+@EntityListeners(value = {AuditingEntityListener.class})
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer"})
 public class EUser implements Serializable{
     
     private static final long serialVersionUID = 1L;
@@ -55,5 +60,9 @@ public class EUser implements Serializable{
 
     @OneToOne(mappedBy = "user")
     private EUserProfile profile;
+
+    public EUser(){
+        setCreatedOn(LocalDateTime.now());
+    }
 
 }

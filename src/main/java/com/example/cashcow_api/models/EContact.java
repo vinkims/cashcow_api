@@ -5,8 +5,10 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -25,10 +27,23 @@ public class EContact implements Serializable {
     @JoinColumn(name = "contact_type_id", referencedColumnName = "id")
     private EContactType contactType;
 
+    @Id
     @Column(name = "value")
     private String value;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @MapsId(value = "userId")
     private EUser user;
+
+    @Column(name = "user_id")
+    private Integer userId;
+
+    /**
+     * Sets user
+     */
+    public void setUser(EUser user){
+        this.user = user;
+        this.userId = user.getId();
+    }
 }
