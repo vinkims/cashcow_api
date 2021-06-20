@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ContactDAO extends JpaRepository<EContact, Integer>{
     
+    Boolean existsByValue(String contactValue);
 }
