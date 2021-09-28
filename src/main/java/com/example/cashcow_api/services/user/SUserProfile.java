@@ -1,4 +1,4 @@
-package com.example.cashcow_api.services;
+package com.example.cashcow_api.services.user;
 
 import com.example.cashcow_api.dtos.user.UserProfileDTO;
 import com.example.cashcow_api.models.EUser;

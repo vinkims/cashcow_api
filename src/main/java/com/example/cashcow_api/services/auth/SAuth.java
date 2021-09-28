@@ -9,7 +9,7 @@ import com.example.cashcow_api.dtos.auth.SignoutDTO;
 import com.example.cashcow_api.exceptions.InvalidInputException;
 import com.example.cashcow_api.models.EBlacklistToken;
 import com.example.cashcow_api.models.EUser;
-import com.example.cashcow_api.services.SUser;
+import com.example.cashcow_api.services.user.SUser;
 import com.example.cashcow_api.utils.JwtUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;

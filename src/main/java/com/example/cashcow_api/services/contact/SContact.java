@@ -1,4 +1,4 @@
-package com.example.cashcow_api.services;
+package com.example.cashcow_api.services.contact;
 
 import com.example.cashcow_api.dtos.contact.ContactDTO;
 import com.example.cashcow_api.models.EContact;

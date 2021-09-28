@@ -6,7 +6,7 @@ import java.util.Set;
 
 import com.example.cashcow_api.exceptions.InvalidInputException;
 import com.example.cashcow_api.models.EUser;
-import com.example.cashcow_api.services.SUser;
+import com.example.cashcow_api.services.user.SUser;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;

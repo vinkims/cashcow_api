@@ -1,4 +1,4 @@
-package com.example.cashcow_api.services;
+package com.example.cashcow_api.services.user;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +14,9 @@ import com.example.cashcow_api.models.EShop;
 import com.example.cashcow_api.models.EUser;
 import com.example.cashcow_api.models.EUserProfile;
 import com.example.cashcow_api.repositories.UserDAO;
+import com.example.cashcow_api.services.contact.SContact;
+import com.example.cashcow_api.services.role.SRole;
+import com.example.cashcow_api.services.shop.SShop;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

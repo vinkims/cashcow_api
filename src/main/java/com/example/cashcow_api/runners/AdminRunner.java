@@ -8,7 +8,7 @@ import com.example.cashcow_api.dtos.contact.ContactDTO;
 import com.example.cashcow_api.dtos.user.UserDTO;
 import com.example.cashcow_api.dtos.user.UserProfileDTO;
 import com.example.cashcow_api.models.EUser;
-import com.example.cashcow_api.services.SUser;
+import com.example.cashcow_api.services.user.SUser;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

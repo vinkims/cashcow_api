@@ -1,4 +1,4 @@
-package com.example.cashcow_api.services;
+package com.example.cashcow_api.services.role;
 
 import java.util.List;
 import java.util.Optional;
