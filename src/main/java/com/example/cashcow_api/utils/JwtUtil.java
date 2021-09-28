@@ -24,7 +24,7 @@ public class JwtUtil {
     @Value(value = "${default.value.security.token-valid-duration}")
     private Integer TOKEN_VALID_DURATION;
 
-    @Value(value = "${default.value.security.token-valid-scondary-duration}")
+    @Value(value = "${default.value.security.token-valid-secondary-duration}")
     private Integer TOKEN_VALID_SECONDARY_DURATION;
 
     @Value(value = "${default.value.user.user-api-client-name}")
