@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.cashcow_api.dtos.contact.ContactDTO;
+import com.example.cashcow_api.dtos.farm.FarmDTO;
 import com.example.cashcow_api.dtos.shop.ShopDTO;
 import com.example.cashcow_api.models.EContact;
 import com.example.cashcow_api.models.ERole;
@@ -36,6 +37,10 @@ public class UserDTO {
 
     private ShopDTO shop;
 
+    private FarmDTO farm;
+
+    private Integer farmId;
+
     private Integer userId;
 
     private Integer roleId;
@@ -52,6 +57,9 @@ public class UserDTO {
         this.setCreatedOn(user.getCreatedOn());
         this.setRole(user.getRole());
         setContactData(user.getContacts());
+        if (user.getFarm() != null){
+            this.setFarm(new FarmDTO(user.getFarm()));
+        }
         if (user.getShop() != null){
             this.setShop(new ShopDTO(user.getShop()));
         }

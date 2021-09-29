@@ -55,6 +55,10 @@ public class EUser implements Serializable{
     @JoinColumn(name = "shop_id", referencedColumnName = "id")
     private EShop shop;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "farm_id", referencedColumnName = "id")
+    private EFarm farm;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<EContact> contacts;
 

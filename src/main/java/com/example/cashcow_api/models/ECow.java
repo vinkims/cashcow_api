@@ -48,4 +48,8 @@ public class ECow implements Serializable{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cow_category_id", referencedColumnName = "id")
     private ECowCategory category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "farm_id", referencedColumnName = "id")
+    private EFarm farm;
 }

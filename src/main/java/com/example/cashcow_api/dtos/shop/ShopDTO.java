@@ -1,5 +1,6 @@
 package com.example.cashcow_api.dtos.shop;
 
+import com.example.cashcow_api.dtos.farm.FarmDTO;
 import com.example.cashcow_api.models.EShop;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -14,6 +15,10 @@ import lombok.NoArgsConstructor;
 @JsonInclude(value = Include.NON_NULL)
 public class ShopDTO {
     
+    private FarmDTO farm;
+
+    private Integer farmId;
+
     private Integer shopId;
 
     private String name;
@@ -21,6 +26,7 @@ public class ShopDTO {
     private String location;
 
     public ShopDTO(EShop shop){
+        setFarm(new FarmDTO(shop.getFarm()));
         this.setShopId(shop.getId());
         this.setName(shop.getName());
         this.setLocation(shop.getLocation());

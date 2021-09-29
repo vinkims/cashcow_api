@@ -9,12 +9,14 @@ import com.example.cashcow_api.dtos.user.UserDTO;
 import com.example.cashcow_api.dtos.user.UserProfileDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.EContact;
+import com.example.cashcow_api.models.EFarm;
 import com.example.cashcow_api.models.ERole;
 import com.example.cashcow_api.models.EShop;
 import com.example.cashcow_api.models.EUser;
 import com.example.cashcow_api.models.EUserProfile;
 import com.example.cashcow_api.repositories.UserDAO;
 import com.example.cashcow_api.services.contact.SContact;
+import com.example.cashcow_api.services.farm.SFarm;
 import com.example.cashcow_api.services.role.SRole;
 import com.example.cashcow_api.services.shop.SShop;
 
@@ -27,6 +29,8 @@ public class SUser {
     @Autowired private UserDAO userDAO;
 
     @Autowired private SContact sContact;
+
+    @Autowired private SFarm sFarm;
 
     @Autowired private SRole sRole;
 
@@ -49,6 +53,7 @@ public class SUser {
         if (userDTO.getLastName() != null){
             user.setLastName(userDTO.getLastName());
         }
+        setFarm(user, userDTO.getFarmId());
         setRole(user, userDTO.getRoleId());
         setShop(user, userDTO.getShopId());
         save(user);
@@ -81,6 +86,17 @@ public class SUser {
             sUserProfile.save(profile);
             user.setProfile(profile);
         }
+    }
+
+    public void setFarm(EUser user, Integer farmId){
+        
+        if (farmId == null){ return; }
+
+        Optional<EFarm> farm = sFarm.getById(farmId);
+        if (!farm.isPresent()){
+            throw new NotFoundException("farm with specified id not found", "farmId");
+        }
+        user.setFarm(farm.get());
     }
 
     /**
