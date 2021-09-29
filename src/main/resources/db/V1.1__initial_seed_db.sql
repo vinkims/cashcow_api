@@ -28,3 +28,16 @@ VALUES
     (1, 'morning', 'first milking session'),
     (2, 'afternoon', 'second milking session'),
     (3, 'evening', 'third milking session');
+
+INSERT INTO statuses ("id", "name", "description")
+VALUES 
+    (1, 'active', 'resource enabled for all corresponding functionality'),
+    (2, 'inactive', 'reources locked for some/all functionslity'),
+    (3, 'pending', 'resource awaiting further action'),
+    (4, 'complete', 'resource action completed successfully'),
+    (5, 'failed', 'transaction unsuccessful'),
+    (6, 'dry', 'cow that has stopped giving milk'),
+    (7, 'pregnant', 'cow that is pregnant'),
+    (8, 'lactating', 'cow that is producing milk'),
+    (9, 'pre-calving', 'cow that is yet to give birth'),
+    (10, 'dead', 'cow that is dead');

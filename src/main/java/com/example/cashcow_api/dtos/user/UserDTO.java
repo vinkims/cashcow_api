@@ -23,46 +23,46 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDTO {
     
-    private String firstName;
-
-    private String middleName;
-
-    private String lastName;
-
-    private LocalDateTime createdOn;
-
-    private ERole role;
-
     private List<ContactDTO> contacts = new ArrayList<ContactDTO>();
 
-    private ShopDTO shop;
+    private LocalDateTime createdOn;
 
     private FarmDTO farm;
 
     private Integer farmId;
 
-    private Integer userId;
+    private String firstName;
 
-    private Integer roleId;
+    private String lastName;
 
-    private Integer shopId;
+    private String middleName;
 
     private UserProfileDTO profile;
 
+    private ERole role;
+
+    private Integer roleId;
+
+    private ShopDTO shop;
+
+    private Integer shopId;
+
+    private Integer userId;
+
     public UserDTO(EUser user){
-        this.setUserId(user.getId());
-        this.setFirstName(user.getFirstName());
-        this.setMiddleName(user.getMiddleName());
-        this.setLastName(user.getLastName());
-        this.setCreatedOn(user.getCreatedOn());
-        this.setRole(user.getRole());
         setContactData(user.getContacts());
+        this.setCreatedOn(user.getCreatedOn());
         if (user.getFarm() != null){
             this.setFarm(new FarmDTO(user.getFarm()));
         }
+        this.setFirstName(user.getFirstName());
+        this.setLastName(user.getLastName());
+        this.setMiddleName(user.getMiddleName());
+        this.setRole(user.getRole());
         if (user.getShop() != null){
             this.setShop(new ShopDTO(user.getShop()));
         }
+        this.setUserId(user.getId());
     }
 
     public void setContactData(List<EContact> contactList){

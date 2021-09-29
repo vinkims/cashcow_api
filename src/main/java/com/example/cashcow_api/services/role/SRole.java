@@ -10,14 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SRole {
+public class SRole implements IRole{
     
     @Autowired private RoleDAO roleDAO;
 
+    @Override
     public Optional<ERole> getById(Integer roleId){
         return roleDAO.findById(roleId);
     }
 
+    @Override
     public List<ERole> getAll(){
         return roleDAO.findAll();
     }

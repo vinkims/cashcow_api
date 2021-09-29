@@ -5,13 +5,28 @@ CREATE TABLE IF NOT EXISTS cow_categories (
     "description" VARCHAR(80)
 );
 
--- Create cows table: holds information about cows
+-- create statuses table: hold info about all statuses
+CREATE TABLE If NOT EXISTS statuses (
+    "id" SERIAL PRIMARY KEY,
+    "name" VARCHAR(20) NOT NULL UNIQUE,
+    "description" VARCHAR(80) NOT NULL
+);
+
+-- Crate farms table: holds data about the farm
+CREATE TABLE IF NOT EXISTS farms (
+    "id" SERIAL PRIMARY KEY,
+    "name" VARCHAR(20) NOT NULL,
+    "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create cows table: holds primary information about cows
 CREATE TABLE IF NOT EXISTS cows (
     "id" SERIAL PRIMARY KEY,
     "name" VARCHAR(40),
     "color" VARCHAR(20),
-    "breed" VARCHAR(20),
     "calf_id" INTEGER REFERENCES cows("id") ON DELETE SET NULL,
+    "farm_id" INTEGER REFERENCES farms("id"),
+    "status_id" INTEGER REFERENCES statuses("id") ON DELETE SET NULL,
     "cow_category_id" INTEGER REFERENCES cow_categories("id") ON DELETE SET NULL
 );
 
@@ -22,6 +37,7 @@ CREATE TABLE IF NOT EXISTS cow_profiles (
     "date_of_purchase" DATE,
     "date_of_death" DATE,
     "date_of_sale" DATE,
+    "breed" VARCHAR(20),
     "purchase_amount" NUMERIC(11,4),
     "sale_amount" NUMERIC(11,4),
     "location_bought" VARCHAR(40)
@@ -32,7 +48,8 @@ CREATE TABLE IF NOT EXISTS shops (
     "id" SERIAL PRIMARY KEY,
     "name" VARCHAR(20) NULL,
     "location" VARCHAR(100),
-    "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    "farm_id" INTEGER REFERENCES farms("id")
 );
 
 -- Create roles table
@@ -50,7 +67,9 @@ CREATE TABLE IF NOT EXISTS users (
     "last_name" VARCHAR(15),
     "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     "role_id" INTEGER REFERENCES roles("id") ON DELETE SET NULL,
-    "shop_id" INTEGER REFERENCES shops("id") ON DELETE SET NULL
+    "shop_id" INTEGER REFERENCES shops("id") ON DELETE SET NULL,
+    "farm_id" INTEGER REFERENCES farms("id") ON DELETE SET NULL,
+    "status_id" INTEGER REFERENCES statuses("id") ON DELETE SET NULL
 );
 
 --Create user profiles table
@@ -80,7 +99,8 @@ CREATE TABLE IF NOT EXISTS milk_sales (
     "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     "quantity" NUMERIC(11,3),
     "customer_id" INTEGER REFERENCES users("id") ON DELETE SET NULL,
-    "amount" NUMERIC(11,4)
+    "amount" NUMERIC(11,4),
+    "status_id" INTEGER REFERENCES statuses("id") ON DELETE SET NULL
 );
 
 -- Create table transaction types: contains transactions metadata
@@ -106,7 +126,8 @@ CREATE TABLE IF NOT EXISTS transactions (
     "payment_channel_id" INTEGER REFERENCES payment_channels("id") ON DELETE CASCADE,
     "shop_id" INTEGER REFERENCES shops("id") ON DELETE SET NULL,
     "attendant_id" INTEGER REFERENCES users("id") ON DELETE SET NULL,
-    "customer_id" INTEGER REFERENCES users("id") ON DELETE SET NULL
+    "customer_id" INTEGER REFERENCES users("id") ON DELETE SET NULL,
+    "status_id" INTEGER REFERENCES statuses("id") ON DELETE SET NULL
 );
 
 -- cow_services: Services offered to the cows
@@ -145,4 +166,12 @@ CREATE TABLE IF NOT EXISTS milk_productions (
     "session_id" INTEGER REFERENCES milking_sessions("id"),
     "quantity" NUMERIC(11,4),
     "user_id" INTEGER REFERENCES users("id")
+);
+
+-- create blacklist tokens: contains deactivated tokens
+CREATE TABLE blacklist_tokens (
+    "id" SERIAL PRIMARY KEY,
+    "user_id" INTEGER REFERENCES users("id") ON DELETE SET NULL,
+    "token_hash" BIGINT NOT NULL UNIQUE,
+    "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );

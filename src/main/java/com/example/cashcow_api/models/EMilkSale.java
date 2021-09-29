@@ -23,25 +23,29 @@ public class EMilkSale implements Serializable{
     
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, updatable = false, name = "id")
-    private Integer id;
+    @Column(name = "amount")
+    private BigDecimal amount;
 
     @Column(name = "created_on")
     private LocalDateTime createdOn;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
+    private EUser customer;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, updatable = false, name = "id")
+    private Integer id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id", referencedColumnName = "id")
     private EShop shop;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_id", referencedColumnName = "id")
+    private EStatus status;
+
     @Column(name = "quantity")
     private BigDecimal quantity;
-
-    @Column(name = "amount")
-    private BigDecimal amount;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", referencedColumnName = "id")
-    private EUser customer;
 }
