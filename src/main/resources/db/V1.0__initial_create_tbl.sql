@@ -162,6 +162,7 @@ CREATE TABLE IF NOT EXISTS milking_sessions (
 -- milk production: Hold milk production information
 CREATE TABLE IF NOT EXISTS milk_productions (
     "id" SERIAL PRIMARY KEY,
+    "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     "cow_id" INTEGER REFERENCES cows("id"),
     "session_id" INTEGER REFERENCES milking_sessions("id"),
     "quantity" NUMERIC(11,4),
