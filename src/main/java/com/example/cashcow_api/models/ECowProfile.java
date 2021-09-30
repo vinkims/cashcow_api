@@ -25,6 +25,9 @@ public class ECowProfile implements Serializable{
     @Column(name = "breed")
     private String breed;
 
+    @Column(name = "color")
+    private String color;
+
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn(name = "cow_id", referencedColumnName = "id")
     private ECow cow;

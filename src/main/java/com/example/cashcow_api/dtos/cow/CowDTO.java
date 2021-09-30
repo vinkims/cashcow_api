@@ -23,6 +23,8 @@ public class CowDTO {
 
     private ECowCategory category;
 
+    private Integer categoryId;
+
     private CowProfileDTO profile;
 
     private Integer farmId;
@@ -33,6 +35,10 @@ public class CowDTO {
 
     private String name;
 
+    private CowDTO parent;
+
+    private Integer parentId;
+
     private String status;
 
     private Integer statusId;
@@ -40,7 +46,10 @@ public class CowDTO {
     public CowDTO(ECow cow){
         setCalvesList(cow.getCalves());
         setCategory(cow.getCategory());
+        setId(cow.getId());
         setFarm(new FarmDTO(cow.getFarm()));
+        setParent(cow.getParent());
+        setProfile(new CowProfileDTO(cow.getProfile()));
         setStatus(cow.getStatus().getName());
     }
 
@@ -55,6 +64,13 @@ public class CowDTO {
             calfDTO.setProfile(new CowProfileDTO(calf.getProfile()));
             calves.add(calfDTO);
         }
+    }
+
+    public void setParent(ECow cow){
+        CowDTO calfParent = new CowDTO();
+        calfParent.setName(cow.getName());
+        calfParent.setId(cow.getId());
+        this.parent = calfParent;
     }
 
 }

@@ -1,6 +1,7 @@
 package com.example.cashcow_api.models;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -25,15 +26,18 @@ public class ECow implements Serializable{
     private static final long serialVersionUID = 1L;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "calf_id", referencedColumnName = "id")
-    private ECow calf;
+    @JoinColumn(name = "parent_id", referencedColumnName = "id")
+    private ECow parent;
 
-    @OneToMany(mappedBy = "calf", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
     private List<ECow> calves;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cow_category_id", referencedColumnName = "id")
     private ECowCategory category;
+
+    @Column(name = "created_on")
+    private LocalDateTime createdOn;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "farm_id", referencedColumnName = "id")

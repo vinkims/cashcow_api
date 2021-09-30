@@ -1,5 +1,6 @@
 package com.example.cashcow_api.services.user;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import com.example.cashcow_api.models.EContact;
 import com.example.cashcow_api.models.EFarm;
 import com.example.cashcow_api.models.ERole;
 import com.example.cashcow_api.models.EShop;
+import com.example.cashcow_api.models.EStatus;
 import com.example.cashcow_api.models.EUser;
 import com.example.cashcow_api.models.EUserProfile;
 import com.example.cashcow_api.repositories.UserDAO;
@@ -19,12 +21,17 @@ import com.example.cashcow_api.services.contact.SContact;
 import com.example.cashcow_api.services.farm.IFarm;
 import com.example.cashcow_api.services.role.IRole;
 import com.example.cashcow_api.services.shop.IShop;
+import com.example.cashcow_api.services.status.IStatus;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SUser implements IUser {
+
+    @Value(value = "${default.value.status.active-id}")
+    private Integer activeStatusId;
     
     @Autowired private UserDAO userDAO;
 
@@ -35,6 +42,8 @@ public class SUser implements IUser {
     @Autowired private IRole sRole;
 
     @Autowired private IShop sShop;
+
+    @Autowired private IStatus sStatus;
 
     @Autowired private SUserProfile sUserProfile;
 
@@ -47,6 +56,7 @@ public class SUser implements IUser {
     public EUser create(UserDTO userDTO){
 
         EUser user = new EUser();
+        user.setCreatedOn(LocalDateTime.now());
         user.setFirstName(userDTO.getFirstName());
         if (userDTO.getMiddleName() != null){
             user.setMiddleName(userDTO.getMiddleName());
@@ -57,6 +67,10 @@ public class SUser implements IUser {
         setFarm(user, userDTO.getFarmId());
         setRole(user, userDTO.getRoleId());
         setShop(user, userDTO.getShopId());
+
+        Integer statusId = userDTO.getStatusId() != null ? userDTO.getStatusId() : activeStatusId;
+        setStatus(user, statusId);
+
         save(user);
 
         setContactData(user, userDTO.getContacts());
@@ -130,6 +144,15 @@ public class SUser implements IUser {
             throw new NotFoundException("shop with specified id not found", "shopId");
         }
         user.setShop(shop.get());
+    }
+
+    public void setStatus(EUser user, Integer statusId){
+        
+        Optional<EStatus> status = sStatus.getById(statusId);
+        if (!status.isPresent()){
+            throw new NotFoundException("Status with specified id not found", "statusId");
+        }
+        user.setStatus(status.get());
     }
 
     /**

@@ -40,4 +40,5 @@ VALUES
     (7, 'pregnant', 'cow that is pregnant'),
     (8, 'lactating', 'cow that is producing milk'),
     (9, 'pre-calving', 'cow that is yet to give birth'),
-    (10, 'dead', 'cow that is dead');
+    (10, 'dead', 'cow that is dead'),
+    (11, 'sold', 'cow that has been sold');

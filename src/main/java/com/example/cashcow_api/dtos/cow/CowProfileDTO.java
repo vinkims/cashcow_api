@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 public class CowProfileDTO {
 
     private String breed;
+
+    private String color;
     
     private String dateOfBirth;
 
@@ -34,6 +36,7 @@ public class CowProfileDTO {
 
     public CowProfileDTO(ECowProfile profile){
         setBreed(profile.getBreed());
+        setColor(profile.getColor());
         setDateOfBirth(profile.getDateOfBirth().toString());
         setDateOfDeath(profile.getDateOfDeath().toString());
         setDateOfPurchase(profile.getDateOfPurchase().toString());

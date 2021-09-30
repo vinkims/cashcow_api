@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS farms (
 CREATE TABLE IF NOT EXISTS cows (
     "id" SERIAL PRIMARY KEY,
     "name" VARCHAR(40),
-    "color" VARCHAR(20),
-    "calf_id" INTEGER REFERENCES cows("id") ON DELETE SET NULL,
+    "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    "parent_id" INTEGER REFERENCES cows("id") ON DELETE SET NULL,
     "farm_id" INTEGER REFERENCES farms("id"),
     "status_id" INTEGER REFERENCES statuses("id") ON DELETE SET NULL,
     "cow_category_id" INTEGER REFERENCES cow_categories("id") ON DELETE SET NULL
@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS cow_profiles (
     "date_of_death" DATE,
     "date_of_sale" DATE,
     "breed" VARCHAR(20),
+    "color" VARCHAR(20),
     "purchase_amount" NUMERIC(11,4),
     "sale_amount" NUMERIC(11,4),
     "location_bought" VARCHAR(40)

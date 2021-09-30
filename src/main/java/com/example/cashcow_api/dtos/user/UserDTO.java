@@ -47,6 +47,10 @@ public class UserDTO {
 
     private Integer shopId;
 
+    private String status;
+
+    private Integer statusId;
+
     private Integer userId;
 
     public UserDTO(EUser user){
