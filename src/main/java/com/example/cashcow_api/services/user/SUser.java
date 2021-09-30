@@ -16,25 +16,25 @@ import com.example.cashcow_api.models.EUser;
 import com.example.cashcow_api.models.EUserProfile;
 import com.example.cashcow_api.repositories.UserDAO;
 import com.example.cashcow_api.services.contact.SContact;
-import com.example.cashcow_api.services.farm.SFarm;
-import com.example.cashcow_api.services.role.SRole;
-import com.example.cashcow_api.services.shop.SShop;
+import com.example.cashcow_api.services.farm.IFarm;
+import com.example.cashcow_api.services.role.IRole;
+import com.example.cashcow_api.services.shop.IShop;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SUser {
+public class SUser implements IUser {
     
     @Autowired private UserDAO userDAO;
 
     @Autowired private SContact sContact;
 
-    @Autowired private SFarm sFarm;
+    @Autowired private IFarm sFarm;
 
-    @Autowired private SRole sRole;
+    @Autowired private IRole sRole;
 
-    @Autowired private SShop sShop;
+    @Autowired private IShop sShop;
 
     @Autowired private SUserProfile sUserProfile;
 
@@ -43,6 +43,7 @@ public class SUser {
      * @param userDTO
      * @return
      */
+    @Override
     public EUser create(UserDTO userDTO){
 
         EUser user = new EUser();
@@ -136,10 +137,12 @@ public class SUser {
      * @param userId
      * @return
      */
+    @Override
     public Optional<EUser> getById(Integer userId){
         return userDAO.findById(userId);
     }
 
+    @Override
     public Optional<EUser> getByContactValue(String contactValue){
         return userDAO.findByContactValue(contactValue);
     }
@@ -148,6 +151,7 @@ public class SUser {
      * Get a list of all users
      * @return
      */
+    @Override
     public List<EUser> getAllUsers(){
         return userDAO.findAll();
     }
@@ -156,6 +160,7 @@ public class SUser {
      * Persist EUser obj to db
      * @param user
      */
+    @Override
     public void save(EUser user){
         userDAO.save(user);
     }

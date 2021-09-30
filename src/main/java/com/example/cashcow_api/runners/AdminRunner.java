@@ -8,7 +8,7 @@ import com.example.cashcow_api.dtos.contact.ContactDTO;
 import com.example.cashcow_api.dtos.user.UserDTO;
 import com.example.cashcow_api.dtos.user.UserProfileDTO;
 import com.example.cashcow_api.models.EUser;
-import com.example.cashcow_api.services.user.SUser;
+import com.example.cashcow_api.services.user.IUser;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +33,7 @@ public class AdminRunner implements CommandLineRunner{
     @Value(value = "${default.value.role.system-admin-role-id}")
     private Integer systemAdminRoleId;
 
-    @Autowired private SUser sUser;
+    @Autowired private IUser sUser;
 
     @Override
     public void run(String... args) throws Exception {

@@ -8,18 +8,19 @@ import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.EFarm;
 import com.example.cashcow_api.models.EShop;
 import com.example.cashcow_api.repositories.ShopDAO;
-import com.example.cashcow_api.services.farm.SFarm;
+import com.example.cashcow_api.services.farm.IFarm;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SShop {
+public class SShop implements IShop{
 
-    @Autowired private SFarm sFarm;
+    @Autowired private IFarm sFarm;
     
     @Autowired private ShopDAO shopDAO;
 
+    @Override
     public EShop create(ShopDTO shopDTO){
 
         EShop shop = new EShop();
@@ -34,14 +35,17 @@ public class SShop {
         return shop;
     }
 
+    @Override
     public Optional<EShop> getById(Integer shopId){
         return shopDAO.findById(shopId);
     }
 
+    @Override
     public List<EShop> getAll(){
         return shopDAO.findAll();
     }
 
+    @Override
     public void save(EShop shop){
         shopDAO.save(shop);
     }

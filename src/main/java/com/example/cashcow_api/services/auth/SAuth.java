@@ -9,7 +9,7 @@ import com.example.cashcow_api.dtos.auth.SignoutDTO;
 import com.example.cashcow_api.exceptions.InvalidInputException;
 import com.example.cashcow_api.models.EBlacklistToken;
 import com.example.cashcow_api.models.EUser;
-import com.example.cashcow_api.services.user.SUser;
+import com.example.cashcow_api.services.user.IUser;
 import com.example.cashcow_api.utils.JwtUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,18 +23,19 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class SAuth {
+public class SAuth implements IAuth {
     
     @Autowired private AuthenticationManager authenticationManager;
 
     @Autowired private JwtUtil jwtUtil;
 
-    @Autowired private SBlacklist sBlacklist;
+    @Autowired private IBlacklist sBlacklist;
 
-    @Autowired private SUser sUser;
+    @Autowired private IUser sUser;
 
     @Autowired private SUserDetails sUserDetails;
 
+    @Override
     public String authenticateUser(AuthDTO authDTO){
         try{
             authenticationManager.authenticate(
@@ -58,6 +59,7 @@ public class SAuth {
 
     }
 
+    @Override
     public EUser getUser(Integer userId){
         Optional<EUser> user = sUser.getById(userId);
         if (!user.isPresent()){

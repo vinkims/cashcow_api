@@ -12,10 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SFarm {
+public class SFarm implements IFarm {
     
     @Autowired private FarmDAO farmDAO;
 
+    @Override
     public EFarm create(FarmDTO farmDTO){
         
         EFarm farm = new EFarm();
@@ -25,14 +26,17 @@ public class SFarm {
         return farm;
     }
 
+    @Override
     public List<EFarm> getAll(){
         return farmDAO.findAll();
     }
 
+    @Override
     public Optional<EFarm> getById(Integer farmId){
         return farmDAO.findById(farmId);
     }
 
+    @Override
     public void save(EFarm farm){
         farmDAO.save(farm);
     }
