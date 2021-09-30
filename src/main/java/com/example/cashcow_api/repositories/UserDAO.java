@@ -5,9 +5,10 @@ import java.util.Optional;
 import com.example.cashcow_api.models.EUser;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
-public interface UserDAO extends JpaRepository<EUser, Integer>{
+public interface UserDAO extends JpaRepository<EUser, Integer>, JpaSpecificationExecutor<EUser>{
     
     @Query(
         value = "SELECT * FROM users u "

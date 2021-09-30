@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.cashcow_api.dtos.contact.ContactDTO;
+import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.dtos.user.UserDTO;
 import com.example.cashcow_api.dtos.user.UserProfileDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
@@ -22,9 +23,15 @@ import com.example.cashcow_api.services.farm.IFarm;
 import com.example.cashcow_api.services.role.IRole;
 import com.example.cashcow_api.services.shop.IShop;
 import com.example.cashcow_api.services.status.IStatus;
+import com.example.cashcow_api.specifications.SpecBuilder;
+import com.example.cashcow_api.specifications.SpecFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,6 +45,9 @@ public class SUser implements IUser {
     @Autowired private SContact sContact;
 
     @Autowired private IFarm sFarm;
+
+    @Autowired
+    private SpecFactory specFactory;
 
     @Autowired private IRole sRole;
 
@@ -171,12 +181,25 @@ public class SUser implements IUser {
     }
 
     /**
-     * Get a list of all users
+     * Get a paginated list of all users
      * @return
      */
     @Override
-    public List<EUser> getAllUsers(){
-        return userDAO.findAll();
+    @SuppressWarnings("unchecked")
+    public Page<EUser> getPaginatedList(PageDTO pageDTO, List<String> allowableFields){
+
+        String search = pageDTO.getSearch();
+
+        SpecBuilder<EUser> specBuilder = new SpecBuilder<>();
+
+        specBuilder = (SpecBuilder<EUser>) specFactory.generateSpecification(search, specBuilder, allowableFields, "user");
+
+        Specification<EUser> spec = specBuilder.build();
+
+        PageRequest pageRequest = PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize(),
+            Sort.by(pageDTO.getDirection(), pageDTO.getSortVal()));
+
+        return userDAO.findAll(spec, pageRequest);
     }
 
     /**
