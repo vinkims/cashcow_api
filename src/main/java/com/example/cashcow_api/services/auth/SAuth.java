@@ -53,6 +53,7 @@ public class SAuth implements IAuth {
         EUser user = sUser.getByContactValue(authDTO.getUserContact()).get();
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", user.getId());
+        claims.put("role", user.getRole().getName());
         final String token = jwtUtil.generateToken(userDetails, claims);
 
         return token;
