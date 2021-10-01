@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import com.example.cashcow_api.dtos.contact.ContactDTO;
 import com.example.cashcow_api.dtos.farm.FarmDTO;
 import com.example.cashcow_api.dtos.shop.ShopDTO;
@@ -23,7 +25,7 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDTO {
     
-    private List<ContactDTO> contacts = new ArrayList<ContactDTO>();
+    private List<@Valid ContactDTO> contacts = new ArrayList<ContactDTO>();
 
     private LocalDateTime createdOn;
 
@@ -37,7 +39,7 @@ public class UserDTO {
 
     private String middleName;
 
-    private UserProfileDTO profile;
+    private @Valid UserProfileDTO profile;
 
     private ERole role;
 

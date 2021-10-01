@@ -1,5 +1,7 @@
 package com.example.cashcow_api.dtos.user;
 
+import javax.validation.constraints.Size;
+
 import com.example.cashcow_api.models.EUserProfile;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -14,6 +16,7 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserProfileDTO {
     
+    @Size(min = 4, max = 30)
     private String passcode;
 
     public UserProfileDTO(EUserProfile userProfile){
