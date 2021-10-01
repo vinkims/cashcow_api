@@ -7,6 +7,8 @@ import com.example.cashcow_api.dtos.cow.CowDTO;
 import com.example.cashcow_api.models.ECow;
 
 public interface ICow {
+
+    Boolean checkExistsByName(String cowName);
     
     ECow create(CowDTO cowDTO);
 

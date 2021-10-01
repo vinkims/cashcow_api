@@ -7,6 +7,8 @@ import com.example.cashcow_api.dtos.farm.FarmDTO;
 import com.example.cashcow_api.models.EFarm;
 
 public interface IFarm {
+
+    Boolean checkExistsByName(String farmName);
     
     EFarm create(FarmDTO farmDTO);
 

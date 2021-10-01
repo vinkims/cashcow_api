@@ -42,11 +42,16 @@ public class SCow implements ICow {
     private IStatus sStatus;
 
     @Override
+    public Boolean checkExistsByName(String cowName){
+        return cowDAO.existsByName(cowName);
+    }
+
+    @Override
     public ECow create(CowDTO cowDTO) {
 
         ECow cow = new ECow();
         cow.setCreatedOn(LocalDateTime.now());
-        cow.setName(cowDTO.getName());
+        cow.setName(cowDTO.getName().toUpperCase());
         setCowCategory(cow, cowDTO.getCategoryId());
         setFarm(cow, cowDTO.getFarmId());
         setParent(cow, cowDTO.getParentId());

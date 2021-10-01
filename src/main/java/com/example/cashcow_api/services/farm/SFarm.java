@@ -17,10 +17,15 @@ public class SFarm implements IFarm {
     @Autowired private FarmDAO farmDAO;
 
     @Override
+    public Boolean checkExistsByName(String farmName){
+        return farmDAO.existsByName(farmName);
+    }
+
+    @Override
     public EFarm create(FarmDTO farmDTO){
         
         EFarm farm = new EFarm();
-        farm.setName(farmDTO.getName());
+        farm.setName(farmDTO.getName().toUpperCase());
         farm.setCreatedOn(LocalDateTime.now());
         save(farm);
 

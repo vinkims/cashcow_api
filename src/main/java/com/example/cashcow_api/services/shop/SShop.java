@@ -21,11 +21,16 @@ public class SShop implements IShop{
     @Autowired private ShopDAO shopDAO;
 
     @Override
+    public Boolean checkExistsByName(String shopName){
+        return shopDAO.existsByName(shopName);
+    }
+
+    @Override
     public EShop create(ShopDTO shopDTO){
 
         EShop shop = new EShop();
         if (shopDTO.getName() != null){
-            shop.setName(shopDTO.getName());
+            shop.setName(shopDTO.getName().toUpperCase());
         }
         if (shopDTO.getLocation() != null){
             shop.setLocation(shopDTO.getLocation());

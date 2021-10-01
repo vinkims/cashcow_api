@@ -8,6 +8,8 @@ import com.example.cashcow_api.models.EShop;
 
 public interface IShop {
     
+    Boolean checkExistsByName(String shopName);
+    
     EShop create(ShopDTO shopDTO);
 
     Optional<EShop> getById(Integer shopId);

@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CowDAO extends JpaRepository<ECow, Integer> {
     
+    Boolean existsByName(String cowName);
 }

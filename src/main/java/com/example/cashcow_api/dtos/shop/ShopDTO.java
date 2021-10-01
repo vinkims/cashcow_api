@@ -1,5 +1,8 @@
 package com.example.cashcow_api.dtos.shop;
 
+import javax.validation.constraints.NotBlank;
+
+import com.example.cashcow_api.annotations.IsShopNameValid;
 import com.example.cashcow_api.dtos.farm.FarmDTO;
 import com.example.cashcow_api.models.EShop;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -21,6 +24,8 @@ public class ShopDTO {
 
     private Integer shopId;
 
+    @NotBlank
+    @IsShopNameValid
     private String name;
 
     private String location;

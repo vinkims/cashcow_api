@@ -3,6 +3,9 @@ package com.example.cashcow_api.dtos.cow;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.NotBlank;
+
+import com.example.cashcow_api.annotations.IsCowNameValid;
 import com.example.cashcow_api.dtos.farm.FarmDTO;
 import com.example.cashcow_api.models.ECow;
 import com.example.cashcow_api.models.ECowCategory;
@@ -33,6 +36,8 @@ public class CowDTO {
 
     private Integer id;
 
+    @NotBlank
+    @IsCowNameValid
     private String name;
 
     private CowDTO parent;

@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.dtos.user.UserDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
@@ -32,7 +34,7 @@ public class CUser {
     private IUser sUser;
 
     @PostMapping(path = "/user", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<SuccessResponse> createUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<SuccessResponse> createUser(@Valid @RequestBody UserDTO userDTO){
 
         EUser user = sUser.create(userDTO);
 
@@ -86,14 +88,14 @@ public class CUser {
             .body(new SuccessResponse(200, "user fetched", new UserDTO(user.get())));
     }
 
-    @PatchMapping(path = "/user/{userId}", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<SuccessResponse> updateUser(@PathVariable Integer userId, @RequestBody UserDTO userDTO) 
+    @PatchMapping(path = "/user/{userValue}", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<SuccessResponse> updateUser(@PathVariable String userValue, @Valid @RequestBody UserDTO userDTO) 
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
             NoSuchMethodException, SecurityException{
 
-        Optional<EUser> user = sUser.getById(userId);
+        Optional<EUser> user = sUser.getByIdOrContact(userValue);
         if (!user.isPresent()){
-            throw new NotFoundException("user with specified id not found", "userId");
+            throw new NotFoundException("user with specified id or contact not found", "userValue");
         }
 
         EUser updateUser = sUser.update(user.get(), userDTO);

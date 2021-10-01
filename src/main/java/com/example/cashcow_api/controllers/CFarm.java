@@ -3,6 +3,8 @@ package com.example.cashcow_api.controllers;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import com.example.cashcow_api.dtos.farm.FarmDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.EFarm;
@@ -24,7 +26,7 @@ public class CFarm {
     private IFarm sFarm;
 
     @PostMapping(path = "/farm", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<SuccessResponse> createFarm(@RequestBody FarmDTO farmDTO){
+    public ResponseEntity<SuccessResponse> createFarm(@Valid @RequestBody FarmDTO farmDTO){
 
         EFarm farm = sFarm.create(farmDTO);
 
