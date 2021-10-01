@@ -22,6 +22,7 @@ public class SFarm implements IFarm {
         EFarm farm = new EFarm();
         farm.setName(farmDTO.getName());
         farm.setCreatedOn(LocalDateTime.now());
+        save(farm);
 
         return farm;
     }

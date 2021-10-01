@@ -24,12 +24,12 @@ public class PageDTO {
     private String sortVal;
 
     public PageDTO(Map<String, Object> params){
-        this.setDirection();
         this.setPageNumber(Integer.valueOf((String) params.getOrDefault("pgNum", "0")));
         this.setPageSize(Integer.valueOf((String) params.getOrDefault("pgSize", "10")));
         this.setSearch((String) params.getOrDefault("q", null));
         this.setSortDirection((String) params.getOrDefault("sortDirection", "desc"));
         this.setSortVal((String) params.getOrDefault("sortValue", "createdOn"));
+        this.setDirection();
     }
 
     public void setDirection(){

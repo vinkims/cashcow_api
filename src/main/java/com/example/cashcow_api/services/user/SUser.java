@@ -1,5 +1,7 @@
 package com.example.cashcow_api.services.user;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,8 @@ import com.example.cashcow_api.services.status.IStatus;
 import com.example.cashcow_api.specifications.SpecBuilder;
 import com.example.cashcow_api.specifications.SpecFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -36,6 +40,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SUser implements IUser {
+
+    Logger logger = LoggerFactory.getLogger(SUser.class);
 
     @Value(value = "${default.value.status.active-id}")
     private Integer activeStatusId;
@@ -180,6 +186,21 @@ public class SUser implements IUser {
         return userDAO.findByContactValue(contactValue);
     }
 
+    @Override
+    public Optional<EUser> getByIdOrContact(String userValue){
+
+        Integer userId;
+        try {
+            userId = Integer.valueOf(userValue);
+        } catch (NumberFormatException e){
+            userId = (Integer) null;
+            logger.info("\nERROR: [SUser.getByIdOrContact] | [MSG] - {}", e.getMessage());
+            return getByContactValue(userValue);
+        }
+
+        return userDAO.findByIdOrContactValue(userId, userValue);
+    }
+
     /**
      * Get a paginated list of all users
      * @return
@@ -210,4 +231,31 @@ public class SUser implements IUser {
     public void save(EUser user){
         userDAO.save(user);
     }
+
+    @Override
+    public EUser update(EUser user, UserDTO userDTO) 
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
+            NoSuchMethodException, SecurityException{
+
+        String[] fields = {"FirstName", "MiddleName", "LastName"};
+        for (String field : fields){
+            Method getField = UserDTO.class.getMethod(String.format("get%s", field));
+            Object fieldValue = getField.invoke(userDTO);
+
+            if (fieldValue != null){
+                fieldValue = fieldValue.getClass().equals(String.class) ? 
+                    ((String) fieldValue).trim() : fieldValue;
+                EUser.class.getMethod("set" + field, fieldValue.getClass()).invoke(user, fieldValue);
+            }
+        }
+
+        setShop(user, userDTO.getShopId());
+        setStatus(user, userDTO.getStatusId());
+        save(user);
+
+        setContactData(user, userDTO.getContacts());
+        setProfile(user, userDTO.getProfile());
+
+        return user;
+    } 
 }

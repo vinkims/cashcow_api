@@ -29,7 +29,7 @@ public class SpecBuilder<T> {
 
         for (SearchCriteriaDTO criteria : searchParams){
             if (searchParams.indexOf(criteria) == 0){
-                result = new SearchSpec<>(criteria);
+                result = new SearchSpec<T>(criteria);
                 continue;
             }
             result = Specification.where(result).and(new SearchSpec<T>(criteria));

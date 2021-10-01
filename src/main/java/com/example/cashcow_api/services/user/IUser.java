@@ -1,5 +1,6 @@
 package com.example.cashcow_api.services.user;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +18,12 @@ public interface IUser {
 
     Optional<EUser> getById(Integer userId);
 
+    Optional<EUser> getByIdOrContact(String userValue);
+
     Page<EUser> getPaginatedList(PageDTO pageDTO, List<String> allowableFields);
 
     void save(EUser user);
+
+    EUser update(EUser user, UserDTO userDTO) throws IllegalAccessException, 
+        IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
 }
