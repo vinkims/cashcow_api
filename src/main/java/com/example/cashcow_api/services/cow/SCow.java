@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.example.cashcow_api.dtos.cow.CowDTO;
 import com.example.cashcow_api.dtos.cow.CowProfileDTO;
+import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.ECow;
 import com.example.cashcow_api.models.ECowCategory;
@@ -15,9 +16,15 @@ import com.example.cashcow_api.models.EStatus;
 import com.example.cashcow_api.repositories.CowDAO;
 import com.example.cashcow_api.services.farm.IFarm;
 import com.example.cashcow_api.services.status.IStatus;
+import com.example.cashcow_api.specifications.SpecBuilder;
+import com.example.cashcow_api.specifications.SpecFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,6 +44,9 @@ public class SCow implements ICow {
 
     @Autowired
     private IFarm sFarm;
+
+    @Autowired
+    private SpecFactory specFactory;
 
     @Autowired
     private IStatus sStatus;
@@ -73,6 +83,22 @@ public class SCow implements ICow {
     @Override
     public Optional<ECow> getById(Integer cowId) {
         return cowDAO.findById(cowId);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Page<ECow> getPaginatedList(PageDTO pageDTO, List<String> allowableFields){
+        
+        String search = pageDTO.getSearch();
+
+        SpecBuilder<ECow> specBuilder = new SpecBuilder<>();
+        specBuilder = (SpecBuilder<ECow>) specFactory.generateSpecification(search, specBuilder, allowableFields, "cow");
+        Specification<ECow> spec = specBuilder.build();
+
+        PageRequest pageRequest = PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize(),
+            Sort.by(pageDTO.getDirection(), pageDTO.getSortVal()));
+        
+        return cowDAO.findAll(spec, pageRequest);
     }
 
     @Override
@@ -129,6 +155,19 @@ public class SCow implements ICow {
             throw new NotFoundException("status with specified id not found", "statusId");
         }
         cow.setStatus(status.get());
+    }
+
+    @Override
+    public ECow update(ECow cow, CowDTO cowDTO){
+
+        cow.setName(cowDTO.getName());
+        setCowCategory(cow, cowDTO.getCategoryId());
+        setStatus(cow, cowDTO.getStatusId());
+        save(cow);
+
+        setProfile(cow, cowDTO.getProfile());
+
+        return cow;
     }
     
 }

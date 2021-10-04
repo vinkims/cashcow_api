@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.cashcow_api.dtos.cow.CowDTO;
+import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.models.ECow;
+
+import org.springframework.data.domain.Page;
 
 public interface ICow {
 
@@ -16,5 +19,9 @@ public interface ICow {
 
     Optional<ECow> getById(Integer cowId);
 
+    Page<ECow> getPaginatedList(PageDTO pageDTO, List<String> allowableFields);
+
     void save(ECow cow);
+
+    ECow update(ECow cow, CowDTO cowDTO);
 }

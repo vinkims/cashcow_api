@@ -3,6 +3,7 @@ package com.example.cashcow_api.dtos.cow;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import com.example.cashcow_api.annotations.IsCowNameValid;
@@ -28,7 +29,7 @@ public class CowDTO {
 
     private Integer categoryId;
 
-    private CowProfileDTO profile;
+    private @Valid CowProfileDTO profile;
 
     private Integer farmId;
 
@@ -53,7 +54,10 @@ public class CowDTO {
         setCategory(cow.getCategory());
         setId(cow.getId());
         setFarm(new FarmDTO(cow.getFarm()));
-        setParent(cow.getParent());
+        if (cow.getParent() != null){
+            setParent(cow.getParent());
+        }
+        setName(cow.getName());
         setProfile(new CowProfileDTO(cow.getProfile()));
         setStatus(cow.getStatus().getName());
     }

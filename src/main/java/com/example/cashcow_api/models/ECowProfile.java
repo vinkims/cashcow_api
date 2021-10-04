@@ -12,12 +12,15 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @Entity(name = "cow_profiles")
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer"})
 public class ECowProfile implements Serializable{
     
     private static final long serialVersionUID = 1L;
@@ -56,4 +59,9 @@ public class ECowProfile implements Serializable{
 
     @Column(name = "sale_amount")
     private BigDecimal saleAmount;
+
+    public void setCow(ECow cow){
+        this.cow = cow;
+        this.cowId = cow.getId();
+    }
 }

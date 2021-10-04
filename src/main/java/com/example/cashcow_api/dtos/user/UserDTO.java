@@ -62,8 +62,12 @@ public class UserDTO {
             this.setFarm(new FarmDTO(user.getFarm()));
         }
         this.setFirstName(user.getFirstName());
-        this.setLastName(user.getLastName());
-        this.setMiddleName(user.getMiddleName());
+        if (user.getLastName() != null){
+            this.setLastName(user.getLastName());
+        }
+        if (user.getMiddleName() != null){
+            this.setMiddleName(user.getMiddleName());
+        }
         this.setRole(user.getRole());
         if (user.getShop() != null){
             this.setShop(new ShopDTO(user.getShop()));
