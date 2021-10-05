@@ -1,5 +1,6 @@
 package com.example.cashcow_api.services.shop;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +30,7 @@ public class SShop implements IShop{
     public EShop create(ShopDTO shopDTO){
 
         EShop shop = new EShop();
+        shop.setCreatedOn(LocalDateTime.now());
         if (shopDTO.getName() != null){
             shop.setName(shopDTO.getName().toUpperCase());
         }

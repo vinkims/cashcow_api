@@ -1,5 +1,7 @@
 package com.example.cashcow_api.dtos.shop;
 
+import java.time.LocalDateTime;
+
 import javax.validation.constraints.NotBlank;
 
 import com.example.cashcow_api.annotations.IsShopNameValid;
@@ -17,6 +19,8 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(value = Include.NON_NULL)
 public class ShopDTO {
+
+    private LocalDateTime createdOn;
     
     private FarmDTO farm;
 
@@ -31,6 +35,7 @@ public class ShopDTO {
     private String location;
 
     public ShopDTO(EShop shop){
+        setCreatedOn(shop.getCreatedOn());
         setFarm(new FarmDTO(shop.getFarm()));
         this.setShopId(shop.getId());
         this.setName(shop.getName());
