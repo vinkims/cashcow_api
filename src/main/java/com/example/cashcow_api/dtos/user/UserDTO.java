@@ -25,6 +25,8 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDTO {
     
+    private Float balance;
+    
     private List<@Valid ContactDTO> contacts = new ArrayList<ContactDTO>();
 
     private LocalDateTime createdOn;

@@ -1,7 +1,5 @@
 package com.example.cashcow_api.dtos.cow;
 
-import java.math.BigDecimal;
-
 import javax.validation.constraints.Pattern;
 
 import com.example.cashcow_api.annotations.IsDateValid;
@@ -53,9 +51,9 @@ public class CowProfileDTO {
 
     private String locationBought;
 
-    private BigDecimal purchaseAmount;
+    private Float purchaseAmount;
 
-    private BigDecimal saleAmount;
+    private Float saleAmount;
 
     public CowProfileDTO(ECowProfile profile){
         setBreed(profile.getBreed());

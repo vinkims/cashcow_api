@@ -1,7 +1,6 @@
 package com.example.cashcow_api.models;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -37,7 +36,7 @@ public class ECowService implements Serializable{
     private ECowServiceType cowServiceType;
 
     @Column(name = "amount")
-    private BigDecimal amount;
+    private Float amount;
 
     @Column(name = "results")
     private String results;

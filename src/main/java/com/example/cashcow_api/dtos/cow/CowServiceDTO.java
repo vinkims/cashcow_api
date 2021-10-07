@@ -1,6 +1,5 @@
 package com.example.cashcow_api.dtos.cow;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.example.cashcow_api.dtos.user.UserBasicDTO;
@@ -18,7 +17,7 @@ import lombok.NoArgsConstructor;
 @JsonInclude(value = Include.NON_NULL)
 public class CowServiceDTO {
 
-    private BigDecimal amount;
+    private Float amount;
     
     private CowBasicDTO cow;
 

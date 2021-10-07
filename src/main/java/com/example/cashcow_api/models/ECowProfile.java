@@ -1,7 +1,6 @@
 package com.example.cashcow_api.models;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import javax.persistence.CascadeType;
@@ -55,10 +54,10 @@ public class ECowProfile implements Serializable{
     private String locationBought;
 
     @Column(name = "purchase_amount")
-    private BigDecimal purchaseAmount;
+    private Float purchaseAmount;
 
     @Column(name = "sale_amount")
-    private BigDecimal saleAmount;
+    private Float saleAmount;
 
     public void setCow(ECow cow){
         this.cow = cow;

@@ -1,7 +1,6 @@
 package com.example.cashcow_api.models;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -39,11 +38,11 @@ public class EPurchase implements Serializable{
     private EUser supplier;
 
     @Column(name = "unit_price")
-    private BigDecimal unitPrice;
+    private Float unitPrice;
 
     @Column(name = "quantity")
-    private BigDecimal quantity;
+    private Float quantity;
 
     @Column(name = "transaport_cost")
-    private BigDecimal tranasportCost;
+    private Float tranasportCost;
 }

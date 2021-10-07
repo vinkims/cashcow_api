@@ -1,7 +1,5 @@
 package com.example.cashcow_api.dtos.milk;
 
-import java.math.BigDecimal;
-
 import com.example.cashcow_api.dtos.cow.CowBasicDTO;
 import com.example.cashcow_api.dtos.user.UserBasicDTO;
 import com.example.cashcow_api.models.EMilkProduction;
@@ -28,7 +26,7 @@ public class MilkProductionDTO {
 
     private Integer sessionId;
 
-    private BigDecimal quantity;
+    private Float quantity;
 
     private UserBasicDTO user;
 

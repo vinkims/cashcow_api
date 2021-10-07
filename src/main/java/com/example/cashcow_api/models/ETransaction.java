@@ -1,7 +1,6 @@
 package com.example.cashcow_api.models;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -24,7 +23,7 @@ public class ETransaction implements Serializable{
     private static final long serialVersionUID = 1L;
 
     @Column(name = "amount")
-    private BigDecimal amount;
+    private Float amount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "attendant_id", referencedColumnName = "id")

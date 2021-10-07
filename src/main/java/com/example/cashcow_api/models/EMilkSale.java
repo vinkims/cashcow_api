@@ -1,7 +1,6 @@
 package com.example.cashcow_api.models;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -47,5 +46,5 @@ public class EMilkSale implements Serializable{
     private EStatus status;
 
     @Column(name = "quantity")
-    private BigDecimal quantity;
+    private Float quantity;
 }
