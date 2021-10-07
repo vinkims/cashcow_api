@@ -101,6 +101,7 @@ CREATE TABLE IF NOT EXISTS milk_sales (
     "quantity" NUMERIC(11,3),
     "customer_id" INTEGER REFERENCES users("id") ON DELETE SET NULL,
     "amount" NUMERIC(11,4),
+    "attendant_id" INTEGER REFERENCES users("id") ON DELETE SET NULL,
     "status_id" INTEGER REFERENCES statuses("id") ON DELETE SET NULL
 );
 
@@ -123,6 +124,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     "id" SERIAL PRIMARY KEY,
     "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     "amount" NUMERIC(11,4),
+    "reference" VARCHAR(40),
     "transaction_type_id" INTEGER REFERENCES transaction_types("id") ON DELETE SET NULL,
     "payment_channel_id" INTEGER REFERENCES payment_channels("id") ON DELETE CASCADE,
     "shop_id" INTEGER REFERENCES shops("id") ON DELETE SET NULL,
@@ -131,12 +133,20 @@ CREATE TABLE IF NOT EXISTS transactions (
     "status_id" INTEGER REFERENCES statuses("id") ON DELETE SET NULL
 );
 
+-- Create cow_service_types table
+CREATE TABLE IF NOT EXISTS cow_service_types (
+    "id" SERIAL PRIMARY KEY,
+    "name" VARCHAR(40) NOT NULL UNIQUE,
+    "description" VARCHAR(80),
+    "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
 -- cow_services: Services offered to the cows
 CREATE TABLE IF NOT EXISTS cow_services (
     "id" SERIAL PRIMARY KEY,
     "cow_id" INTEGER REFERENCES cows("id"),
     "amount" NUMERIC(11,4),
-    "name" VARCHAR(20),
+    "cow_service_type_id" INTEGER REFERENCES cow_service_types("id") ON DELETE SET NULL,
     "results" VARCHAR(80),
     "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     "user_id" INTEGER REFERENCES users("id")

@@ -32,11 +32,12 @@ public class ECowService implements Serializable{
     @JoinColumn(name = "cow_id", referencedColumnName = "id")
     private ECow cow;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cow_service_type_id", referencedColumnName = "id")
+    private ECowServiceType cowServiceType;
+
     @Column(name = "amount")
     private BigDecimal amount;
-
-    @Column(name = "name")
-    private String name;
 
     @Column(name = "results")
     private String results;
