@@ -30,6 +30,9 @@ public class EUser implements Serializable{
     
     private static final long serialVersionUID = 1L;
 
+    @Column(name = "balance")
+    private Float balance;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<EContact> contacts;
 

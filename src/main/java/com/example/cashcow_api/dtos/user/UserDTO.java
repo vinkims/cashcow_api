@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @JsonInclude(value = Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDTO {
-    
+
     private Float balance;
     
     private List<@Valid ContactDTO> contacts = new ArrayList<ContactDTO>();
@@ -58,6 +58,7 @@ public class UserDTO {
     private Integer userId;
 
     public UserDTO(EUser user){
+        setBalance(user.getBalance());
         setContactData(user.getContacts());
         this.setCreatedOn(user.getCreatedOn());
         if (user.getFarm() != null){

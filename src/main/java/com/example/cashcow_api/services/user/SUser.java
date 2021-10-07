@@ -237,7 +237,7 @@ public class SUser implements IUser {
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
             NoSuchMethodException, SecurityException{
 
-        String[] fields = {"FirstName", "MiddleName", "LastName"};
+        String[] fields = {"FirstName", "MiddleName", "LastName", "Balance"};
         for (String field : fields){
             Method getField = UserDTO.class.getMethod(String.format("get%s", field));
             Object fieldValue = getField.invoke(userDTO);

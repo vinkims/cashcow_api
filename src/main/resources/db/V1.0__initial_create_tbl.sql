@@ -66,6 +66,7 @@ CREATE TABLE IF NOT EXISTS users (
     "first_name" VARCHAR(15) NOT NULL,
     "middle_name" VARCHAR(15),
     "last_name" VARCHAR(15),
+    "balance" NUMERIC(11,4) DEFAULT 0,
     "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     "role_id" INTEGER REFERENCES roles("id") ON DELETE SET NULL,
     "shop_id" INTEGER REFERENCES shops("id") ON DELETE SET NULL,

@@ -23,7 +23,11 @@ public class EMilkSale implements Serializable{
     private static final long serialVersionUID = 1L;
 
     @Column(name = "amount")
-    private BigDecimal amount;
+    private Float amount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "attendant_id", referencedColumnName = "id")
+    private EUser attendant;
 
     @Column(name = "created_on")
     private LocalDateTime createdOn;
