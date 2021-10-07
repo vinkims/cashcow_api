@@ -62,6 +62,7 @@ public class SMilkProduction implements IMilkProduction {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Page<EMilkProduction> getPaginatedList(PageDTO pageDTO, List<String> allowableFields) {
         
         String search = pageDTO.getSearch();

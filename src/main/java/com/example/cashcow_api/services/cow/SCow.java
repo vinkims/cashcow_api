@@ -30,6 +30,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class SCow implements ICow {
 
+    @Value(value = "${default.value.category.cow-id}")
+    private Integer categoryCowId;
+
     @Value(value = "${default.value.status.pre-calving-id}")
     private Integer preCalvingStatusId;
 
@@ -138,6 +141,8 @@ public class SCow implements ICow {
             throw new NotFoundException("parent not found", "parentId");
         }
         cow.setParent(parent.get());
+
+        updateParent(parent.get());
     }
 
     public void setProfile(ECow cow, CowProfileDTO cowProfileDTO){
@@ -150,6 +155,7 @@ public class SCow implements ICow {
 
     public void setStatus(ECow cow, Integer statusId){
 
+        if (statusId == null){ return; }
         Optional<EStatus> status = sStatus.getById(statusId);
         if (!status.isPresent()){
             throw new NotFoundException("status with specified id not found", "statusId");
@@ -160,7 +166,9 @@ public class SCow implements ICow {
     @Override
     public ECow update(ECow cow, CowDTO cowDTO){
 
-        cow.setName(cowDTO.getName());
+        if (cowDTO.getName() != null){
+            cow.setName(cowDTO.getName());
+        }
         setCowCategory(cow, cowDTO.getCategoryId());
         setStatus(cow, cowDTO.getStatusId());
         save(cow);
@@ -168,6 +176,16 @@ public class SCow implements ICow {
         setProfile(cow, cowDTO.getProfile());
 
         return cow;
+    }
+
+    public void updateParent(ECow cow){
+
+        CowDTO cowDTO = new CowDTO();
+        if (!cow.getCategory().getId().equals(categoryCowId)){
+            cowDTO.setCategoryId(categoryCowId);
+        }
+
+        update(cow, cowDTO);
     }
     
 }
