@@ -127,7 +127,7 @@ public class SMilkSale implements IMilkSale {
         specBuilder = (SpecBuilder<EMilkSale>) specFactory.generateSpecification(search, specBuilder, allowableFields, "serviceName");
         Specification<EMilkSale> spec = specBuilder.build();
 
-        PageRequest pageRequest = PageRequest.of(pageDTO.getPageSize(), pageDTO.getPageSize(),
+        PageRequest pageRequest = PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize(),
             Sort.by(pageDTO.getDirection(), pageDTO.getSortVal()));
         
         return milkSaleDAO.findAll(spec, pageRequest);
