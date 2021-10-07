@@ -9,6 +9,10 @@ import lombok.Data;
 public class DefaultValueStatusConfig {
 
     private Integer activeStatusId;
+
+    private Integer completeStatusId;
+
+    private Integer pendingStatusId;
     
     private Integer preCalvingStatusId;
 }

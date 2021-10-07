@@ -45,6 +45,9 @@ public class ETransaction implements Serializable{
     @JoinColumn(name = "payment_channel_id", referencedColumnName = "id")
     private EPaymentChannel paymentChannel;
 
+    @Column(name = "reference")
+    private String reference;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id", referencedColumnName = "id")
     private EShop shop;
