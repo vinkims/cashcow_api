@@ -43,6 +43,6 @@ public class EPurchase implements Serializable{
     @Column(name = "quantity")
     private Float quantity;
 
-    @Column(name = "transaport_cost")
-    private Float tranasportCost;
+    @Column(name = "transport_cost")
+    private Float transportCost;
 }

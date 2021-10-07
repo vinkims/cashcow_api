@@ -14,20 +14,17 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserBasicDTO {
     
-    private String firstName;
-
-    private String lastName;
+    private String name;
 
     private String role;
 
     private Integer userId;
 
     public UserBasicDTO(EUser user){
-        setFirstName(user.getFirstName());
-        if (user.getLastName() != null){
-            setLastName(user.getLastName());
-        }
-        setRole(user.getRole().getName());
+        String firstName = user.getFirstName();
+        String lastName = user.getLastName() != null || !user.getLastName().isEmpty() ?
+            user.getLastName() : "";
+        setName(firstName + " " + lastName);
         setUserId(user.getId());
     }
 }

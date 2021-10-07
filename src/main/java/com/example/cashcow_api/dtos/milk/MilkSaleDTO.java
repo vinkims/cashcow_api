@@ -2,8 +2,8 @@ package com.example.cashcow_api.dtos.milk;
 
 import java.time.LocalDateTime;
 
-import com.example.cashcow_api.dtos.shop.ShopDTO;
-import com.example.cashcow_api.dtos.user.UserDTO;
+import com.example.cashcow_api.dtos.shop.ShopBasicDTO;
+import com.example.cashcow_api.dtos.user.UserBasicDTO;
 import com.example.cashcow_api.models.EMilkSale;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -20,13 +20,13 @@ public class MilkSaleDTO {
     
     private Float amount;
 
-    private UserDTO attendant;
+    private UserBasicDTO attendant;
 
     private Integer attendantId;
 
     private LocalDateTime createdOn;
 
-    private UserDTO customer;
+    private UserBasicDTO customer;
 
     private Integer customerId;
 
@@ -34,7 +34,7 @@ public class MilkSaleDTO {
 
     private Integer saleId;
 
-    private ShopDTO shop;
+    private ShopBasicDTO shop;
 
     private Integer shopId;
 
@@ -46,11 +46,11 @@ public class MilkSaleDTO {
 
     public MilkSaleDTO(EMilkSale sale){
         setAmount(sale.getAmount());
-        setAttendant(new UserDTO(sale.getAttendant()));
+        setAttendant(new UserBasicDTO(sale.getAttendant()));
         setCreatedOn(sale.getCreatedOn());
-        setCustomer(new UserDTO(sale.getCustomer()));
+        setCustomer(new UserBasicDTO(sale.getCustomer()));
         setSaleId(sale.getId());
-        setShop(new ShopDTO(sale.getShop()));
+        setShop(new ShopBasicDTO(sale.getShop()));
         setStatus(sale.getStatus().getName());
         setQuantity(sale.getQuantity());
     }
