@@ -52,6 +52,9 @@ public class SAuth implements IAuth {
 
         EUser user = sUser.getByContactValue(authDTO.getUserContact()).get();
         Map<String, Object> claims = new HashMap<>();
+        if (user.getFarm() != null){
+            claims.put("farm", user.getFarm().getId());
+        }
         claims.put("userId", user.getId());
         claims.put("role", user.getRole().getName());
         claims.put("name", user.getFirstName());

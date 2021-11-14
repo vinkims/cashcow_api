@@ -56,7 +56,9 @@ public class CowProfileDTO {
     private Float saleAmount;
 
     public CowProfileDTO(ECowProfile profile){
-        setBreed(profile.getBreed());
+        if (profile.getBreed() != null){
+            setBreed(profile.getBreed());
+        }
         setColor(profile.getColor());
         if (profile.getDateOfBirth() != null){
             setDateOfBirth(profile.getDateOfBirth().toString());
