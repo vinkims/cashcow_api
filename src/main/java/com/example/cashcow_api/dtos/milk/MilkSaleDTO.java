@@ -48,7 +48,9 @@ public class MilkSaleDTO {
         setAmount(sale.getAmount());
         setAttendant(new UserBasicDTO(sale.getAttendant()));
         setCreatedOn(sale.getCreatedOn());
-        setCustomer(new UserBasicDTO(sale.getCustomer()));
+        if (sale.getCustomer() != null){
+            setCustomer(new UserBasicDTO(sale.getCustomer()));
+        }
         setSaleId(sale.getId());
         setShop(new ShopBasicDTO(sale.getShop()));
         setStatus(sale.getStatus().getName());

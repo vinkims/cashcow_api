@@ -63,9 +63,11 @@ public class SMilkSale implements IMilkSale {
 
     @Override
     public EMilkSale create(MilkSaleDTO saleDTO) {
+
+        Float amount = saleDTO.getAmount();
         
         EMilkSale milkSale = new EMilkSale();
-        milkSale.setAmount(saleDTO.getAmount());
+        milkSale.setAmount(amount);
         milkSale.setCreatedOn(LocalDateTime.now());
         milkSale.setQuantity(saleDTO.getQuantity());
         setAttendant(milkSale, saleDTO.getAttendantId());
@@ -77,8 +79,12 @@ public class SMilkSale implements IMilkSale {
 
         save(milkSale);
 
-        Float amount = saleDTO.getStatusId().equals(pendingStatusId) ?
-            (-saleDTO.getAmount()) : saleDTO.getAmount();
+        // update customer balance if credit sale
+        if (saleDTO.getStatusId().equals(pendingStatusId)){
+            EUser customer = milkSale.getCustomer();
+            customer.setBalance(-amount);
+            sUser.save(customer);
+        }
 
         Integer transactionTypeId = saleDTO.getStatusId().equals(pendingStatusId) ?
             creditTransactiontypeId : milkSaleTransactionTypeId;

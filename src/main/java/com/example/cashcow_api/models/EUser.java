@@ -76,4 +76,9 @@ public class EUser implements Serializable{
         setCreatedOn(LocalDateTime.now());
     }
 
+    public void setBalance(Float balance){
+        this.balance = this.balance == null ? 0 : this.balance;
+        this.balance += balance;
+    }
+
 }
