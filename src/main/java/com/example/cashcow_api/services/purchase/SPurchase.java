@@ -39,7 +39,7 @@ public class SPurchase implements IPurchase {
         EPurchase purchase = new EPurchase();
         purchase.setCreatedOn(LocalDateTime.now());
         purchase.setName(purchaseDTO.getName());
-        if (purchase.getQuantity() != null){
+        if (purchaseDTO.getQuantity() != null){
             purchase.setQuantity(purchaseDTO.getQuantity());
         }
         if (purchaseDTO.getTransportCost() != null){
