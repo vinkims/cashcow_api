@@ -14,6 +14,8 @@ public class DefaultValueConfig {
     
     private DefaultValueLogConfig logging;
 
+    private DefaultValueMilkConfig milk;
+
     private DefaultValueRoleConfig role;
 
     private DefaultValueSecurityConfig security;

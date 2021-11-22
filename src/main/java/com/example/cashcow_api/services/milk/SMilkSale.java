@@ -43,6 +43,9 @@ public class SMilkSale implements IMilkSale {
     @Value(value = "${default.value.status.pending-id}")
     private Integer pendingStatusId;
 
+    @Value(value = "${default.value.milk.price-per-litre}")
+    private Float pricePerLitre;
+
     @Autowired
     private MilkSaleDAO milkSaleDAO;
 
