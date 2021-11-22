@@ -27,7 +27,9 @@ public class SCowServiceType implements ICowServiceType {
         
         ECowServiceType serviceType = new ECowServiceType();
         serviceType.setCreatedOn(LocalDateTime.now());
-        serviceType.setDescription(serviceTypeDTO.getDescription());
+        if (serviceTypeDTO.getDescription() != null){
+            serviceType.setDescription(serviceTypeDTO.getDescription());
+        }
         serviceType.setName(serviceTypeDTO.getName().toUpperCase());
 
         save(serviceType);

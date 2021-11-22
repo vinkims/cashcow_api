@@ -45,8 +45,12 @@ public class SCowService implements ICowService {
     public ECowService create(CowServiceDTO cowServiceDTO) {
         
         ECowService cowService = new ECowService();
-        cowService.setAmount(cowServiceDTO.getAmount());
-        cowService.setResults(cowServiceDTO.getResults());
+        if (cowServiceDTO.getAmount() != null){
+            cowService.setAmount(cowServiceDTO.getAmount());
+        }
+        if (cowServiceDTO.getResults() != null){
+            cowService.setResults(cowServiceDTO.getResults());
+        }
         cowService.setCreatedOn(LocalDateTime.now());
         setCow(cowService, cowServiceDTO.getCowId());
         setCowServiceType(cowService, cowServiceDTO.getCowServiceTypeId());

@@ -38,12 +38,17 @@ public class CowServiceDTO {
     private Integer userId;
 
     public CowServiceDTO(ECowService cowService){
-        
-        setAmount(cowService.getAmount());
+        if (cowService.getAmount() != null){
+            setAmount(cowService.getAmount());
+        }
         setCow(new CowBasicDTO(cowService.getCow()));
         setCowServiceType(cowService.getCowServiceType().getName());
         setCreatedOn(cowService.getCreatedOn());
-        setResults(cowService.getResults());
-        setUser(new UserBasicDTO(cowService.getUser()));
+        if (cowService.getResults() != null){
+            setResults(cowService.getResults());
+        }
+        if (cowService.getUser() != null){
+            setUser(new UserBasicDTO(cowService.getUser()));
+        }
     }
 }

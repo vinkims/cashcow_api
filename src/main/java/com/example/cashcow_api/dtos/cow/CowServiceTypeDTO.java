@@ -32,7 +32,9 @@ public class CowServiceTypeDTO {
     public CowServiceTypeDTO(ECowServiceType cowServiceType){
 
         setCreatedOn(cowServiceType.getCreatedOn());
-        setDescription(cowServiceType.getDescription());
+        if (cowServiceType.getDescription() != null){
+            setDescription(cowServiceType.getDescription());
+        }
         setId(cowServiceType.getId());
         setName(cowServiceType.getName());
     }
