@@ -102,13 +102,15 @@ public class SUser implements IUser {
      */
     public void setContactData(EUser user, List<ContactDTO> contactList){
 
-        List<EContact> contacts = new ArrayList<>();
-        for (ContactDTO contactDTO : contactList){
-            EContact contact = sContact.create(user, contactDTO);
-            sContact.save(contact);
-            contacts.add(contact);
+        if (contactList != null){
+            List<EContact> contacts = new ArrayList<>();
+            for (ContactDTO contactDTO : contactList){
+                EContact contact = sContact.create(user, contactDTO);
+                sContact.save(contact);
+                contacts.add(contact);
+            }
+            user.setContacts(contacts);
         }
-        user.setContacts(contacts);
     }
 
     public void setProfile(EUser user, UserProfileDTO userProfileDTO){
