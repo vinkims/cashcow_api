@@ -65,7 +65,9 @@ public class SCow implements ICow {
         ECow cow = new ECow();
         cow.setCreatedOn(LocalDateTime.now());
         cow.setName(cowDTO.getName().toUpperCase());
-        setCowCategory(cow, cowDTO.getCategoryId());
+        Integer categoryId = cowDTO.getCategoryId() == null ?
+                categoryCowId : cowDTO.getCategoryId();
+        setCowCategory(cow, categoryId);
         setFarm(cow, cowDTO.getFarmId());
         setParent(cow, cowDTO.getParentId());
 
