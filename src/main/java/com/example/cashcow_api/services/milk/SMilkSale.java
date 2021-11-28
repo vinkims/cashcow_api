@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionDTO;
+import com.example.cashcow_api.exceptions.InvalidInputException;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.EMilkSale;
 import com.example.cashcow_api.models.EShop;
@@ -68,13 +69,23 @@ public class SMilkSale implements IMilkSale {
     public EMilkSale create(MilkSaleDTO saleDTO) {
 
         Float amount = saleDTO.getAmount();
-        
+        Integer customerId = saleDTO.getCustomerId();
+
+        Float quantity = saleDTO.getQuantity();
+        Float expectedAmount = quantity * pricePerLitre;
+
+        Float difference = expectedAmount - amount;
+
+        if (!amount.equals(expectedAmount) && customerId == null){
+            throw new InvalidInputException("Customer cannot be null", "customer");
+        }
+
         EMilkSale milkSale = new EMilkSale();
         milkSale.setAmount(amount);
         milkSale.setCreatedOn(LocalDateTime.now());
-        milkSale.setQuantity(saleDTO.getQuantity());
+        milkSale.setQuantity(quantity);
         setAttendant(milkSale, saleDTO.getAttendantId());
-        setCustomer(milkSale, saleDTO.getCustomerId());
+        setCustomer(milkSale, customerId);
         setShop(milkSale, saleDTO.getShopId());
 
         Integer statusId = saleDTO.getStatusId() != null ? saleDTO.getStatusId() : completeStatusId;
