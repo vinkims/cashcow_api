@@ -22,6 +22,8 @@ public interface IUser {
 
     Page<EUser> getPaginatedList(PageDTO pageDTO, List<String> allowableFields);
 
+    List<EUser> getSystemUsers();
+
     void save(EUser user);
 
     EUser update(EUser user, UserDTO userDTO) throws IllegalAccessException, 

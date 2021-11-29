@@ -3,6 +3,7 @@ package com.example.cashcow_api.controllers;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -68,6 +69,18 @@ public class CUser {
         return ResponseEntity
             .ok()
             .body(new SuccessPaginatedResponse(200,  "fetched user list", userPage, UserDTO.class, EUser.class));
+    }
+
+    @GetMapping(path = "/user/system", produces = "application/json")
+    public ResponseEntity<SuccessPaginatedResponse> getSystemUsers() throws 
+            InstantiationException, IllegalAccessException, IllegalArgumentException, 
+            InvocationTargetException, NoSuchMethodException, SecurityException{
+
+        List<EUser> systemUsers = sUser.getSystemUsers();
+
+        return ResponseEntity
+            .ok()
+            .body(new SuccessPaginatedResponse(200, "fetched system users list", systemUsers, UserDTO.class, EUser.class));
     }
 
     /**

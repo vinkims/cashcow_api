@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +46,15 @@ public class SUser implements IUser {
 
     @Value(value = "${default.value.status.active-id}")
     private Integer activeStatusId;
+
+    @Value(value = "${default.value.role.admin-role-id}")
+    private Integer adminRoleId;
+
+    @Value(value = "${default.value.role.farm-attendant-role-id}")
+    private Integer farmAttendantRoleId;
+
+    @Value(value = "${default.value.role.shop-attendant-role-id}")
+    private Integer shopAttendantRoleId;
     
     @Autowired private UserDAO userDAO;
 
@@ -223,6 +233,14 @@ public class SUser implements IUser {
             Sort.by(pageDTO.getDirection(), pageDTO.getSortVal()));
 
         return userDAO.findAll(spec, pageRequest);
+    }
+
+    @Override
+    public List<EUser> getSystemUsers(){
+        List<Integer> systemRoles = new ArrayList<>(
+            Arrays.asList(adminRoleId, farmAttendantRoleId, shopAttendantRoleId)
+        );
+        return userDAO.findSystemUsers(systemRoles);
     }
 
     /**

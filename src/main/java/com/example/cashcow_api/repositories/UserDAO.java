@@ -1,5 +1,6 @@
 package com.example.cashcow_api.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.example.cashcow_api.models.EUser;
@@ -27,5 +28,12 @@ public interface UserDAO extends JpaRepository<EUser, Integer>, JpaSpecification
     )
     Optional<EUser> findByContactValue(String contactValue);
 
+    @Query(
+        value = "SELECT * FROM users u "
+            + "LEFT JOIN roles r ON r.id = u.role_id "
+            + "WHERE u.role_id IN(:systemRoles)",
+        nativeQuery = true
+    )
+    List<EUser> findSystemUsers(List<Integer> systemRoles);
     
 }
