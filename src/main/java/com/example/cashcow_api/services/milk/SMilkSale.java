@@ -74,8 +74,6 @@ public class SMilkSale implements IMilkSale {
         Float quantity = saleDTO.getQuantity();
         Float expectedAmount = quantity * pricePerLitre;
 
-        Float difference = expectedAmount - amount;
-
         if (!amount.equals(expectedAmount) && customerId == null){
             throw new InvalidInputException("Customer cannot be null", "customer");
         }
@@ -93,26 +91,31 @@ public class SMilkSale implements IMilkSale {
 
         save(milkSale);
 
-        // update customer balance if credit sale
-        if (saleDTO.getStatusId().equals(pendingStatusId)){
-            EUser customer = milkSale.getCustomer();
-            customer.setBalance(-amount);
-            sUser.save(customer);
+        // update customer balance
+        EUser milkCustomer = milkSale.getCustomer();
+        if (expectedAmount < amount){
+            milkCustomer.setBalance(amount - expectedAmount);
+            sUser.save(milkCustomer);
+        } else if (expectedAmount > amount){
+            milkCustomer.setBalance(amount - expectedAmount);
+            sUser.save(milkCustomer);
         }
 
         Integer transactionTypeId = saleDTO.getStatusId().equals(pendingStatusId) ?
             creditTransactiontypeId : milkSaleTransactionTypeId;
         
-        createTransaction(
-            amount, 
-            saleDTO.getAttendantId(), 
-            saleDTO.getCustomerId(), 
-            milkSale.getId(), 
-            saleDTO.getShopId(),
-            statusId,
-            saleDTO.getPaymentChannelId(),
-            transactionTypeId
-        );
+        if (amount != 0){
+            createTransaction(
+                amount, 
+                saleDTO.getAttendantId(), 
+                saleDTO.getCustomerId(), 
+                milkSale.getId(), 
+                saleDTO.getShopId(),
+                statusId,
+                saleDTO.getPaymentChannelId(),
+                transactionTypeId
+            );
+        }
 
         return milkSale;
     }
