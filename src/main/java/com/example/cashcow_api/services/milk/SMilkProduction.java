@@ -1,11 +1,14 @@
 package com.example.cashcow_api.services.milk;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.cashcow_api.dtos.general.DateParamDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionDTO;
+import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.ECow;
 import com.example.cashcow_api.models.EMilkProduction;
@@ -59,6 +62,11 @@ public class SMilkProduction implements IMilkProduction {
     @Override
     public Optional<EMilkProduction> getById(Integer productionId) {
         return productionDAO.findById(productionId);
+    }
+
+    @Override
+    public List<MilkProductionSummaryDTO> getMilkProductionSummary(LocalDateTime startDate, LocalDateTime endDate){
+        return productionDAO.findMilkProductionSummary(startDate, endDate);
     }
 
     @Override
