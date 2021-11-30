@@ -18,16 +18,18 @@ public class SReport implements IReport {
     @Autowired
     private IMilkProduction sMilkProduction;
 
-    private LocalDateTime today = LocalDateTime.now();
+    
 
     @Override
     public List<MilkProductionSummaryDTO> getCurrentWeekProduction(){
+        LocalDateTime today = LocalDateTime.now();
         LocalDateTime startDate = today.with(DayOfWeek.MONDAY).withHour(0).withMinute(0).withSecond(0).withNano(0);
         return sMilkProduction.getMilkProductionSummary(startDate, today);
     }
 
     @Override
     public List<MilkProductionSummaryDTO> getPreviousWeekProduction(){
+        LocalDateTime today = LocalDateTime.now();
         LocalDateTime startDate = today.with(DayOfWeek.MONDAY).minusDays(7).withHour(0).withMinute(0).withSecond(0).withNano(0);
         LocalDateTime endDate = today.with(DayOfWeek.MONDAY).minusDays(1).withHour(23).withMinute(59).withSecond(59).withNano(999999999);
         return sMilkProduction.getMilkProductionSummary(startDate, endDate);
