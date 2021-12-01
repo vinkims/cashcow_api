@@ -1,8 +1,11 @@
 package com.example.cashcow_api.services.report;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.example.cashcow_api.dtos.general.DateParamDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
@@ -27,6 +30,14 @@ public class SReport implements IReport {
         return sMilkProduction.getMilkProductionSummary(startDate, today);
     }
 
+    public Map<LocalDate, Double> getCurrentWeek(){
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = endDate.with(DayOfWeek.MONDAY).withHour(0).withMinute(0).withSecond(0).withNano(0);
+        List<MilkProductionSummaryDTO> currentList = sMilkProduction.getMilkProductionSummary(startDate, endDate);
+        return currentList.stream()
+            .collect(Collectors.toMap(MilkProductionSummaryDTO::getCreatedOn, MilkProductionSummaryDTO::getQuantity));
+    }
+
     @Override
     public List<MilkProductionSummaryDTO> getPreviousWeekProduction(){
         LocalDateTime today = LocalDateTime.now();
@@ -43,6 +54,7 @@ public class SReport implements IReport {
     @Override
     public ReportDTO getReportByDate(DateParamDTO dateParamDTO) {
         ReportDTO reportDTO = new ReportDTO();
+        reportDTO.setCurrentWeek(getCurrentWeek());
         reportDTO.setCurrentWeekSummary(getCurrentWeekProduction());
         reportDTO.setPreviousWeekSummary(getPreviousWeekProduction());
         reportDTO.setProductionSummary(getProductionByDate(dateParamDTO));

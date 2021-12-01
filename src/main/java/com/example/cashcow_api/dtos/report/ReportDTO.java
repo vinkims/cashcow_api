@@ -1,6 +1,8 @@
 package com.example.cashcow_api.dtos.report;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -14,6 +16,8 @@ import lombok.NoArgsConstructor;
 @JsonInclude(value = Include.NON_NULL)
 public class ReportDTO {
 
+    private Map<LocalDate, Double> currentWeek;
+    
     private List<MilkProductionSummaryDTO> currentWeekSummary;
     
     private List<MilkProductionSummaryDTO> previousWeekSummary;
