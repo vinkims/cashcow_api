@@ -8,8 +8,10 @@ import javax.validation.constraints.NotBlank;
 
 import com.example.cashcow_api.annotations.IsCowNameValid;
 import com.example.cashcow_api.dtos.farm.FarmDTO;
+import com.example.cashcow_api.dtos.user.UserBasicDTO;
 import com.example.cashcow_api.models.ECow;
 import com.example.cashcow_api.models.ECowCategory;
+import com.example.cashcow_api.models.ECowService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -29,8 +31,6 @@ public class CowDTO {
 
     private Integer categoryId;
 
-    private @Valid CowProfileDTO profile;
-
     private Integer farmId;
 
     private FarmDTO farm;
@@ -44,6 +44,10 @@ public class CowDTO {
     private CowDTO parent;
 
     private Integer parentId;
+
+    private @Valid CowProfileDTO profile;
+
+    private List<CowServiceDTO> services = new ArrayList<>();
 
     private String status;
 
@@ -59,6 +63,7 @@ public class CowDTO {
         }
         setName(cow.getName());
         setProfile(new CowProfileDTO(cow.getProfile()));
+        setServicesData(cow.getServices());
         setStatus(cow.getStatus().getName());
     }
 
@@ -80,6 +85,23 @@ public class CowDTO {
         calfParent.setName(cow.getName());
         calfParent.setId(cow.getId());
         this.parent = calfParent;
+    }
+
+    public void setServicesData(List<ECowService> servicesList){
+        if (servicesList == null || servicesList.isEmpty()){ return; }
+        for (ECowService cowService : servicesList){
+            CowServiceDTO cowServiceDTO = new CowServiceDTO();
+            cowServiceDTO.setCreatedOn(cowService.getCreatedOn());
+            cowServiceDTO.setCowServiceType(cowService.getCowServiceType().getName());
+            if (cowService.getResults() != null){
+                cowServiceDTO.setResults(cowService.getResults());
+            }
+            if (cowService.getUser() != null){
+                cowServiceDTO.setUser(new UserBasicDTO(cowService.getUser()));
+            }
+
+            services.add(cowServiceDTO);
+        }
     }
 
 }

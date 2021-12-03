@@ -3,6 +3,7 @@ package com.example.cashcow_api.repositories;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.example.cashcow_api.dtos.milk.DailyCowProductionDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
 import com.example.cashcow_api.models.EMilkProduction;
 
@@ -18,8 +19,19 @@ public interface MilkProductionDAO extends JpaRepository<EMilkProduction, Intege
             + "WHERE m.createdOn > :startDate "
                 + "AND m.createdOn < :endDate "
             + "GROUP BY cast(m.createdOn as LocalDate) "
-            + "ORDER BY cast(m.createdOn as LocalDate) DESC"
+            + "ORDER BY cast(m.createdOn as LocalDate) ASC"
     )
     List<MilkProductionSummaryDTO> findMilkProductionSummary(LocalDateTime startDate, LocalDateTime endDate);
     
+    @Query(
+        value = "SELECT new com.example.cashcow_api.dtos.milk.DailyCowProductionDTO(m.quantity, s.name) "
+            + "FROM com.example.cashcow_api.models.EMilkProduction m "
+            + "LEFT JOIN m.cow c "
+            + "LEFT JOIN m.milkingSession s "
+            + "WHERE m.createdOn > :startDate "
+                + "AND m.createdOn < :endDate "
+                + "AND c.id = :cowId "
+            + "GROUP BY s.name, m.quantity"
+    )
+    List<DailyCowProductionDTO> findDailyProductionByCow(LocalDateTime startDate, LocalDateTime endDate, Integer cowId);
 }

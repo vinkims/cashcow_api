@@ -14,6 +14,6 @@ public interface IReport {
 
     List<MilkProductionSummaryDTO> getProductionByDate(DateParamDTO dateParamDTO);
 
-    ReportDTO getReportByDate(DateParamDTO dateParamDTO);
+    ReportDTO getReportByDateAndCow(DateParamDTO dateParamDTO, Integer cowId);
 
 }

@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.example.cashcow_api.dtos.general.DateParamDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
+import com.example.cashcow_api.dtos.milk.DailyCowProductionDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
@@ -62,6 +63,11 @@ public class SMilkProduction implements IMilkProduction {
     @Override
     public Optional<EMilkProduction> getById(Integer productionId) {
         return productionDAO.findById(productionId);
+    }
+
+    @Override
+    public List<DailyCowProductionDTO> getDailyCowProduction(LocalDateTime startDate, LocalDateTime endDate, Integer cowId){
+        return productionDAO.findDailyProductionByCow(startDate, endDate, cowId);
     }
 
     @Override

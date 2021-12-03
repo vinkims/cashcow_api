@@ -60,4 +60,7 @@ public class ECow implements Serializable{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id", referencedColumnName = "id")
     private EStatus status;
+
+    @OneToMany(mappedBy = "cow", fetch = FetchType.LAZY)
+    private List<ECowService> services;
 }

@@ -24,8 +24,14 @@ public class CReport {
             throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException{
 
         DateParamDTO dateParamDTO = new DateParamDTO(params);
+        Integer cowId;
+        try{
+            cowId = Integer.valueOf(params.get("cow.id"));
+        } catch(NumberFormatException e){
+            cowId = null;
+        }
         
-        ReportDTO reports = sReport.getReportByDate(dateParamDTO);
+        ReportDTO reports = sReport.getReportByDateAndCow(dateParamDTO, cowId);
 
         return ResponseEntity
             .ok()

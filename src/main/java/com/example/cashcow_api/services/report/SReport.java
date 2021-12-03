@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.example.cashcow_api.dtos.general.DateParamDTO;
+import com.example.cashcow_api.dtos.milk.DailyCowProductionDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
 import com.example.cashcow_api.dtos.report.ReportDTO;
 import com.example.cashcow_api.services.milk.IMilkProduction;
@@ -38,6 +39,14 @@ public class SReport implements IReport {
             .collect(Collectors.toMap(MilkProductionSummaryDTO::getCreatedOn, MilkProductionSummaryDTO::getQuantity));
     }
 
+    public List<DailyCowProductionDTO> getDailyCowProduction(Integer cowId){
+        LocalDateTime today = LocalDateTime.now();
+        LocalDateTime startDate = today.withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime endDate = today.withHour(23).withMinute(59).withSecond(59).withNano(999999999);
+        return sMilkProduction.getDailyCowProduction(startDate, endDate, cowId);
+
+    }
+
     @Override
     public List<MilkProductionSummaryDTO> getPreviousWeekProduction(){
         LocalDateTime today = LocalDateTime.now();
@@ -52,10 +61,11 @@ public class SReport implements IReport {
     }
 
     @Override
-    public ReportDTO getReportByDate(DateParamDTO dateParamDTO) {
+    public ReportDTO getReportByDateAndCow(DateParamDTO dateParamDTO, Integer cowId) {
         ReportDTO reportDTO = new ReportDTO();
         reportDTO.setCurrentWeek(getCurrentWeek());
         reportDTO.setCurrentWeekSummary(getCurrentWeekProduction());
+        reportDTO.setDailyCowProduction(getDailyCowProduction(cowId));
         reportDTO.setPreviousWeekSummary(getPreviousWeekProduction());
         reportDTO.setProductionSummary(getProductionByDate(dateParamDTO));
         return reportDTO;

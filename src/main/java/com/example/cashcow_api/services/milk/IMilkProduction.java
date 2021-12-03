@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.cashcow_api.dtos.general.DateParamDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
+import com.example.cashcow_api.dtos.milk.DailyCowProductionDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
 import com.example.cashcow_api.models.EMilkProduction;
@@ -17,6 +17,8 @@ public interface IMilkProduction {
     EMilkProduction create(MilkProductionDTO productionDTO);
 
     Optional<EMilkProduction> getById(Integer productionId);
+
+    List<DailyCowProductionDTO> getDailyCowProduction(LocalDateTime startDate, LocalDateTime endDate, Integer cowId);
 
     List<MilkProductionSummaryDTO> getMilkProductionSummary(LocalDateTime startDate, LocalDateTime endDate);
 
