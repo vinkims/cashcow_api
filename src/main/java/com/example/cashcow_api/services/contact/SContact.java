@@ -27,6 +27,10 @@ public class SContact {
         return contactDAO.existsByValue(contactValue);
     }
 
+    public void deleteContact(EContact contact){
+        contactDAO.delete(contact);
+    }
+
     public void save(EContact contact){
         contactDAO.save(contact);
     }

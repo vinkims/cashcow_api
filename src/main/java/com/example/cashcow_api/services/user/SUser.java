@@ -105,6 +105,16 @@ public class SUser implements IUser {
         return user;
     }
 
+    public void deleteContact(EUser user, List <ContactDTO> contactList){
+        List<EContact> contacts = user.getContacts();
+        if (contacts != null){
+            for (EContact contact : contacts){
+                sContact.deleteContact(contact);
+            }
+        }
+        setContactData(user, contactList);
+    }
+
     /**
      * Set contacts
      * @param user
@@ -270,10 +280,15 @@ public class SUser implements IUser {
         }
 
         setShop(user, userDTO.getShopId());
-        setStatus(user, userDTO.getStatusId());
+
+        Integer statusId = userDTO.getStatusId() != null ? userDTO.getStatusId() : activeStatusId;
+        setStatus(user, statusId);
+
         save(user);
 
-        setContactData(user, userDTO.getContacts());
+        if (userDTO.getContacts() != null){
+            deleteContact(user, userDTO.getContacts());
+        }
         setProfile(user, userDTO.getProfile());
 
         return user;
