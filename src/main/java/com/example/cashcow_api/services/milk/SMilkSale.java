@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleDTO;
+import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionDTO;
 import com.example.cashcow_api.exceptions.InvalidInputException;
 import com.example.cashcow_api.exceptions.NotFoundException;
@@ -139,6 +140,11 @@ public class SMilkSale implements IMilkSale {
     @Override
     public Optional<EMilkSale> getById(Integer saleId) {
         return milkSaleDAO.findById(saleId);
+    }
+
+    @Override
+    public List<MilkSaleSummaryDTO> getMilkSaleSummary(LocalDateTime startDate, LocalDateTime endDate){
+        return milkSaleDAO.findMilkSaleSummary(startDate, endDate);
     }
 
     @Override

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.example.cashcow_api.dtos.milk.DailyCowProductionDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
+import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -22,6 +23,8 @@ public class ReportDTO {
     private List<MilkProductionSummaryDTO> currentWeekSummary;
 
     private List<DailyCowProductionDTO> dailyCowProduction;
+
+    private List<MilkSaleSummaryDTO> milkSaleSummary;
     
     private List<MilkProductionSummaryDTO> previousWeekSummary;
 
