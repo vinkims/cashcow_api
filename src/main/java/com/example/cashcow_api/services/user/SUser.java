@@ -53,6 +53,9 @@ public class SUser implements IUser {
     @Value(value = "${default.value.role.farm-attendant-role-id}")
     private Integer farmAttendantRoleId;
 
+    @Value(value = "${default.value.contact.mobile-type-id}")
+    private Integer mobileTypeId;
+
     @Value(value = "${default.value.role.shop-attendant-role-id}")
     private Integer shopAttendantRoleId;
     
@@ -223,6 +226,24 @@ public class SUser implements IUser {
         return userDAO.findByIdOrContactValue(userId, userValue);
     }
 
+    public String getFirstContact(List<EContact> contactsList){
+
+        Optional<EContact> contact = contactsList
+            .stream()
+            .filter(cont -> cont.getContactType().getId().equals(mobileTypeId))
+            .findFirst();
+        return contact.map(EContact::getValue).orElse(null);
+    }
+
+    public String getFirstContactFromApp(List<ContactDTO> contacts){
+
+        Optional<ContactDTO> contact = contacts
+            .stream()
+            .filter(cont -> cont.getContactTypeId().equals(mobileTypeId))
+            .findFirst();
+        return contact.map(ContactDTO::getContactValue).orElse(null);
+    }
+
     /**
      * Get a paginated list of all users
      * @return
@@ -286,10 +307,12 @@ public class SUser implements IUser {
 
         save(user);
 
-        if (userDTO.getContacts() != null){
-            deleteContact(user, userDTO.getContacts());
-        }
+        //if (userDTO.getContacts() != null){
+        //    deleteContact(user, userDTO.getContacts());
+        //}
+        setContactData(user, userDTO.getContacts());
         setProfile(user, userDTO.getProfile());
+        setRole(user, userDTO.getRoleId());
 
         return user;
     } 
