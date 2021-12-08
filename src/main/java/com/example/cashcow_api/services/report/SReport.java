@@ -10,8 +10,11 @@ import java.util.stream.Collectors;
 import com.example.cashcow_api.dtos.general.DateParamDTO;
 import com.example.cashcow_api.dtos.milk.DailyCowProductionDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
+import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
+import com.example.cashcow_api.dtos.milk.MilkSaleTotalDTO;
 import com.example.cashcow_api.dtos.report.ReportDTO;
 import com.example.cashcow_api.services.milk.IMilkProduction;
+import com.example.cashcow_api.services.milk.IMilkSale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,9 @@ public class SReport implements IReport {
 
     @Autowired
     private IMilkProduction sMilkProduction;
+
+    @Autowired
+    private IMilkSale sMilkSale;
 
     @Override
     public List<MilkProductionSummaryDTO> getCurrentWeekProduction(){
@@ -46,6 +52,19 @@ public class SReport implements IReport {
     }
 
     @Override
+    public List<MilkSaleSummaryDTO> getMilkSaleSummary(DateParamDTO dateParamDTO, Integer shopId){
+        List<MilkSaleSummaryDTO> saleSummary = shopId == null 
+            ? sMilkSale.getMilkSaleSummary(dateParamDTO.getStartDate(), dateParamDTO.getEndDate())
+            : sMilkSale.getMilkSaleSummaryByShop(dateParamDTO.getStartDate(), dateParamDTO.getEndDate(), shopId);
+        return saleSummary;
+    }
+
+    @Override
+    public List<MilkSaleTotalDTO> getMilkSaleTotal(DateParamDTO dateParamDTO){
+        return sMilkSale.getMilkSaleTotal(dateParamDTO.getStartDate(), dateParamDTO.getEndDate());
+    }
+    
+    @Override
     public List<MilkProductionSummaryDTO> getPreviousWeekProduction(){
         LocalDateTime today = LocalDateTime.now();
         LocalDateTime startDate = today.with(DayOfWeek.MONDAY).minusDays(7).withHour(0).withMinute(0).withSecond(0).withNano(0);
@@ -56,6 +75,14 @@ public class SReport implements IReport {
     @Override
     public List<MilkProductionSummaryDTO> getProductionByDate(DateParamDTO dateParamDTO){
         return sMilkProduction.getMilkProductionSummary(dateParamDTO.getStartDate(), dateParamDTO.getEndDate());
+    }
+
+    @Override
+    public ReportDTO getMilkSaleReport(DateParamDTO dateParamDTO, Integer shopId){
+        ReportDTO reportDTO = new ReportDTO();
+        reportDTO.setMilkSaleSummary(getMilkSaleSummary(dateParamDTO, shopId));
+        reportDTO.setMilkSaleTotal(getMilkSaleTotal(dateParamDTO));
+        return reportDTO;
     }
 
     @Override
