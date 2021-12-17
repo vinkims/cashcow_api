@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.cashcow_api.dtos.general.PageDTO;
+import com.example.cashcow_api.dtos.user.SummaryUserDTO;
 import com.example.cashcow_api.dtos.user.UserDTO;
 import com.example.cashcow_api.models.EUser;
 
@@ -23,6 +24,8 @@ public interface IUser {
     Page<EUser> getPaginatedList(PageDTO pageDTO, List<String> allowableFields);
 
     List<EUser> getSystemUsers();
+
+    List<SummaryUserDTO> getUserCountPerRole();
 
     void save(EUser user);
 

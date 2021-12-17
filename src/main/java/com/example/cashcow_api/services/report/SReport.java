@@ -13,8 +13,10 @@ import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTotalDTO;
 import com.example.cashcow_api.dtos.report.ReportDTO;
+import com.example.cashcow_api.dtos.user.SummaryUserDTO;
 import com.example.cashcow_api.services.milk.IMilkProduction;
 import com.example.cashcow_api.services.milk.IMilkSale;
+import com.example.cashcow_api.services.user.IUser;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,16 @@ public class SReport implements IReport {
 
     @Autowired
     private IMilkSale sMilkSale;
+
+    @Autowired
+    private IUser sUser;
+
+    @Override
+    public List<MilkSaleSummaryDTO> getCurrentWeekShopSale(Integer shopId){
+        LocalDateTime today = LocalDateTime.now();
+        LocalDateTime startDate = today.with(DayOfWeek.MONDAY).withHour(0).withMinute(0).withSecond(0).withNano(0);
+        return sMilkSale.getMilkSaleSummaryByShop(startDate, today, shopId);
+    }
 
     @Override
     public List<MilkProductionSummaryDTO> getCurrentWeekProduction(){
@@ -78,8 +90,14 @@ public class SReport implements IReport {
     }
 
     @Override
+    public List<SummaryUserDTO> getUsersReport(){
+        return sUser.getUserCountPerRole();
+    }
+
+    @Override
     public ReportDTO getMilkSaleReport(DateParamDTO dateParamDTO, Integer shopId){
         ReportDTO reportDTO = new ReportDTO();
+        reportDTO.setCurrentWeekMilkSale(getCurrentWeekShopSale(shopId));
         reportDTO.setMilkSaleSummary(getMilkSaleSummary(dateParamDTO, shopId));
         reportDTO.setMilkSaleTotal(getMilkSaleTotal(dateParamDTO));
         return reportDTO;
@@ -93,6 +111,13 @@ public class SReport implements IReport {
         reportDTO.setDailyCowProduction(getDailyCowProduction(cowId));
         reportDTO.setPreviousWeekSummary(getPreviousWeekProduction());
         reportDTO.setProductionSummary(getProductionByDate(dateParamDTO));
+        return reportDTO;
+    }
+
+    @Override
+    public ReportDTO getUsersSummaryReport(){
+        ReportDTO reportDTO = new ReportDTO();
+        reportDTO.setUserSummary(getUsersReport());
         return reportDTO;
     }
     

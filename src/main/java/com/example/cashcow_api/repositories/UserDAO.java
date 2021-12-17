@@ -3,6 +3,7 @@ package com.example.cashcow_api.repositories;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.cashcow_api.dtos.user.SummaryUserDTO;
 import com.example.cashcow_api.models.EUser;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,5 +36,13 @@ public interface UserDAO extends JpaRepository<EUser, Integer>, JpaSpecification
         nativeQuery = true
     )
     List<EUser> findSystemUsers(List<Integer> systemRoles);
+
+    @Query(
+        value = "SELECT new com.example.cashcow_api.dtos.user.SummaryUserDTO(COUNT(user) AS count, role.name) "
+            + "FROM com.example.cashcow_api.models.EUser user "
+            + "LEFT JOIN user.role role "
+            + "GROUP BY role"
+    )
+    List<SummaryUserDTO> findUserCountByRole();
     
 }

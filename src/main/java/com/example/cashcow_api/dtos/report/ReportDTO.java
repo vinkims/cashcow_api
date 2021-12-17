@@ -8,6 +8,7 @@ import com.example.cashcow_api.dtos.milk.DailyCowProductionDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTotalDTO;
+import com.example.cashcow_api.dtos.user.SummaryUserDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -21,6 +22,8 @@ public class ReportDTO {
 
     private Map<LocalDate, Double> currentWeek;
     
+    private List<MilkSaleSummaryDTO> currentWeekMilkSale;
+    
     private List<MilkProductionSummaryDTO> currentWeekSummary;
 
     private List<DailyCowProductionDTO> dailyCowProduction;
@@ -32,4 +35,6 @@ public class ReportDTO {
     private List<MilkProductionSummaryDTO> previousWeekSummary;
 
     private List<MilkProductionSummaryDTO> productionSummary;
+
+    private List<SummaryUserDTO> userSummary;
 }

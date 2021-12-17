@@ -56,4 +56,14 @@ public class CReport {
             .ok()
             .body(new SuccessResponse(200, "returned production list", reports));
     }
+
+    @GetMapping(path = "/report/user", produces = "application/json")
+    public ResponseEntity<SuccessResponse> getUsersSummary(){
+
+        ReportDTO usersReport = sReport.getUsersSummaryReport();
+
+        return ResponseEntity
+            .ok()
+            .body(new SuccessResponse(200, "returned users summary", usersReport));
+    }
 }

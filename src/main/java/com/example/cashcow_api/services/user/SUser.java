@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import com.example.cashcow_api.dtos.contact.ContactDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
+import com.example.cashcow_api.dtos.user.SummaryUserDTO;
 import com.example.cashcow_api.dtos.user.UserDTO;
 import com.example.cashcow_api.dtos.user.UserProfileDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
@@ -272,6 +273,11 @@ public class SUser implements IUser {
             Arrays.asList(adminRoleId, farmAttendantRoleId, shopAttendantRoleId)
         );
         return userDAO.findSystemUsers(systemRoles);
+    }
+
+    @Override
+    public List<SummaryUserDTO> getUserCountPerRole(){
+        return userDAO.findUserCountByRole();
     }
 
     /**

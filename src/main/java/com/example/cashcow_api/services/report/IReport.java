@@ -8,8 +8,11 @@ import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTotalDTO;
 import com.example.cashcow_api.dtos.report.ReportDTO;
+import com.example.cashcow_api.dtos.user.SummaryUserDTO;
 
 public interface IReport {
+
+    List<MilkSaleSummaryDTO> getCurrentWeekShopSale(Integer shopId);
 
     List<MilkProductionSummaryDTO> getCurrentWeekProduction();
 
@@ -23,8 +26,12 @@ public interface IReport {
 
     List<MilkProductionSummaryDTO> getProductionByDate(DateParamDTO dateParamDTO);
 
+    List<SummaryUserDTO> getUsersReport();
+
     ReportDTO getMilkSaleReport(DateParamDTO dateParamDTO, Integer shopId);
 
     ReportDTO getReportByDateAndCow(DateParamDTO dateParamDTO, Integer cowId);
+
+    ReportDTO getUsersSummaryReport();
 
 }
