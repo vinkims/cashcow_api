@@ -24,6 +24,8 @@ public interface IReport {
 
     List<MilkProductionSummaryDTO> getPreviousWeekProduction();
 
+    List<MilkSaleSummaryDTO> getPreviousWeekShopSale(Integer shopId);
+
     List<MilkProductionSummaryDTO> getProductionByDate(DateParamDTO dateParamDTO);
 
     List<SummaryUserDTO> getUsersReport();

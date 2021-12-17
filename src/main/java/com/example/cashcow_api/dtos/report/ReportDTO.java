@@ -31,6 +31,8 @@ public class ReportDTO {
     private List<MilkSaleSummaryDTO> milkSaleSummary;
 
     private List<MilkSaleTotalDTO> milkSaleTotal;
+
+    private List<MilkSaleSummaryDTO> previousWeekMilkSale;
     
     private List<MilkProductionSummaryDTO> previousWeekSummary;
 

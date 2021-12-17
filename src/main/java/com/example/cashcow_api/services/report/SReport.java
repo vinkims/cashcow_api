@@ -85,6 +85,14 @@ public class SReport implements IReport {
     }
 
     @Override
+    public List<MilkSaleSummaryDTO> getPreviousWeekShopSale(Integer shopId){
+        LocalDateTime today = LocalDateTime.now();
+        LocalDateTime startDate = today.with(DayOfWeek.MONDAY).minusDays(7).withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime endDate = today.with(DayOfWeek.MONDAY).minusDays(1).withHour(23).withMinute(59).withSecond(59).withNano(999999999);
+        return sMilkSale.getMilkSaleSummaryByShop(startDate, endDate, shopId);
+    }
+
+    @Override
     public List<MilkProductionSummaryDTO> getProductionByDate(DateParamDTO dateParamDTO){
         return sMilkProduction.getMilkProductionSummary(dateParamDTO.getStartDate(), dateParamDTO.getEndDate());
     }
@@ -100,6 +108,7 @@ public class SReport implements IReport {
         reportDTO.setCurrentWeekMilkSale(getCurrentWeekShopSale(shopId));
         reportDTO.setMilkSaleSummary(getMilkSaleSummary(dateParamDTO, shopId));
         reportDTO.setMilkSaleTotal(getMilkSaleTotal(dateParamDTO));
+        reportDTO.setPreviousWeekMilkSale(getPreviousWeekShopSale(shopId));
         return reportDTO;
     }
 
