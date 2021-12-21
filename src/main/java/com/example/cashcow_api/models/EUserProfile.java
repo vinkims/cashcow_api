@@ -1,6 +1,7 @@
 package com.example.cashcow_api.models;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -33,8 +34,17 @@ public class EUserProfile implements Serializable {
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "id")
     private EUser user;
 
+    @Column(name = "milk_price")
+    private Float milkPrice;
+
     @Column(name = "passcode")
     private String passcode;
+
+    @Column(name = "price_expires_on")
+    private LocalDate priceExpiresOn;
+
+    @Column(name = "price_valid_on")
+    private LocalDate priceValidOn;
 
     public void setPasscode(String passcode){
         if (passcode != null){

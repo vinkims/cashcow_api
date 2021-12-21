@@ -71,6 +71,7 @@ public class UserDTO {
         if (user.getMiddleName() != null){
             this.setMiddleName(user.getMiddleName());
         }
+        this.setProfile(new UserProfileDTO(user.getProfile()));
         this.setRole(user.getRole());
         if (user.getShop() != null){
             this.setShop(new ShopDTO(user.getShop()));

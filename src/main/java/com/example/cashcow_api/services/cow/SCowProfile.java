@@ -1,7 +1,6 @@
 package com.example.cashcow_api.services.cow;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import com.example.cashcow_api.dtos.cow.CowProfileDTO;
 import com.example.cashcow_api.models.ECow;
