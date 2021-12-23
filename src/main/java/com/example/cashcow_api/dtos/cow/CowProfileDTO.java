@@ -49,6 +49,16 @@ public class CowProfileDTO {
     )
     private String dateOfSale;
 
+    @Pattern(
+        regexp = "(?i)^male|female|",
+        message = "gender must be either male or female"
+    )
+    private String gender;
+
+    private CowImageDTO image;
+
+    private Integer imageId;
+
     private String locationBought;
 
     private Float purchaseAmount;
@@ -71,6 +81,12 @@ public class CowProfileDTO {
         }
         if (profile.getDateOfSale() != null){
             setDateOfSale(profile.getDateOfSale().toString());
+        }
+        if (profile.getGender() != null){
+            setGender(profile.getGender());
+        }
+        if (profile.getCowImage() != null){
+            setImage(new CowImageDTO(profile.getCowImage()));
         }
         if (profile.getLocationBought() != null){
             setLocationBought(profile.getLocationBought());

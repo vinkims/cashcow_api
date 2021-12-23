@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.example.cashcow_api.dtos.cow.CowDTO;
 import com.example.cashcow_api.dtos.cow.CowProfileDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
+import com.example.cashcow_api.dtos.weight.WeightDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.ECow;
 import com.example.cashcow_api.models.ECowCategory;
@@ -16,6 +17,7 @@ import com.example.cashcow_api.models.EStatus;
 import com.example.cashcow_api.repositories.CowDAO;
 import com.example.cashcow_api.services.farm.IFarm;
 import com.example.cashcow_api.services.status.IStatus;
+import com.example.cashcow_api.services.weight.IWeight;
 import com.example.cashcow_api.specifications.SpecBuilder;
 import com.example.cashcow_api.specifications.SpecFactory;
 
@@ -54,6 +56,9 @@ public class SCow implements ICow {
     @Autowired
     private IStatus sStatus;
 
+    @Autowired
+    private IWeight sWeight;
+
     @Override
     public Boolean checkExistsByName(String cowName){
         return cowDAO.existsByName(cowName);
@@ -77,6 +82,7 @@ public class SCow implements ICow {
         save(cow);
 
         setProfile(cow, cowDTO.getProfile());
+        recordWeight(cow.getId(), cowDTO.getWeight());
         return cow;
     }
 
@@ -104,6 +110,15 @@ public class SCow implements ICow {
             Sort.by(pageDTO.getDirection(), pageDTO.getSortVal()));
         
         return cowDAO.findAll(spec, pageRequest);
+    }
+
+    public void recordWeight(Integer cowId, Float weight){
+
+        WeightDTO weightDTO = new WeightDTO();
+        weightDTO.setCowId(cowId);
+        weightDTO.setWeight(weight);
+
+        sWeight.create(weightDTO);
     }
 
     @Override

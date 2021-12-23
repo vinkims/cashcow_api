@@ -53,6 +53,8 @@ public class CowDTO {
 
     private Integer statusId;
 
+    private Float weight;
+
     public CowDTO(ECow cow){
         setCalvesList(cow.getCalves());
         setCategory(cow.getCategory());
