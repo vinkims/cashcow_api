@@ -7,6 +7,8 @@ import lombok.Data;
 @Data
 @ConfigurationProperties(prefix = "transaction-type")
 public class DefaultValueTransactionTypeConfig {
+
+    private Integer cowPurchaseTypeId;
     
     private Integer creditTransactiontypeId;
 

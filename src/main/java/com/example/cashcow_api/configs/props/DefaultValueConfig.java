@@ -16,6 +16,8 @@ public class DefaultValueConfig {
 
     private DefaultValueMilkConfig milk;
 
+    private DefaultValuePaymentChannelConfig paymentChannel;
+
     private DefaultValueRoleConfig role;
 
     private DefaultValueSecurityConfig security;

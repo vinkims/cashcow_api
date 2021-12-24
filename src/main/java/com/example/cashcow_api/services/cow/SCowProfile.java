@@ -3,18 +3,37 @@ package com.example.cashcow_api.services.cow;
 import java.time.LocalDate;
 
 import com.example.cashcow_api.dtos.cow.CowProfileDTO;
+import com.example.cashcow_api.dtos.transaction.TransactionDTO;
+import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.ECow;
 import com.example.cashcow_api.models.ECowProfile;
 import com.example.cashcow_api.repositories.CowProfileDAO;
+import com.example.cashcow_api.services.transaction.ITransaction;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SCowProfile {
+
+    @Value(value = "${default.value.status.complete-id}")
+    private Integer completeStatusId;
+
+    @Value(value = "${default.value.transaction-type.cow-purchase-type-id}")
+    private Integer cowPurchaseTransactionTypeId;
+
+    @Value(value = "${default.value.payment-channel.mpesa-channel-id}")
+    private Integer mpesaPaymentChannelId;
     
     @Autowired
     private CowProfileDAO cowProfileDAO;
+
+    @Autowired
+    private ICowImage sCowImage;
+
+    @Autowired
+    private ITransaction sTransaction;
 
     public ECowProfile create(CowProfileDTO cowProfileDTO, ECow cow){
 
@@ -30,7 +49,35 @@ public class SCowProfile {
         setPurchaseAmount(profile, cowProfileDTO);
         setSaleAmount(profile, cowProfileDTO);
 
+        if (cowProfileDTO.getDateOfPurchase() != null ){
+            createPurchaseTransaction(
+                cowProfileDTO.getPurchaseAmount(), 
+                completeStatusId, 
+                mpesaPaymentChannelId, 
+                cowPurchaseTransactionTypeId,
+                String.format("Cow id: %s", cow.getId())
+            );
+        }
+
         return profile;
+    }
+
+    /**
+     * Create cow purchase transaction if cow was purchased
+     * @param amount
+     * @param statusId
+     * @param paymentChannelId
+     * @param transactionTypeId
+     */
+    public void createPurchaseTransaction(Float amount, Integer statusId, 
+            Integer paymentChannelId, Integer transactionTypeId, String reference){
+        TransactionDTO transactionDTO = new TransactionDTO();
+        transactionDTO.setAmount(amount);
+        transactionDTO.setPaymentChannelId(paymentChannelId);
+        transactionDTO.setReference(reference);
+        transactionDTO.setStatusId(statusId);
+        transactionDTO.setTransactionTypeId(transactionTypeId);
+        sTransaction.create(transactionDTO);
     }
 
     public void save(ECowProfile cowProfile){
