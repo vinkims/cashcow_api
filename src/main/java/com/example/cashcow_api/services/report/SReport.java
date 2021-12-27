@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.example.cashcow_api.dtos.general.DateParamDTO;
+import com.example.cashcow_api.dtos.milk.CustomerSaleSummaryDTO;
+import com.example.cashcow_api.dtos.milk.CustomerSaleTotalDTO;
 import com.example.cashcow_api.dtos.milk.DailyCowProductionDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
@@ -56,6 +58,16 @@ public class SReport implements IReport {
     }
 
     @Override
+    public List<CustomerSaleSummaryDTO> getCustomerSaleSummary(DateParamDTO dateParamDTO, Integer customerId){
+        return sMilkSale.getCustomerSaleSummary(dateParamDTO.getStartDate(), dateParamDTO.getEndDate(), customerId);
+    }
+
+    @Override
+    public List<CustomerSaleTotalDTO> getCustomerSaleTotal(DateParamDTO dateParamDTO, Integer customerId){
+        return sMilkSale.getCustomerSaleTotal(dateParamDTO.getStartDate(), dateParamDTO.getEndDate(), customerId);
+    }
+
+    @Override
     public List<DailyCowProductionDTO> getDailyCowProduction(Integer cowId){
         LocalDateTime today = LocalDateTime.now();
         LocalDateTime startDate = today.withHour(0).withMinute(0).withSecond(0).withNano(0);
@@ -100,6 +112,19 @@ public class SReport implements IReport {
     @Override
     public List<SummaryUserDTO> getUsersReport(){
         return sUser.getUserCountPerRole();
+    }
+
+    /*@Override
+    public List<EWeight> getWeightSummary(DateParamDTO dateParamDTO, Integer cowId){
+        return sWeight.getWeightSummary(dateParamDTO.getStartDate(), dateParamDTO.getEndDate(), cowId);
+    }*/
+
+    @Override
+    public ReportDTO getCustomerReport(DateParamDTO dateParamDTO, Integer customerId){
+        ReportDTO reportDTO = new ReportDTO();
+        reportDTO.setCustomerSaleSummary(getCustomerSaleSummary(dateParamDTO, customerId));
+        reportDTO.setCustomerSaleTotal(getCustomerSaleTotal(dateParamDTO, customerId));
+        return reportDTO;
     }
 
     @Override

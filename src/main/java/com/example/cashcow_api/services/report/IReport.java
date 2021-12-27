@@ -3,6 +3,8 @@ package com.example.cashcow_api.services.report;
 import java.util.List;
 
 import com.example.cashcow_api.dtos.general.DateParamDTO;
+import com.example.cashcow_api.dtos.milk.CustomerSaleSummaryDTO;
+import com.example.cashcow_api.dtos.milk.CustomerSaleTotalDTO;
 import com.example.cashcow_api.dtos.milk.DailyCowProductionDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
@@ -15,6 +17,10 @@ public interface IReport {
     List<MilkSaleSummaryDTO> getCurrentWeekShopSale(Integer shopId);
 
     List<MilkProductionSummaryDTO> getCurrentWeekProduction();
+
+    List<CustomerSaleSummaryDTO> getCustomerSaleSummary(DateParamDTO dateParamDTO, Integer customerId);
+
+    List<CustomerSaleTotalDTO> getCustomerSaleTotal(DateParamDTO dateParamDTO, Integer customerId);
 
     List<DailyCowProductionDTO> getDailyCowProduction(Integer cowId);
 
@@ -29,6 +35,8 @@ public interface IReport {
     List<MilkProductionSummaryDTO> getProductionByDate(DateParamDTO dateParamDTO);
 
     List<SummaryUserDTO> getUsersReport();
+
+    ReportDTO getCustomerReport(DateParamDTO dateParamDTO, Integer customerId);
 
     ReportDTO getMilkSaleReport(DateParamDTO dateParamDTO, Integer shopId);
 

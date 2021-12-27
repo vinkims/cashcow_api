@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+import com.example.cashcow_api.dtos.milk.CustomerSaleSummaryDTO;
+import com.example.cashcow_api.dtos.milk.CustomerSaleTotalDTO;
 import com.example.cashcow_api.dtos.milk.DailyCowProductionDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
@@ -25,6 +27,10 @@ public class ReportDTO {
     private List<MilkSaleSummaryDTO> currentWeekMilkSale;
     
     private List<MilkProductionSummaryDTO> currentWeekSummary;
+
+    private List<CustomerSaleSummaryDTO> customerSaleSummary;
+
+    private List<CustomerSaleTotalDTO> customerSaleTotal;
 
     private List<DailyCowProductionDTO> dailyCowProduction;
 
