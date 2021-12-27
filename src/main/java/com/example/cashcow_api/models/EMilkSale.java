@@ -42,6 +42,10 @@ public class EMilkSale implements Serializable{
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sale_type_id", referencedColumnName = "id")
+    private ESaleType saleType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id", referencedColumnName = "id")
     private EShop shop;
 

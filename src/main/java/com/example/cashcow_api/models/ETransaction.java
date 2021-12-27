@@ -56,6 +56,9 @@ public class ETransaction implements Serializable{
     @JoinColumn(name = "status_id", referencedColumnName = "id")
     private EStatus status;
 
+    @Column(name = "transaction_code")
+    private String transactionCode;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_type_id", referencedColumnName = "id")
     private ETransactionType transactionType;

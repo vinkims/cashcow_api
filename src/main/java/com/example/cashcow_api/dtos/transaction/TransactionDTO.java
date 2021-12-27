@@ -46,6 +46,8 @@ public class TransactionDTO {
 
     private Integer statusId;
 
+    private String transactionCode;
+
     private String transactionType;
 
     private Integer transactionTypeId;
@@ -60,6 +62,9 @@ public class TransactionDTO {
         setReference(transaction.getReference());
         setShop(new ShopDTO(transaction.getShop()));
         setStatus(transaction.getStatus().getName());
+        if (transaction.getTransactionCode() != null){
+            setTransactionCode(transaction.getTransactionCode());
+        }
         setTransactionType(transaction.getTransactionType().getName());
     }
 }

@@ -62,6 +62,9 @@ public class STransaction implements ITransaction {
         transaction.setAmount(transactionDTO.getAmount());
         transaction.setCreatedOn(LocalDateTime.now());
         transaction.setReference(transactionDTO.getReference());
+        if (transactionDTO.getTransactionCode() != null){
+            transaction.setTransactionCode(transactionDTO.getTransactionCode());
+        }
         setAttendant(transaction, transactionDTO.getAttendantId());
         setCustomer(transaction, transactionDTO.getCustomerId());
         setPaymentChannel(transaction, transactionDTO.getPaymentChannelId());

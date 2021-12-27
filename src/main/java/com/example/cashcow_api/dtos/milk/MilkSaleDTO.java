@@ -32,7 +32,15 @@ public class MilkSaleDTO {
 
     private Integer paymentChannelId;
 
+    private Float pricePerLitre;
+
+    private Float quantity;
+
     private Integer saleId;
+
+    private String saleType;
+
+    private Integer saleTypeId;
 
     private ShopBasicDTO shop;
 
@@ -42,7 +50,7 @@ public class MilkSaleDTO {
 
     private Integer statusId;
 
-    private Float quantity;
+    private String transactionCode;
 
     public MilkSaleDTO(EMilkSale sale){
         setAmount(sale.getAmount());
@@ -52,6 +60,9 @@ public class MilkSaleDTO {
             setCustomer(new UserBasicDTO(sale.getCustomer()));
         }
         setSaleId(sale.getId());
+        if (sale.getSaleType() != null){
+            setSaleType(sale.getSaleType().getName());
+        }
         setShop(new ShopBasicDTO(sale.getShop()));
         setStatus(sale.getStatus().getName());
         setQuantity(sale.getQuantity());

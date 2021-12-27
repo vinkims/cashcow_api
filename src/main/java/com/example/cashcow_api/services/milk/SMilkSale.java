@@ -12,10 +12,12 @@ import com.example.cashcow_api.dtos.transaction.TransactionDTO;
 import com.example.cashcow_api.exceptions.InvalidInputException;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.EMilkSale;
+import com.example.cashcow_api.models.ESaleType;
 import com.example.cashcow_api.models.EShop;
 import com.example.cashcow_api.models.EStatus;
 import com.example.cashcow_api.models.EUser;
 import com.example.cashcow_api.repositories.MilkSaleDAO;
+import com.example.cashcow_api.services.sale.ISaleType;
 import com.example.cashcow_api.services.shop.IShop;
 import com.example.cashcow_api.services.status.IStatus;
 import com.example.cashcow_api.services.transaction.ITransaction;
@@ -37,6 +39,9 @@ public class SMilkSale implements IMilkSale {
     @Value(value = "${default.value.status.complete-id}")
     private Integer completeStatusId;
 
+    @Value(value = "${default.value.sale.credit-sale-type-id}")
+    private Integer creditSaleTypeId;
+
     @Value(value = "${default.value.transaction-type.credit-transaction-type-id}")
     private Integer creditTransactiontypeId;
 
@@ -56,6 +61,9 @@ public class SMilkSale implements IMilkSale {
     private SpecFactory specFactory;
 
     @Autowired
+    private ISaleType sSaleType;
+
+    @Autowired
     private IShop sShop;
 
     @Autowired
@@ -72,12 +80,13 @@ public class SMilkSale implements IMilkSale {
 
         Float amount = saleDTO.getAmount();
         Integer customerId = saleDTO.getCustomerId();
+        Float litrePrice = saleDTO.getPricePerLitre();
 
         Float quantity = saleDTO.getQuantity();
-        Float expectedAmount = quantity * pricePerLitre;
+        Float expectedAmount = quantity * litrePrice;
 
         if (!amount.equals(expectedAmount) && customerId == null){
-            throw new InvalidInputException("Customer cannot be null", "customer");
+            throw new InvalidInputException("Please select customer", "customer");
         }
 
         EMilkSale milkSale = new EMilkSale();
@@ -86,6 +95,7 @@ public class SMilkSale implements IMilkSale {
         milkSale.setQuantity(quantity);
         setAttendant(milkSale, saleDTO.getAttendantId());
         setCustomer(milkSale, customerId);
+        setSaleType(milkSale, saleDTO.getSaleTypeId());
         setShop(milkSale, saleDTO.getShopId());
 
         Integer statusId = saleDTO.getStatusId() != null ? saleDTO.getStatusId() : completeStatusId;
@@ -94,17 +104,16 @@ public class SMilkSale implements IMilkSale {
         save(milkSale);
 
         // update customer balance
-        EUser milkCustomer = milkSale.getCustomer();
-        if (expectedAmount < amount){
-            milkCustomer.setBalance(amount - expectedAmount);
-            sUser.save(milkCustomer);
-        } else if (expectedAmount > amount){
-            milkCustomer.setBalance(amount - expectedAmount);
+        if (saleDTO.getSaleTypeId().equals(creditSaleTypeId)){
+            EUser milkCustomer = milkSale.getCustomer();
+            milkCustomer.setBalance(-expectedAmount);
             sUser.save(milkCustomer);
         }
 
         Integer transactionTypeId = saleDTO.getStatusId().equals(pendingStatusId) ?
             creditTransactiontypeId : milkSaleTransactionTypeId;
+
+        String transactionCode = saleDTO.getTransactionCode() != null ? saleDTO.getTransactionCode() : null;
         
         if (amount != 0){
             createTransaction(
@@ -115,25 +124,27 @@ public class SMilkSale implements IMilkSale {
                 saleDTO.getShopId(),
                 statusId,
                 saleDTO.getPaymentChannelId(),
-                transactionTypeId
+                transactionTypeId,
+                transactionCode
             );
         }
 
         return milkSale;
     }
 
-    public void createTransaction(Float amount, Integer attendantId, Integer customerId, 
-            Integer saleId, Integer shopId, Integer statusId, Integer paymentChannelId, Integer transactionTypeId){
+    public void createTransaction(Float amount, Integer attendantId, Integer customerId, Integer saleId, 
+            Integer shopId, Integer statusId, Integer paymentChannelId, Integer transactionTypeId, String transactionCode){
         
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setAmount(amount);
         transactionDTO.setAttendantId(attendantId);
         transactionDTO.setCustomerId(customerId);
-        transactionDTO.setReference(saleId.toString());
+        transactionDTO.setReference(String.format("Sale id: %s", saleId.toString()));
         transactionDTO.setShopId(shopId);
         transactionDTO.setStatusId(statusId);
         transactionDTO.setPaymentChannelId(paymentChannelId);
         transactionDTO.setTransactionTypeId(transactionTypeId);
+        transactionDTO.setTransactionCode(transactionCode);
 
         sTransaction.create(transactionDTO);
     }
@@ -196,6 +207,15 @@ public class SMilkSale implements IMilkSale {
             throw new NotFoundException("customer with specified id not found", "customerId");
         }
         milkSale.setCustomer(customer.get());
+    }
+
+    public void setSaleType(EMilkSale milkSale, Integer saleTypeId){
+        if (saleTypeId == null){ return; }
+        Optional<ESaleType> saleType = sSaleType.getById(saleTypeId);
+        if (!saleType.isPresent()){
+            throw new NotFoundException("sale type with sepecified id not found", "saleTypeId");
+        }
+        milkSale.setSaleType(saleType.get());
     }
 
     public void setShop(EMilkSale milkSale, Integer shopId){
