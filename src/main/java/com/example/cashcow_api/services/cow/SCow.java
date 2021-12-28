@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.example.cashcow_api.dtos.cow.CowDTO;
 import com.example.cashcow_api.dtos.cow.CowProfileDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
+import com.example.cashcow_api.dtos.transaction.TransactionDTO;
 import com.example.cashcow_api.dtos.weight.WeightDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.ECow;
@@ -17,6 +18,7 @@ import com.example.cashcow_api.models.EStatus;
 import com.example.cashcow_api.repositories.CowDAO;
 import com.example.cashcow_api.services.farm.IFarm;
 import com.example.cashcow_api.services.status.IStatus;
+import com.example.cashcow_api.services.transaction.ITransaction;
 import com.example.cashcow_api.services.weight.IWeight;
 import com.example.cashcow_api.specifications.SpecBuilder;
 import com.example.cashcow_api.specifications.SpecFactory;
@@ -32,11 +34,23 @@ import org.springframework.stereotype.Service;
 @Service
 public class SCow implements ICow {
 
+    @Value(value = "${default.value.status.active-id}")
+    private Integer activeStatusId;
+
     @Value(value = "${default.value.category.cow-id}")
     private Integer categoryCowId;
 
+    @Value(value = "${default.value.transaction-type.cow-sale-type-id}")
+    private Integer cowSaleTypeId;
+
+    @Value(value = "${default.value.payment-channel.mpesa-channel-id}")
+    private Integer mpesaPaymentChannelId;
+
     @Value(value = "${default.value.status.pre-calving-id}")
     private Integer preCalvingStatusId;
+
+    @Value(value = "${default.value.status.sold-id}")
+    private Integer soldStatusId;
 
     @Autowired
     private CowDAO cowDAO;
@@ -55,6 +69,9 @@ public class SCow implements ICow {
 
     @Autowired
     private IStatus sStatus;
+
+    @Autowired
+    private ITransaction sTransaction;
 
     @Autowired
     private IWeight sWeight;
@@ -76,7 +93,7 @@ public class SCow implements ICow {
         setFarm(cow, cowDTO.getFarmId());
         setParent(cow, cowDTO.getParentId());
 
-        Integer statusId = cowDTO.getStatusId() != null ? cowDTO.getStatusId() : preCalvingStatusId;
+        Integer statusId = cowDTO.getStatusId() != null ? cowDTO.getStatusId() : activeStatusId;
         setStatus(cow, statusId);
 
         save(cow);
@@ -84,6 +101,16 @@ public class SCow implements ICow {
         setProfile(cow, cowDTO.getProfile());
         recordWeight(cow.getId(), cowDTO.getWeight());
         return cow;
+    }
+
+    public void createSaleTransaction(Float amount, Integer paymentChannelId, 
+            Integer transactionTypeId, String reference){
+        TransactionDTO transactionDTO = new TransactionDTO();
+        transactionDTO.setAmount(amount);
+        transactionDTO.setPaymentChannelId(paymentChannelId);
+        transactionDTO.setReference(reference);
+        transactionDTO.setTransactionTypeId(transactionTypeId);
+        sTransaction.create(transactionDTO);
     }
 
     @Override
@@ -159,7 +186,7 @@ public class SCow implements ICow {
         }
         cow.setParent(parent.get());
 
-        updateParent(parent.get());
+        //updateParent(parent.get());
     }
 
     public void setProfile(ECow cow, CowProfileDTO cowProfileDTO){
@@ -191,6 +218,14 @@ public class SCow implements ICow {
         save(cow);
 
         setProfile(cow, cowDTO.getProfile());
+        if (cowDTO.getStatusId().equals(soldStatusId)){
+            createSaleTransaction(
+                cowDTO.getProfile().getSaleAmount(), 
+                mpesaPaymentChannelId, 
+                cowSaleTypeId,
+                String.format("Cow id: %s", cow.getId())
+            );
+        }
 
         return cow;
     }

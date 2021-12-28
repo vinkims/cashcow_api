@@ -1,22 +1,26 @@
 package com.example.cashcow_api.services.cow;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import com.example.cashcow_api.dtos.cow.CowServiceDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
+import com.example.cashcow_api.dtos.transaction.TransactionDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.ECow;
 import com.example.cashcow_api.models.ECowService;
 import com.example.cashcow_api.models.ECowServiceType;
 import com.example.cashcow_api.models.EUser;
 import com.example.cashcow_api.repositories.CowServiceDAO;
+import com.example.cashcow_api.services.transaction.ITransaction;
 import com.example.cashcow_api.services.user.IUser;
 import com.example.cashcow_api.specifications.SpecBuilder;
 import com.example.cashcow_api.specifications.SpecFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -25,6 +29,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SCowService implements ICowService {
+
+    @Value(value = "${default.value.transaction-type.cow-service-type-id}")
+    private Integer cowServiceTypeId;
+
+    @Value(value = "${default.value.payment-channel.mpesa-channel-id}")
+    private Integer mpesaPaymentChannelId;
 
     @Autowired
     private CowServiceDAO cowServiceDAO;
@@ -39,6 +49,9 @@ public class SCowService implements ICowService {
     private SpecFactory specFactory;
 
     @Autowired
+    private ITransaction sTransaction;
+
+    @Autowired
     private IUser sUser;
 
     @Override
@@ -48,6 +61,7 @@ public class SCowService implements ICowService {
         if (cowServiceDTO.getAmount() != null){
             cowService.setAmount(cowServiceDTO.getAmount());
         }
+        cowService.setCreatedOn(LocalDateTime.now());
         if (cowServiceDTO.getResults() != null){
             cowService.setResults(cowServiceDTO.getResults());
         }
@@ -58,7 +72,29 @@ public class SCowService implements ICowService {
 
         save(cowService);
 
+        if (cowServiceDTO.getAmount() != null){
+            createServiceTransaction(
+                cowServiceDTO.getAmount(), 
+                mpesaPaymentChannelId, 
+                cowServiceTypeId, 
+                String.format("Service id: %s", cowService.getId())
+            );
+        }
+
         return cowService;
+    }
+
+    /**
+     * Create cow service payment transaction
+     */
+    public void createServiceTransaction(Float amount, Integer paymentChannelId, 
+            Integer transactionTypeId, String reference){
+        TransactionDTO transactionDTO = new TransactionDTO();
+        transactionDTO.setAmount(amount);
+        transactionDTO.setPaymentChannelId(paymentChannelId);
+        transactionDTO.setReference(reference);
+        transactionDTO.setTransactionTypeId(transactionTypeId);
+        sTransaction.create(transactionDTO);
     }
 
     @Override

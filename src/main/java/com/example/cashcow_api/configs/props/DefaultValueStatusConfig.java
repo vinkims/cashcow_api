@@ -15,4 +15,6 @@ public class DefaultValueStatusConfig {
     private Integer pendingStatusId;
     
     private Integer preCalvingStatusId;
+
+    private Integer soldStatusId;
 }

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.cashcow_api.dtos.general.PageDTO;
+import com.example.cashcow_api.dtos.milk.CustomerSaleSummaryDTO;
+import com.example.cashcow_api.dtos.milk.CustomerSaleTotalDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTotalDTO;
@@ -147,6 +149,16 @@ public class SMilkSale implements IMilkSale {
         transactionDTO.setTransactionCode(transactionCode);
 
         sTransaction.create(transactionDTO);
+    }
+
+    @Override
+    public List<CustomerSaleSummaryDTO> getCustomerSaleSummary(LocalDateTime startDate, LocalDateTime endDate, Integer customerId){
+        return milkSaleDAO.findCustomerSaleSummary(startDate, endDate, customerId);
+    }
+
+    @Override
+    public List<CustomerSaleTotalDTO> getCustomerSaleTotal(LocalDateTime startDate, LocalDateTime endDate, Integer customerId){
+        return milkSaleDAO.findCustomerSaleTotal(startDate, endDate, customerId);
     }
 
     @Override

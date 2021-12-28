@@ -9,8 +9,16 @@ import lombok.Data;
 public class DefaultValueTransactionTypeConfig {
 
     private Integer cowPurchaseTypeId;
+
+    private Integer cowSaleTypeId;
+
+    private Integer cowServiceTypeId;
     
     private Integer creditTransactiontypeId;
 
     private Integer milkSaleTransactionTypeId;
+
+    private Integer productPaymentTypeId;
+
+    private Integer transportTypeId;
 }

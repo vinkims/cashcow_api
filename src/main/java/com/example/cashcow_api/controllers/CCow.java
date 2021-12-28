@@ -75,7 +75,7 @@ public class CCow {
     }
 
     @PatchMapping(path = "/cow/{cowId}", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<SuccessResponse> updateCow(@PathVariable Integer cowId, @Valid @RequestBody CowDTO cowDTO){
+    public ResponseEntity<SuccessResponse> updateCow(@PathVariable Integer cowId, @RequestBody CowDTO cowDTO){
 
         Optional<ECow> cow = sCow.getById(cowId);
         if (!cow.isPresent()){

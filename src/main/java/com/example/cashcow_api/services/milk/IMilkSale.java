@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.cashcow_api.dtos.general.PageDTO;
+import com.example.cashcow_api.dtos.milk.CustomerSaleSummaryDTO;
+import com.example.cashcow_api.dtos.milk.CustomerSaleTotalDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTotalDTO;
@@ -15,6 +17,10 @@ import org.springframework.data.domain.Page;
 public interface IMilkSale {
     
     EMilkSale create(MilkSaleDTO saleDTO);
+
+    List<CustomerSaleSummaryDTO> getCustomerSaleSummary(LocalDateTime startDate, LocalDateTime endDate, Integer customerId);
+
+    List<CustomerSaleTotalDTO> getCustomerSaleTotal(LocalDateTime startDate, LocalDateTime endDate, Integer customerId);
 
     Optional<EMilkSale> getById(Integer saleId);
 
