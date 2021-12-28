@@ -6,15 +6,18 @@ import java.util.Optional;
 
 import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.dtos.purchases.PurchaseDTO;
+import com.example.cashcow_api.dtos.transaction.TransactionDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.EPurchase;
 import com.example.cashcow_api.models.EUser;
 import com.example.cashcow_api.repositories.PurchaseDAO;
+import com.example.cashcow_api.services.transaction.ITransaction;
 import com.example.cashcow_api.services.user.IUser;
 import com.example.cashcow_api.specifications.SpecBuilder;
 import com.example.cashcow_api.specifications.SpecFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -24,6 +27,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class SPurchase implements IPurchase {
 
+    @Value(value = "${default.value.payment-channel.mpesa-channel-id}")
+    private Integer mpesaPaymentChannelId;
+
+    @Value(value = "${default.value.transaction-type.product-payment-type-id}")
+    private Integer productPaymentTypeId;
+
+    @Value(value = "${default.value.transaction-type.transport-type-id}")
+    private Integer transportTypeId;
+
     @Autowired
     private PurchaseDAO purchaseDAO;
 
@@ -32,6 +44,9 @@ public class SPurchase implements IPurchase {
 
     @Autowired
     private IUser sUser;
+
+    @Autowired
+    private ITransaction sTransaction;
 
     @Override
     public EPurchase create(PurchaseDTO purchaseDTO) {
@@ -44,13 +59,36 @@ public class SPurchase implements IPurchase {
         }
         if (purchaseDTO.getTransportCost() != null){
             purchase.setTransportCost(purchaseDTO.getTransportCost());
+            createTransaction(
+                purchaseDTO.getTransportCost(), 
+                mpesaPaymentChannelId, 
+                transportTypeId, 
+                String.format("Transport: %s", purchaseDTO.getName())
+            );
         }
         purchase.setUnitPrice(purchaseDTO.getUnitPrice());
         setSupplier(purchase, purchaseDTO.getSupplierId());
 
         save(purchase);
 
+        createTransaction(
+            (purchaseDTO.getQuantity() * purchaseDTO.getUnitPrice()),
+            mpesaPaymentChannelId, 
+            productPaymentTypeId, 
+            String.format("Product: %s", purchaseDTO.getName())
+        );
+
         return purchase;
+    }
+
+    public void createTransaction(Float amount, Integer paymentChannelId, 
+            Integer transactionTypeId, String reference){
+        TransactionDTO transactionDTO = new TransactionDTO();
+        transactionDTO.setAmount(amount);
+        transactionDTO.setPaymentChannelId(paymentChannelId);
+        transactionDTO.setReference(reference);
+        transactionDTO.setTransactionTypeId(transactionTypeId);
+        sTransaction.create(transactionDTO);
     }
 
     @Override

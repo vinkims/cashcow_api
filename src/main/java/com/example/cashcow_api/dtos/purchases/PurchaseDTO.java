@@ -38,7 +38,9 @@ public class PurchaseDTO {
         setId(purchase.getId());
         setName(purchase.getName());
         setQuantity(purchase.getQuantity());
-        setSupplier(new UserBasicDTO(purchase.getSupplier()));
+        if (purchase.getSupplier() != null){
+            setSupplier(new UserBasicDTO(purchase.getSupplier()));
+        }
         setTransportCost(purchase.getTransportCost());
     }
 }
