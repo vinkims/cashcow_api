@@ -34,4 +34,16 @@ public interface MilkProductionDAO extends JpaRepository<EMilkProduction, Intege
             + "GROUP BY s.name, m.quantity"
     )
     List<DailyCowProductionDTO> findDailyProductionByCow(LocalDateTime startDate, LocalDateTime endDate, Integer cowId);
+
+    @Query(
+        value = "SELECT new com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO(cast(m.createdOn as LocalDate), sum(m.quantity)) "
+            + "FROM com.example.cashcow_api.models.EMilkProduction m "
+            + "LEFT JOIN m.cow c "
+            + "WHERE m.createdOn > :startDate "
+                + "AND m.createdOn < :endDate "
+                + "AND c.id = :cowId "
+            + "GROUP BY cast(m.createdOn as LocalDate) "
+            + "ORDER BY cast(m.createdOn as LocalDate) ASC"
+    )
+    List<MilkProductionSummaryDTO> findProductionSummaryByCow(LocalDateTime startDate, LocalDateTime endDate, Integer cowId);
 }

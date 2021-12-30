@@ -110,6 +110,11 @@ public class SReport implements IReport {
     }
 
     @Override
+    public List<MilkProductionSummaryDTO> getProductionByDateAndCow(DateParamDTO dateParamDTO, Integer cowId){
+        return sMilkProduction.getProductionSummaryByCow(dateParamDTO.getStartDate(), dateParamDTO.getEndDate(), cowId);
+    }
+
+    @Override
     public List<SummaryUserDTO> getUsersReport(){
         return sUser.getUserCountPerRole();
     }
@@ -140,6 +145,7 @@ public class SReport implements IReport {
     @Override
     public ReportDTO getReportByDateAndCow(DateParamDTO dateParamDTO, Integer cowId) {
         ReportDTO reportDTO = new ReportDTO();
+        reportDTO.setCowProductionSummary(getProductionByDateAndCow(dateParamDTO, cowId));
         reportDTO.setCurrentWeek(getCurrentWeek());
         reportDTO.setCurrentWeekSummary(getCurrentWeekProduction());
         reportDTO.setDailyCowProduction(getDailyCowProduction(cowId));

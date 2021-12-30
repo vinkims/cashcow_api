@@ -24,5 +24,7 @@ public interface IMilkProduction {
 
     Page<EMilkProduction> getPaginatedList(PageDTO pageDTO, List<String> allowableFields);
 
+    List<MilkProductionSummaryDTO> getProductionSummaryByCow(LocalDateTime startDate, LocalDateTime endDate, Integer cowId);
+
     void save(EMilkProduction production);
 }

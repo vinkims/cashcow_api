@@ -92,6 +92,11 @@ public class SMilkProduction implements IMilkProduction {
     }
 
     @Override
+    public List<MilkProductionSummaryDTO> getProductionSummaryByCow(LocalDateTime startDate, LocalDateTime endDate, Integer cowId){
+        return productionDAO.findProductionSummaryByCow(startDate, endDate, cowId);
+    }
+
+    @Override
     public void save(EMilkProduction production) {
         productionDAO.save(production);
     }

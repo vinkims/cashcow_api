@@ -22,6 +22,8 @@ import lombok.NoArgsConstructor;
 @JsonInclude(value = Include.NON_NULL)
 public class ReportDTO {
 
+    private List<MilkProductionSummaryDTO> cowProductionSummary;
+    
     private Map<LocalDate, Double> currentWeek;
     
     private List<MilkSaleSummaryDTO> currentWeekMilkSale;

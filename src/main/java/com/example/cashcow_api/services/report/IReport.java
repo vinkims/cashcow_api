@@ -11,6 +11,7 @@ import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTotalDTO;
 import com.example.cashcow_api.dtos.report.ReportDTO;
 import com.example.cashcow_api.dtos.user.SummaryUserDTO;
+import com.example.cashcow_api.models.EWeight;
 
 public interface IReport {
 
@@ -33,6 +34,10 @@ public interface IReport {
     List<MilkSaleSummaryDTO> getPreviousWeekShopSale(Integer shopId);
 
     List<MilkProductionSummaryDTO> getProductionByDate(DateParamDTO dateParamDTO);
+
+    List<MilkProductionSummaryDTO> getProductionByDateAndCow(DateParamDTO dateParamDTO, Integer cowId);
+
+    //List<EWeight> getWeightSummary(DateParamDTO dateParamDTO, Integer cowId);
 
     List<SummaryUserDTO> getUsersReport();
 
