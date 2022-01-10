@@ -54,13 +54,19 @@ public class TransactionDTO {
 
     public TransactionDTO(ETransaction transaction){
         setAmount(transaction.getAmount());
-        setAttendant(new UserBasicDTO(transaction.getAttendant()));
+        if (transaction.getAttendant() != null){
+            setAttendant(new UserBasicDTO(transaction.getAttendant()));
+        }
         setCreatedOn(transaction.getCreatedOn());
-        setCustomer(new UserBasicDTO(transaction.getCustomer()));
+        if (transaction.getCustomer() != null){
+            setCustomer(new UserBasicDTO(transaction.getCustomer()));
+        }
         setId(transaction.getId());
         setPaymentChannel(transaction.getPaymentChannel().getName());
         setReference(transaction.getReference());
-        setShop(new ShopDTO(transaction.getShop()));
+        if (transaction.getShop() != null){
+            setShop(new ShopDTO(transaction.getShop()));
+        }
         setStatus(transaction.getStatus().getName());
         if (transaction.getTransactionCode() != null){
             setTransactionCode(transaction.getTransactionCode());

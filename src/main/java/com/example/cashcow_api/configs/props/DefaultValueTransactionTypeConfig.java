@@ -20,5 +20,9 @@ public class DefaultValueTransactionTypeConfig {
 
     private Integer productPaymentTypeId;
 
+    private Integer staffAdvanceTypeId;
+
+    private Integer staffSalaryTypeId;
+
     private Integer transportTypeId;
 }

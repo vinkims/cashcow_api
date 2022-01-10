@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.cashcow_api.dtos.general.PageDTO;
+import com.example.cashcow_api.dtos.transaction.EmployeeTransactionDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.EPaymentChannel;
@@ -33,6 +34,12 @@ public class STransaction implements ITransaction {
 
     @Value(value = "${default.value.status.complete-id}")
     private Integer completeStatusId;
+
+    @Value(value = "${default.value.transaction-type.staff-advance-type-id}")
+    private Integer staffAdvanceTypeId;
+
+    @Value(value = "${default.value.transaction-type.staff-salary-type-id}")
+    private Integer staffSalaryTypeId;
 
     @Autowired
     private TransactionDAO transactionDAO;
@@ -83,6 +90,11 @@ public class STransaction implements ITransaction {
     @Override
     public Optional<ETransaction> getById(Integer transactionId) {
         return transactionDAO.findById(transactionId);
+    }
+
+    @Override
+    public List<EmployeeTransactionDTO> getEmployeeExpenses(LocalDateTime startDate, LocalDateTime endDate, Integer userId){
+        return transactionDAO.findEmployeeExpenses(startDate, endDate, staffAdvanceTypeId, staffSalaryTypeId, userId);
     }
 
     @Override

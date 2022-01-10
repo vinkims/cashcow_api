@@ -76,9 +76,18 @@ public class CReport {
     }
 
     @GetMapping(path = "/report/user", produces = "application/json")
-    public ResponseEntity<SuccessResponse> getUsersSummary(){
+    public ResponseEntity<SuccessResponse> getUsersSummary(@RequestParam Map<String, String> params) 
+            throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException{
 
-        ReportDTO usersReport = sReport.getUsersSummaryReport();
+        DateParamDTO dateParamDTO = new DateParamDTO(params);
+        Integer userId;
+        try{
+            userId = Integer.valueOf(params.get("user.id"));
+        } catch(NumberFormatException e){
+            userId = null;
+        }
+
+        ReportDTO usersReport = sReport.getUsersSummaryReport(dateParamDTO, userId);
 
         return ResponseEntity
             .ok()

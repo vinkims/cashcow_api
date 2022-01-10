@@ -15,9 +15,9 @@ public class WeightSummaryDTO {
     
     private LocalDate createdOn;
 
-    private Double value;
+    private Float value;
 
-    public WeightSummaryDTO(LocalDate createdOn, Double value){
+    public WeightSummaryDTO(LocalDate createdOn, Float value){
         setCreatedOn(createdOn);
         setValue(value);
     }

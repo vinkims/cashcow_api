@@ -10,6 +10,7 @@ import com.example.cashcow_api.dtos.milk.DailyCowProductionDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTotalDTO;
+import com.example.cashcow_api.dtos.transaction.EmployeeTransactionDTO;
 import com.example.cashcow_api.dtos.user.SummaryUserDTO;
 import com.example.cashcow_api.models.EWeight;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -36,6 +37,8 @@ public class ReportDTO {
     private List<CustomerSaleTotalDTO> customerSaleTotal;
 
     private List<DailyCowProductionDTO> dailyCowProduction;
+
+    private List<EmployeeTransactionDTO> employeeExpenses;
 
     private List<MilkSaleSummaryDTO> milkSaleSummary;
 
