@@ -1,10 +1,12 @@
 package com.example.cashcow_api.services.weight;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.dtos.weight.WeightDTO;
+import com.example.cashcow_api.dtos.weight.WeightSummaryDTO;
 import com.example.cashcow_api.models.EWeight;
 
 import org.springframework.data.domain.Page;

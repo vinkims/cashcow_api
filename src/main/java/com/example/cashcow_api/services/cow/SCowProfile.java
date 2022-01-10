@@ -1,11 +1,13 @@
 package com.example.cashcow_api.services.cow;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import com.example.cashcow_api.dtos.cow.CowProfileDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.ECow;
+import com.example.cashcow_api.models.ECowImage;
 import com.example.cashcow_api.models.ECowProfile;
 import com.example.cashcow_api.repositories.CowProfileDAO;
 import com.example.cashcow_api.services.transaction.ITransaction;
@@ -45,6 +47,8 @@ public class SCowProfile {
         setDateOfDeath(profile, cowProfileDTO);
         setDateOfPurchase(profile, cowProfileDTO);
         setDateOfDeath(profile, cowProfileDTO);
+        setGender(profile, cowProfileDTO);
+        setImage(profile, cowProfileDTO.getImageId());
         setLocationBought(profile, cowProfileDTO);
         setPurchaseAmount(profile, cowProfileDTO);
         setSaleAmount(profile, cowProfileDTO);
@@ -117,6 +121,23 @@ public class SCowProfile {
     public void setDateOfSale(ECowProfile cowProfile, CowProfileDTO cowProfileDTO){
         if (cowProfileDTO.getDateOfSale() != null){
             cowProfile.setDateOfSale(LocalDate.parse(cowProfileDTO.getDateOfSale()));
+        }
+    }
+
+    public void setGender(ECowProfile cowProfile, CowProfileDTO cowProfileDTO){
+        if (cowProfileDTO.getGender() != null){
+            cowProfile.setGender(cowProfileDTO.getGender());
+        }
+    }
+
+    public void setImage(ECowProfile cowProfile, Integer imageId){
+        
+        if (imageId != null){
+            Optional<ECowImage> image = sCowImage.getById(imageId);
+            if (!image.isPresent()){
+                throw new NotFoundException("image with specified id not found", "imageId");
+            }
+            cowProfile.setCowImage(image.get());
         }
     }
 

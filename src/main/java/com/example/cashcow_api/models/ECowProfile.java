@@ -6,11 +6,16 @@ import java.time.LocalDate;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
+import com.example.cashcow_api.utils.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
@@ -38,6 +43,10 @@ public class ECowProfile implements Serializable{
     @Column(name = "cow_id")
     private Integer cowId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cow_image_id", referencedColumnName = "id")
+    private ECowImage cowImage;
+
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
@@ -50,6 +59,10 @@ public class ECowProfile implements Serializable{
     @Column(name = "date_of_sale")
     private LocalDate dateOfSale;
 
+    @Column(name = "gender")
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
     @Column(name = "location_bought")
     private String locationBought;
 
@@ -58,6 +71,20 @@ public class ECowProfile implements Serializable{
 
     @Column(name = "sale_amount")
     private Float saleAmount;
+
+    /**
+     * Get gender value as string
+     */
+    public String getGender(){
+        return gender == null ? null : gender.getGender();
+    }
+
+    /**
+     * Sets gender value
+     */
+    public void setGender(String gender){
+        this.gender = Gender.of(gender.toLowerCase());
+    }
 
     public void setCow(ECow cow){
         this.cow = cow;

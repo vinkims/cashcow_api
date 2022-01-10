@@ -65,9 +65,11 @@ public class SCowService implements ICowService {
         if (cowServiceDTO.getResults() != null){
             cowService.setResults(cowServiceDTO.getResults());
         }
-        cowService.setCreatedOn(LocalDateTime.now());
+        setBull(cowService, cowServiceDTO.getBullId());
+        setCalvingDate(cowService, cowServiceDTO.getCalvingDate());
         setCow(cowService, cowServiceDTO.getCowId());
         setCowServiceType(cowService, cowServiceDTO.getCowServiceTypeId());
+        setObservationDate(cowService, cowServiceDTO.getObservationDate());
         setUser(cowService, cowServiceDTO.getUserId());
 
         save(cowService);
@@ -123,6 +125,22 @@ public class SCowService implements ICowService {
         cowServiceDAO.save(cowService);
     }
 
+    public void setBull(ECowService cowService, Integer bullId){
+
+        if (bullId == null){ return; }
+        Optional<ECow> bull = sCow.getById(bullId);
+        if (!bull.isPresent()){
+            throw new NotFoundException("bull with specified id not found", "bullId");
+        }
+        cowService.setBull(bull.get());
+    }
+
+    public void setCalvingDate(ECowService cowService, String calvingDate){
+        if (calvingDate != null){
+            cowService.setCalvingDate(LocalDate.parse(calvingDate));
+        }
+    }
+
     public void setCow(ECowService cowService, Integer cowId){
 
         Optional<ECow> cow = sCow.getById(cowId);
@@ -139,6 +157,12 @@ public class SCowService implements ICowService {
             throw new NotFoundException("service type with specified id not found", "servicetypeId");
         }
         cowService.setCowServiceType(serviceType.get());
+    }
+
+    public void setObservationDate(ECowService cowService, String observationDate){
+        if (observationDate != null){
+            cowService.setObservationDate(LocalDate.parse(observationDate));
+        }
     }
 
     public void setUser(ECowService cowService, Integer userId){

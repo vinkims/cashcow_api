@@ -1,7 +1,6 @@
 package com.example.cashcow_api.models;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -18,42 +17,36 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "cow_services")
-public class ECowService implements Serializable{
-    
-    private static final long serialVersionUID = 1L;
+@Entity(name = "expenses")
+public class EExpense implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    
     @Column(name = "amount")
     private Float amount;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bull_id", referencedColumnName = "id")
-    private ECow bull;
-
-    @Column(name = "calving_date")
-    private LocalDate calvingDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cow_id", referencedColumnName = "id")
     private ECow cow;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cow_service_type_id", referencedColumnName = "id")
-    private ECowServiceType cowServiceType;
-
     @Column(name = "created_on")
     private LocalDateTime createdOn;
+
+    @Column(name = "description")
+    private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "expense_type_id", referencedColumnName = "id")
+    private EExpenseType expenseType;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false, name = "id")
     private Integer id;
 
-    @Column(name = "observation_date")
-    private LocalDate observationDate;
-
-    @Column(name = "results")
-    private String results;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_id", referencedColumnName = "id")
+    private EStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")

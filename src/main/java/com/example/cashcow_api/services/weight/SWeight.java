@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.dtos.weight.WeightDTO;
+import com.example.cashcow_api.dtos.weight.WeightSummaryDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.ECow;
 import com.example.cashcow_api.models.EWeight;
