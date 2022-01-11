@@ -16,6 +16,7 @@ import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTotalDTO;
 import com.example.cashcow_api.dtos.report.ReportDTO;
 import com.example.cashcow_api.dtos.transaction.EmployeeTransactionDTO;
+import com.example.cashcow_api.dtos.transaction.TransactionSummaryDTO;
 import com.example.cashcow_api.dtos.user.SummaryUserDTO;
 import com.example.cashcow_api.models.EWeight;
 import com.example.cashcow_api.services.milk.IMilkProduction;
@@ -131,6 +132,11 @@ public class SReport implements IReport {
     }
 
     @Override
+    public List<TransactionSummaryDTO> getTransactionSummary(DateParamDTO dateParamDTO){
+        return sTransaction.getTransactionSummary(dateParamDTO.getStartDate(), dateParamDTO.getEndDate());
+    }
+
+    @Override
     public List<SummaryUserDTO> getUsersReport(){
         return sUser.getUserCountPerRole();
     }
@@ -176,6 +182,13 @@ public class SReport implements IReport {
         ReportDTO reportDTO = new ReportDTO();
         reportDTO.setEmployeeExpenses(getEmployeeExpenses(dateParamDTO, userId));
         reportDTO.setUserSummary(getUsersReport());
+        return reportDTO;
+    }
+
+    @Override
+    public ReportDTO getTransactionReport(DateParamDTO dateParamDTO){
+        ReportDTO reportDTO = new ReportDTO();
+        reportDTO.setTransactionSummary(getTransactionSummary(dateParamDTO));
         return reportDTO;
     }
     

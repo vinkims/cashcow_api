@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.example.cashcow_api.dtos.transaction.EmployeeTransactionDTO;
+import com.example.cashcow_api.dtos.transaction.TransactionSummaryDTO;
 import com.example.cashcow_api.models.ETransaction;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -37,4 +38,15 @@ public interface TransactionDAO extends JpaRepository<ETransaction, Integer>, Jp
         + "GROUP BY cast(t.createdOn as LocalDate), amount, tt.name, a.firstName"
     )
     List<EmployeeTransactionDTO> findAllEmployeeExpenses(LocalDateTime startDate, LocalDateTime endDate, Integer advanceTypeId, Integer salaryTypeId);
+
+    @Query(
+        value = "SELECT new com.example.cashcow_api.dtos.transaction.TransactionSummaryDTO(sum(t.amount), tt.name) "
+            + "FROM com.example.cashcow_api.models.ETransaction t "
+            + "LEFT JOIN t.transactionType tt "
+            + "WHERE t.createdOn > :startDate "
+                + "AND t.createdOn < :endDate "
+            + "GROUP BY tt.name "
+            + "ORDER BY tt.name"
+    )
+    List<TransactionSummaryDTO> findTransactionSummary(LocalDateTime startDate, LocalDateTime endDate);
 }

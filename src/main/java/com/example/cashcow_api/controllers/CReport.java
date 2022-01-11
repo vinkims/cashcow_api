@@ -75,6 +75,19 @@ public class CReport {
             .body(new SuccessResponse(200, "returned production list", reports));
     }
 
+    @GetMapping(path = "/report/transaction", produces = "application/json")
+    public ResponseEntity<SuccessResponse> getTransactionsSummary(@RequestParam Map<String, String> params) 
+            throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException{
+
+        DateParamDTO dateParamDTO = new DateParamDTO(params);
+
+        ReportDTO transactions = sReport.getTransactionReport(dateParamDTO);
+
+        return ResponseEntity
+            .ok()
+            .body(new SuccessResponse(200, "returned transactions report", transactions));
+    }
+
     @GetMapping(path = "/report/user", produces = "application/json")
     public ResponseEntity<SuccessResponse> getUsersSummary(@RequestParam Map<String, String> params) 
             throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException{

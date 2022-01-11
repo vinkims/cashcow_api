@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.dtos.transaction.EmployeeTransactionDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionDTO;
+import com.example.cashcow_api.dtos.transaction.TransactionSummaryDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.EPaymentChannel;
 import com.example.cashcow_api.models.EShop;
@@ -113,6 +114,11 @@ public class STransaction implements ITransaction {
             Sort.by(pageDTO.getDirection(), pageDTO.getSortVal()));
 
         return transactionDAO.findAll(spec, pageRequest);
+    }
+
+    @Override
+    public List<TransactionSummaryDTO> getTransactionSummary(LocalDateTime startDate, LocalDateTime endDate){
+        return transactionDAO.findTransactionSummary(startDate, endDate);
     }
 
     @Override

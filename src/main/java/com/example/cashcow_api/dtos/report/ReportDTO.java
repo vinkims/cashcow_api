@@ -11,6 +11,7 @@ import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTotalDTO;
 import com.example.cashcow_api.dtos.transaction.EmployeeTransactionDTO;
+import com.example.cashcow_api.dtos.transaction.TransactionSummaryDTO;
 import com.example.cashcow_api.dtos.user.SummaryUserDTO;
 import com.example.cashcow_api.models.EWeight;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -49,6 +50,8 @@ public class ReportDTO {
     private List<MilkProductionSummaryDTO> previousWeekSummary;
 
     private List<MilkProductionSummaryDTO> productionSummary;
+
+    private List<TransactionSummaryDTO> transactionSummary;
 
     private List<SummaryUserDTO> userSummary;
 

@@ -11,6 +11,7 @@ import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTotalDTO;
 import com.example.cashcow_api.dtos.report.ReportDTO;
 import com.example.cashcow_api.dtos.transaction.EmployeeTransactionDTO;
+import com.example.cashcow_api.dtos.transaction.TransactionSummaryDTO;
 import com.example.cashcow_api.dtos.user.SummaryUserDTO;
 import com.example.cashcow_api.models.EWeight;
 
@@ -40,6 +41,8 @@ public interface IReport {
 
     List<MilkProductionSummaryDTO> getProductionByDateAndCow(DateParamDTO dateParamDTO, Integer cowId);
 
+    List<TransactionSummaryDTO> getTransactionSummary(DateParamDTO dateParamDTO);
+
     //List<EWeight> getWeightSummary(DateParamDTO dateParamDTO, Integer cowId);
 
     List<SummaryUserDTO> getUsersReport();
@@ -51,5 +54,7 @@ public interface IReport {
     ReportDTO getReportByDateAndCow(DateParamDTO dateParamDTO, Integer cowId);
 
     ReportDTO getUsersSummaryReport(DateParamDTO dateParamDTO, Integer userId);
+
+    ReportDTO getTransactionReport(DateParamDTO dateParamDTO);
 
 }
