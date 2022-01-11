@@ -84,6 +84,8 @@ public class STransaction implements ITransaction {
 
         save(transaction);
 
+        updateCustomerBalance(transactionDTO.getCustomerId(), transactionDTO.getAmount());
+
         return transaction;
     }
 
@@ -182,6 +184,14 @@ public class STransaction implements ITransaction {
     public ETransaction update(ETransaction transaction, TransactionDTO transactionDTO) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public void updateCustomerBalance(Integer customerId, Float amount){
+        if (customerId != null && amount != null){
+            EUser customer = sUser.getById(customerId).get();
+            customer.setBalance(amount);
+            sUser.save(customer);
+        }
     }
     
 }
