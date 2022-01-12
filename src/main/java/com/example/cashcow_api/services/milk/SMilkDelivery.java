@@ -6,17 +6,20 @@ import java.util.Optional;
 
 import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.dtos.milk.MilkDeliveryDTO;
+import com.example.cashcow_api.dtos.transaction.TransactionDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.EMilkDelivery;
 import com.example.cashcow_api.models.EShop;
 import com.example.cashcow_api.models.EUser;
 import com.example.cashcow_api.repositories.MilkDeliveryDAO;
 import com.example.cashcow_api.services.shop.IShop;
+import com.example.cashcow_api.services.transaction.ITransaction;
 import com.example.cashcow_api.services.user.IUser;
 import com.example.cashcow_api.specifications.SpecBuilder;
 import com.example.cashcow_api.specifications.SpecFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -30,6 +33,9 @@ public class SMilkDelivery implements IMilkDelivery {
     private IShop sShop;
 
     @Autowired
+    private ITransaction sTransaction;
+
+    @Autowired
     private IUser sUser;
 
     @Autowired
@@ -37,6 +43,12 @@ public class SMilkDelivery implements IMilkDelivery {
 
     @Autowired
     private SpecFactory specFactory;
+
+    @Value(value = "${default.value.transaction-type.milk-transport-type-id}")
+    private Integer milkTransportTypeId;
+
+    @Value(value = "${default.value.payment-channel.mpesa-channel-id}")
+    private Integer mpesaPaymentChannelId;
 
     @Override
     public EMilkDelivery create(MilkDeliveryDTO deliveryDTO) {
@@ -48,7 +60,32 @@ public class SMilkDelivery implements IMilkDelivery {
 
         save(delivery);
 
+        if (deliveryDTO.getTransportCost() != null && deliveryDTO.getTransportCost() != 0){
+            createTransaction(
+                deliveryDTO.getTransportCost(), 
+                deliveryDTO.getUserId(), 
+                deliveryDTO.getShopId(), 
+                mpesaPaymentChannelId, 
+                milkTransportTypeId,
+                delivery.getId()
+            );
+        }
+
         return delivery;
+    }
+
+    public void createTransaction(Float amount, Integer attendantId, Integer shopId, 
+            Integer paymentChannelId, Integer transactionTypeId, Integer deliveryId){
+
+        TransactionDTO transactionDTO = new TransactionDTO();
+        transactionDTO.setAmount(amount);
+        transactionDTO.setAttendantId(attendantId);
+        transactionDTO.setShopId(shopId);
+        transactionDTO.setPaymentChannelId(paymentChannelId);
+        transactionDTO.setTransactionTypeId(transactionTypeId);
+        transactionDTO.setReference(String.format("Delivery id: %s", deliveryId));
+
+        sTransaction.create(transactionDTO);
     }
 
     @Override

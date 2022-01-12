@@ -18,6 +18,8 @@ public class DefaultValueTransactionTypeConfig {
 
     private Integer milkSaleTransactionTypeId;
 
+    private Integer milkTransportTypeId;
+
     private Integer productPaymentTypeId;
 
     private Integer staffAdvanceTypeId;

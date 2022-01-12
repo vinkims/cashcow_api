@@ -24,13 +24,15 @@ public class MilkDeliveryDTO {
 
     private Float quantity;
 
-    private UserBasicDTO user;
-
-    private Integer userId;
-
     private ShopBasicDTO shop;
 
     private Integer shopId;
+
+    private Float transportCost;
+
+    private UserBasicDTO user;
+
+    private Integer userId;
 
     public MilkDeliveryDTO(EMilkDelivery delivery){
         setCreatedOn(delivery.getCreatedOn());
