@@ -7,6 +7,7 @@ import java.util.Map;
 import com.example.cashcow_api.dtos.milk.CustomerSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.CustomerSaleTotalDTO;
 import com.example.cashcow_api.dtos.milk.DailyCowProductionDTO;
+import com.example.cashcow_api.dtos.milk.MilkConsumptionSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTotalDTO;
@@ -40,6 +41,8 @@ public class ReportDTO {
     private List<DailyCowProductionDTO> dailyCowProduction;
 
     private List<EmployeeTransactionDTO> employeeExpenses;
+
+    private List<MilkConsumptionSummaryDTO> milkConsumptionSummary;
 
     private List<MilkSaleSummaryDTO> milkSaleSummary;
 

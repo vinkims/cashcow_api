@@ -64,7 +64,7 @@ public class CCow {
         PageDTO pageDTO = new PageDTO(params);
 
         ArrayList<String> allowableFields = new ArrayList<>(
-            Arrays.asList("status.id", "status.name", "createdOn", "profile.breed", "category.id", "category.name")
+            Arrays.asList("status.id", "status.name", "createdOn", "profile.breed", "category.id", "category.name", "profile.gender")
         );
 
         Page<ECow> cowPage = sCow.getPaginatedList(pageDTO, allowableFields);

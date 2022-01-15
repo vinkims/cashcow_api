@@ -11,6 +11,7 @@ import com.example.cashcow_api.dtos.general.DateParamDTO;
 import com.example.cashcow_api.dtos.milk.CustomerSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.CustomerSaleTotalDTO;
 import com.example.cashcow_api.dtos.milk.DailyCowProductionDTO;
+import com.example.cashcow_api.dtos.milk.MilkConsumptionSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTotalDTO;
@@ -19,6 +20,7 @@ import com.example.cashcow_api.dtos.transaction.EmployeeTransactionDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionSummaryDTO;
 import com.example.cashcow_api.dtos.user.SummaryUserDTO;
 import com.example.cashcow_api.models.EWeight;
+import com.example.cashcow_api.services.milk.IMilkConsumption;
 import com.example.cashcow_api.services.milk.IMilkProduction;
 import com.example.cashcow_api.services.milk.IMilkSale;
 import com.example.cashcow_api.services.transaction.ITransaction;
@@ -30,6 +32,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SReport implements IReport {
+
+    @Autowired
+    private IMilkConsumption sMilkConsumption;
 
     @Autowired
     private IMilkProduction sMilkProduction;
@@ -93,6 +98,11 @@ public class SReport implements IReport {
     }
 
     @Override
+    public List<MilkConsumptionSummaryDTO> getMilkConsumptionSummary(DateParamDTO dateParamDTO){
+        return sMilkConsumption.getMilkConsumptionSummaryByDate(dateParamDTO.getStartDate(), dateParamDTO.getEndDate());
+    }
+
+    @Override
     public List<MilkSaleSummaryDTO> getMilkSaleSummary(DateParamDTO dateParamDTO, Integer shopId){
         List<MilkSaleSummaryDTO> saleSummary = shopId == null 
             ? sMilkSale.getMilkSaleSummary(dateParamDTO.getStartDate(), dateParamDTO.getEndDate())
@@ -151,6 +161,13 @@ public class SReport implements IReport {
         ReportDTO reportDTO = new ReportDTO();
         reportDTO.setCustomerSaleSummary(getCustomerSaleSummary(dateParamDTO, customerId));
         reportDTO.setCustomerSaleTotal(getCustomerSaleTotal(dateParamDTO, customerId));
+        return reportDTO;
+    }
+
+    @Override
+    public ReportDTO getMilkConsumptionReport(DateParamDTO dateParamDTO){
+        ReportDTO reportDTO = new ReportDTO();
+        reportDTO.setMilkConsumptionSummary(getMilkConsumptionSummary(dateParamDTO));
         return reportDTO;
     }
 

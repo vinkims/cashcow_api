@@ -19,6 +19,19 @@ public class CReport {
     @Autowired
     private IReport sReport;
 
+    @GetMapping(path = "/report/consumption", produces = "application/json")
+    public ResponseEntity<SuccessResponse> getConsumptionReport(@RequestParam Map<String, String> params) 
+            throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException{
+
+        DateParamDTO dateParamDTO = new DateParamDTO(params);
+
+        ReportDTO consumptionReport = sReport.getMilkConsumptionReport(dateParamDTO);
+
+        return ResponseEntity
+            .ok()
+            .body(new SuccessResponse(200, "returned consumption report", consumptionReport));
+    }
+
     @GetMapping(path = "/report/customer", produces = "application/json")
     public ResponseEntity<SuccessResponse> getCustomerSummary(@RequestParam Map<String, String> params) 
             throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException{
