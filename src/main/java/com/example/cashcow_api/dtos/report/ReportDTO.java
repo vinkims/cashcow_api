@@ -11,6 +11,7 @@ import com.example.cashcow_api.dtos.milk.MilkConsumptionSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTotalDTO;
+import com.example.cashcow_api.dtos.milk.MilkSaleTypeDTO;
 import com.example.cashcow_api.dtos.transaction.EmployeeTransactionDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionSummaryDTO;
 import com.example.cashcow_api.dtos.user.SummaryUserDTO;
@@ -45,6 +46,8 @@ public class ReportDTO {
     private List<MilkConsumptionSummaryDTO> milkConsumptionSummary;
 
     private List<MilkSaleSummaryDTO> milkSaleSummary;
+
+    private List<MilkSaleTypeDTO> milkSaleTypeSummary;
 
     private List<MilkSaleTotalDTO> milkSaleTotal;
 

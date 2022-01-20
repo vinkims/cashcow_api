@@ -10,6 +10,7 @@ import com.example.cashcow_api.dtos.milk.CustomerSaleTotalDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTotalDTO;
+import com.example.cashcow_api.dtos.milk.MilkSaleTypeDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionDTO;
 import com.example.cashcow_api.exceptions.InvalidInputException;
 import com.example.cashcow_api.exceptions.NotFoundException;
@@ -174,6 +175,11 @@ public class SMilkSale implements IMilkSale {
     @Override
     public List<MilkSaleSummaryDTO> getMilkSaleSummaryByShop(LocalDateTime startDate, LocalDateTime endDate, Integer shopId){
         return milkSaleDAO.findMilkSaleSummaryByShop(startDate, endDate, shopId);
+    }
+
+    @Override
+    public List<MilkSaleTypeDTO> getMilkSaleTypeSummary(LocalDateTime startDate, LocalDateTime endDate, Integer shopId){
+        return milkSaleDAO.findMilkSaleTypeSummary(startDate, endDate, shopId);
     }
 
     @Override

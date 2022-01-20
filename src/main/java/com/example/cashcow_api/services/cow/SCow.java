@@ -124,6 +124,11 @@ public class SCow implements ICow {
     }
 
     @Override
+    public List<ECow> getCowsByGender(String gender){
+        return cowDAO.findCowsByGender(gender);
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public Page<ECow> getPaginatedList(PageDTO pageDTO, List<String> allowableFields){
         

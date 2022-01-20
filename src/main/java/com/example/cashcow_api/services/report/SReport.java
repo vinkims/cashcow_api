@@ -15,6 +15,7 @@ import com.example.cashcow_api.dtos.milk.MilkConsumptionSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTotalDTO;
+import com.example.cashcow_api.dtos.milk.MilkSaleTypeDTO;
 import com.example.cashcow_api.dtos.report.ReportDTO;
 import com.example.cashcow_api.dtos.transaction.EmployeeTransactionDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionSummaryDTO;
@@ -111,6 +112,11 @@ public class SReport implements IReport {
     }
 
     @Override
+    public List<MilkSaleTypeDTO> getMilkSaleTypeSummary(DateParamDTO dateParamDTO, Integer shopId){
+        return sMilkSale.getMilkSaleTypeSummary(dateParamDTO.getStartDate(), dateParamDTO.getEndDate(), shopId);
+    }
+
+    @Override
     public List<MilkSaleTotalDTO> getMilkSaleTotal(DateParamDTO dateParamDTO){
         return sMilkSale.getMilkSaleTotal(dateParamDTO.getStartDate(), dateParamDTO.getEndDate());
     }
@@ -176,6 +182,7 @@ public class SReport implements IReport {
         ReportDTO reportDTO = new ReportDTO();
         reportDTO.setCurrentWeekMilkSale(getCurrentWeekShopSale(shopId));
         reportDTO.setMilkSaleSummary(getMilkSaleSummary(dateParamDTO, shopId));
+        reportDTO.setMilkSaleTypeSummary(getMilkSaleTypeSummary(dateParamDTO, shopId));
         reportDTO.setMilkSaleTotal(getMilkSaleTotal(dateParamDTO));
         reportDTO.setPreviousWeekMilkSale(getPreviousWeekShopSale(shopId));
         return reportDTO;

@@ -19,6 +19,8 @@ public interface ICow {
 
     Optional<ECow> getById(Integer cowId);
 
+    List<ECow> getCowsByGender(String gender);
+
     Page<ECow> getPaginatedList(PageDTO pageDTO, List<String> allowableFields);
 
     void save(ECow cow);

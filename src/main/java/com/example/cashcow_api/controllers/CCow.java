@@ -3,6 +3,7 @@ package com.example.cashcow_api.controllers;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -54,6 +55,18 @@ public class CCow {
         return ResponseEntity
             .ok()
             .body(new SuccessResponse(200, "cow fetched", new CowDTO(cow.get())));
+    }
+
+    @GetMapping(path = "/cow/gender/{gender}", produces = "application/json")
+    public ResponseEntity<SuccessPaginatedResponse> getCowsByGender(@PathVariable String gender) 
+            throws InstantiationException, IllegalAccessException, IllegalArgumentException, 
+            InvocationTargetException, NoSuchMethodException, SecurityException{
+
+        List<ECow> cows = sCow.getCowsByGender(gender);
+
+        return ResponseEntity
+            .ok()
+            .body(new SuccessPaginatedResponse(200, "returned list of cows", cows, CowDTO.class, ECow.class));
     }
 
     @GetMapping(path = "/cow", produces = "application/json")

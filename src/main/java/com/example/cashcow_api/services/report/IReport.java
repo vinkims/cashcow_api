@@ -10,6 +10,7 @@ import com.example.cashcow_api.dtos.milk.MilkConsumptionSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTotalDTO;
+import com.example.cashcow_api.dtos.milk.MilkSaleTypeDTO;
 import com.example.cashcow_api.dtos.report.ReportDTO;
 import com.example.cashcow_api.dtos.transaction.EmployeeTransactionDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionSummaryDTO;
@@ -33,6 +34,8 @@ public interface IReport {
     List<MilkConsumptionSummaryDTO> getMilkConsumptionSummary(DateParamDTO dateParamDTO);
 
     List<MilkSaleSummaryDTO> getMilkSaleSummary(DateParamDTO dateParamDTO, Integer shopId);
+
+    List<MilkSaleTypeDTO> getMilkSaleTypeSummary(DateParamDTO dateParamDTO, Integer shopId);
 
     List<MilkSaleTotalDTO> getMilkSaleTotal(DateParamDTO dateParamDTO);
 
