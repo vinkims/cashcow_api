@@ -8,13 +8,23 @@ import lombok.Data;
 @ConfigurationProperties(prefix = "default.value")
 public class DefaultValueConfig {
     
-    private DefaultValueLogConfig logging;
-
-    private DefaultValueUserConfig user;
+    private DefaultValueCategoryConfig category;
 
     private DefaultValueContactConfig contact;
+    
+    private DefaultValueLogConfig logging;
+
+    private DefaultValueMilkConfig milk;
+
+    private DefaultValuePaymentChannelConfig paymentChannel;
 
     private DefaultValueRoleConfig role;
 
     private DefaultValueSecurityConfig security;
+    
+    private DefaultValueStatusConfig status;
+
+    private DefaultValueTransactionTypeConfig transactionType;
+    
+    private DefaultValueUserConfig user;
 }

@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
 
-import com.example.cashcow_api.services.auth.SBlacklist;
+import com.example.cashcow_api.services.auth.IBlacklist;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,13 +24,13 @@ public class JwtUtil {
     @Value(value = "${default.value.security.token-valid-duration}")
     private Integer TOKEN_VALID_DURATION;
 
-    @Value(value = "${default.value.security.token-valid-scondary-duration}")
+    @Value(value = "${default.value.security.token-valid-secondary-duration}")
     private Integer TOKEN_VALID_SECONDARY_DURATION;
 
     @Value(value = "${default.value.user.user-api-client-name}")
     private String userApiClientName;
 
-    @Autowired private SBlacklist sBlacklist;
+    @Autowired private IBlacklist sBlacklist;
 
     public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);

@@ -10,10 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SBlacklist {
+public class SBlacklist implements IBlacklist {
     
     @Autowired BlacklistTokenDAO blacklistTokenDAO;
 
+    @Override
     public Boolean checkExistsByToken(Integer tokenHash){
         return blacklistTokenDAO.existsByTokenHash(tokenHash);
     }
@@ -32,10 +33,12 @@ public class SBlacklist {
         return blacklistToken;
     }
 
+    @Override
     public Integer getTokenHash(String token){
         return token.hashCode();
     }
 
+    @Override
     public void save(EBlacklistToken blacklistToken){
         blacklistTokenDAO.save(blacklistToken);
     }

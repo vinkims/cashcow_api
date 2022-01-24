@@ -30,22 +30,35 @@ public class EUser implements Serializable{
     
     private static final long serialVersionUID = 1L;
 
+    @Column(name = "balance")
+    private Float balance;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<EContact> contacts;
+
+    @Column(name = "created_on")
+    private LocalDateTime createdOn;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "farm_id", referencedColumnName = "id")
+    private EFarm farm;
+
+    @Column(name = "first_name")
+    private String firstName;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false, name = "id")
     private Integer id;
 
-    @Column(name = "first_name")
-    private String firstName;
-
+    @Column(name = "last_name")
+    private String lastName;
+    
     @Column(name = "middle_name")
     private String middleName;
 
-    @Column(name = "last_name")
-    private String lastName;
-
-    @Column(name = "created_on")
-    private LocalDateTime createdOn;
+    @OneToOne(mappedBy = "user")
+    private EUserProfile profile;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", referencedColumnName = "id")
@@ -55,14 +68,17 @@ public class EUser implements Serializable{
     @JoinColumn(name = "shop_id", referencedColumnName = "id")
     private EShop shop;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<EContact> contacts;
-
-    @OneToOne(mappedBy = "user")
-    private EUserProfile profile;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_id", referencedColumnName = "id")
+    private EStatus status;
 
     public EUser(){
         setCreatedOn(LocalDateTime.now());
+    }
+
+    public void setBalance(Float balance){
+        this.balance = this.balance == null ? 0 : this.balance;
+        this.balance += balance;
     }
 
 }

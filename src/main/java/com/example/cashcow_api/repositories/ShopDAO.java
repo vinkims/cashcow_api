@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ShopDAO extends JpaRepository<EShop, Integer>{
     
+    Boolean existsByName(String shopName);
 }

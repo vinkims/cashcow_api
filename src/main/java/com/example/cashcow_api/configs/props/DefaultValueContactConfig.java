@@ -9,4 +9,6 @@ import lombok.Data;
 public class DefaultValueContactConfig {
     
     private Integer emailTypeId;
+
+    private Integer mobileTypeId;
 }

@@ -1,7 +1,6 @@
 package com.example.cashcow_api.models;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -23,34 +22,44 @@ public class ETransaction implements Serializable{
     
     private static final long serialVersionUID = 1L;
 
+    @Column(name = "amount")
+    private Float amount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "attendant_id", referencedColumnName = "id")
+    private EUser attendant;
+
+    @Column(name = "created_on")
+    private LocalDateTime createdOn;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
+    private EUser customer;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false, name = "id")
     private Integer id;
 
-    @Column(name = "created_on")
-    private LocalDateTime createdOn;
-
-    @Column(name = "amount")
-    private BigDecimal amount;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "transaction_type_id", referencedColumnName = "id")
-    private ETransactionType transactionType;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_channel_id", referencedColumnName = "id")
     private EPaymentChannel paymentChannel;
+
+    @Column(name = "reference")
+    private String reference;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id", referencedColumnName = "id")
     private EShop shop;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "attendant_id", referencedColumnName = "id")
-    private EUser attendant;
+    @JoinColumn(name = "status_id", referencedColumnName = "id")
+    private EStatus status;
+
+    @Column(name = "transaction_code")
+    private String transactionCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", referencedColumnName = "id")
-    private EUser customer;
+    @JoinColumn(name = "transaction_type_id", referencedColumnName = "id")
+    private ETransactionType transactionType;
 }

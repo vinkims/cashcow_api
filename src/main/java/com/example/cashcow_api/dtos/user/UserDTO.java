@@ -4,7 +4,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import com.example.cashcow_api.dtos.contact.ContactDTO;
+import com.example.cashcow_api.dtos.farm.FarmDTO;
 import com.example.cashcow_api.dtos.shop.ShopDTO;
 import com.example.cashcow_api.models.EContact;
 import com.example.cashcow_api.models.ERole;
@@ -21,40 +24,59 @@ import lombok.NoArgsConstructor;
 @JsonInclude(value = Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDTO {
+
+    private Float balance;
     
-    private String firstName;
-
-    private String middleName;
-
-    private String lastName;
+    private List<@Valid ContactDTO> contacts = new ArrayList<ContactDTO>();
 
     private LocalDateTime createdOn;
 
+    private FarmDTO farm;
+
+    private Integer farmId;
+
+    private String firstName;
+
+    private String lastName;
+
+    private String middleName;
+
+    private @Valid UserProfileDTO profile;
+
     private ERole role;
-
-    private List<ContactDTO> contacts = new ArrayList<ContactDTO>();
-
-    private ShopDTO shop;
-
-    private Integer userId;
 
     private Integer roleId;
 
+    private ShopDTO shop;
+
     private Integer shopId;
 
-    private UserProfileDTO profile;
+    private String status;
+
+    private Integer statusId;
+
+    private Integer userId;
 
     public UserDTO(EUser user){
-        this.setUserId(user.getId());
-        this.setFirstName(user.getFirstName());
-        this.setMiddleName(user.getMiddleName());
-        this.setLastName(user.getLastName());
-        this.setCreatedOn(user.getCreatedOn());
-        this.setRole(user.getRole());
+        setBalance(user.getBalance());
         setContactData(user.getContacts());
+        this.setCreatedOn(user.getCreatedOn());
+        if (user.getFarm() != null){
+            this.setFarm(new FarmDTO(user.getFarm()));
+        }
+        this.setFirstName(user.getFirstName());
+        if (user.getLastName() != null){
+            this.setLastName(user.getLastName());
+        }
+        if (user.getMiddleName() != null){
+            this.setMiddleName(user.getMiddleName());
+        }
+        this.setProfile(new UserProfileDTO(user.getProfile()));
+        this.setRole(user.getRole());
         if (user.getShop() != null){
             this.setShop(new ShopDTO(user.getShop()));
         }
+        this.setUserId(user.getId());
     }
 
     public void setContactData(List<EContact> contactList){

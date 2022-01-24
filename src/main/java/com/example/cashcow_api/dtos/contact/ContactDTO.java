@@ -1,5 +1,6 @@
 package com.example.cashcow_api.dtos.contact;
 
+import com.example.cashcow_api.annotations.IsContactValid;
 import com.example.cashcow_api.models.EContact;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@IsContactValid
 public class ContactDTO {
     
     private Integer contactTypeId;
