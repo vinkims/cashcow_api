@@ -1,0 +1,1 @@
+web: java -jar target/cashcow-api-1.0.jar
