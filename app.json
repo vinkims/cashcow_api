@@ -1,8 +1,0 @@
-{
-    "name": "cashcow-api",
-    "buildpacks": [
-        {
-            "url": "heroku/maven"
-        }
-    ]
-}
