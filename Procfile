@@ -1,1 +1,1 @@
-web: java -jar target/cashcow-api-1.0.jar
+web: java -Dserver.port=${PORT} -jar target/cashcow_api-0.0.1-SNAPSHOTjar
