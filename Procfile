@@ -1,1 +1,0 @@
-web: java $JAVA_OPTS -jar target/cashcow_api-0.0.1-SNAPSHOT.jar $JAR_OPTS
