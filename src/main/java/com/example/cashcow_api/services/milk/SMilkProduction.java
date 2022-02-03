@@ -1,11 +1,9 @@
 package com.example.cashcow_api.services.milk;
 
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.cashcow_api.dtos.general.DateParamDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.dtos.milk.DailyCowProductionDTO;
 import com.example.cashcow_api.dtos.milk.MilkProductionDTO;
@@ -50,7 +48,7 @@ public class SMilkProduction implements IMilkProduction {
     public EMilkProduction create(MilkProductionDTO productionDTO) {
         
         EMilkProduction production = new EMilkProduction();
-        production.setCreatedOn(LocalDateTime.now());
+        production.setCreatedOn(productionDTO.getProductionDate());
         production.setQuantity(productionDTO.getQuantity());
         setCow(production, productionDTO.getCowId());
         setMilkingSession(production, productionDTO.getSessionId());
