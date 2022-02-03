@@ -46,7 +46,7 @@ public class SMilkConsumption implements IMilkConsumption {
     public EMilkConsumption create(MilkConsumptionDTO consumptionDTO) {
         
         EMilkConsumption consumption = new EMilkConsumption();
-        consumption.setCreatedOn(LocalDateTime.now());
+        consumption.setCreatedOn(consumptionDTO.getCreatedOn());
         consumption.setLitrePrice(consumptionDTO.getLitrePrice());
         consumption.setQuantity(consumptionDTO.getQuantity());
         setCategory(consumption, consumptionDTO.getCategoryId());
