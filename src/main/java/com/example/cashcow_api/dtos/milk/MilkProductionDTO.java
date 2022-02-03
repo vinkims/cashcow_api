@@ -1,5 +1,7 @@
 package com.example.cashcow_api.dtos.milk;
 
+import java.time.LocalDateTime;
+
 import com.example.cashcow_api.dtos.cow.CowBasicDTO;
 import com.example.cashcow_api.dtos.user.UserBasicDTO;
 import com.example.cashcow_api.models.EMilkProduction;
@@ -21,6 +23,8 @@ public class MilkProductionDTO {
     private Integer cowId;
 
     private Integer id;
+
+    private LocalDateTime productionDate;
 
     private String session;
 
