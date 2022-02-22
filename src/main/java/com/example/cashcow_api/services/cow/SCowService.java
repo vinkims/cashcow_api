@@ -61,7 +61,7 @@ public class SCowService implements ICowService {
         if (cowServiceDTO.getAmount() != null){
             cowService.setAmount(cowServiceDTO.getAmount());
         }
-        cowService.setCreatedOn(LocalDateTime.now());
+        cowService.setCreatedOn(cowServiceDTO.getCreatedOn());
         if (cowServiceDTO.getResults() != null){
             cowService.setResults(cowServiceDTO.getResults());
         }
@@ -76,7 +76,8 @@ public class SCowService implements ICowService {
 
         if (cowServiceDTO.getAmount() != null){
             createServiceTransaction(
-                cowServiceDTO.getAmount(), 
+                cowServiceDTO.getAmount(),
+                cowServiceDTO.getCreatedOn(),
                 mpesaPaymentChannelId, 
                 cowServiceTypeId, 
                 String.format("Service id: %s", cowService.getId())
@@ -89,10 +90,11 @@ public class SCowService implements ICowService {
     /**
      * Create cow service payment transaction
      */
-    public void createServiceTransaction(Float amount, Integer paymentChannelId, 
-            Integer transactionTypeId, String reference){
+    public void createServiceTransaction(Float amount, LocalDateTime createdOn, 
+            Integer paymentChannelId, Integer transactionTypeId, String reference){
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setAmount(amount);
+        transactionDTO.setCreatedOn(createdOn);
         transactionDTO.setPaymentChannelId(paymentChannelId);
         transactionDTO.setReference(reference);
         transactionDTO.setTransactionTypeId(transactionTypeId);

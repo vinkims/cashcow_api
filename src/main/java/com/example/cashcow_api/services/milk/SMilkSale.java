@@ -94,7 +94,7 @@ public class SMilkSale implements IMilkSale {
 
         EMilkSale milkSale = new EMilkSale();
         milkSale.setAmount(amount);
-        milkSale.setCreatedOn(LocalDateTime.now());
+        milkSale.setCreatedOn(saleDTO.getCreatedOn());
         milkSale.setQuantity(quantity);
         setAttendant(milkSale, saleDTO.getAttendantId());
         setCustomer(milkSale, customerId);
@@ -121,7 +121,8 @@ public class SMilkSale implements IMilkSale {
         if (amount != 0){
             createTransaction(
                 amount, 
-                saleDTO.getAttendantId(), 
+                saleDTO.getAttendantId(),
+                saleDTO.getCreatedOn(),
                 saleDTO.getCustomerId(), 
                 milkSale.getId(), 
                 saleDTO.getShopId(),
@@ -135,12 +136,13 @@ public class SMilkSale implements IMilkSale {
         return milkSale;
     }
 
-    public void createTransaction(Float amount, Integer attendantId, Integer customerId, Integer saleId, 
+    public void createTransaction(Float amount, Integer attendantId, LocalDateTime createdOn, Integer customerId, Integer saleId, 
             Integer shopId, Integer statusId, Integer paymentChannelId, Integer transactionTypeId, String transactionCode){
         
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setAmount(amount);
         transactionDTO.setAttendantId(attendantId);
+        transactionDTO.setCreatedOn(createdOn);
         transactionDTO.setCustomerId(customerId);
         transactionDTO.setReference(String.format("Sale id: %s", saleId.toString()));
         transactionDTO.setShopId(shopId);

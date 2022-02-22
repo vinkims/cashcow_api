@@ -68,7 +68,9 @@ public class STransaction implements ITransaction {
         
         ETransaction transaction = new ETransaction();
         transaction.setAmount(transactionDTO.getAmount());
-        transaction.setCreatedOn(LocalDateTime.now());
+        LocalDateTime transDate = transactionDTO.getCreatedOn() != null ?
+            transactionDTO.getCreatedOn() : LocalDateTime.now();
+        transaction.setCreatedOn(transDate);
         transaction.setReference(transactionDTO.getReference());
         if (transactionDTO.getTransactionCode() != null){
             transaction.setTransactionCode(transactionDTO.getTransactionCode());
