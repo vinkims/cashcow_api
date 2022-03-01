@@ -89,6 +89,15 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<configuration>
+					<url>${env.SPRING_DATASOURCE_URL}</url>
+					<user>${DATABASE_USER}</user>
+					<password>${DATABASE_PASSWORD}</password>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
