@@ -93,7 +93,7 @@
 				<groupId>org.flywaydb</groupId>
 				<artifactId>flyway-maven-plugin</artifactId>
 				<configuration>
-					<url>${env.DATABASE_URL}</url>
+					<url>${env.SPRING_DATASOURCE_URL}</url>
 					<user>${DATABASE_USER}</user>
 					<password>${DATABASE_PASSWORD}</password>
 				</configuration>
