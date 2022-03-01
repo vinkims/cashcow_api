@@ -223,7 +223,7 @@ public class SCow implements ICow {
         save(cow);
 
         setProfile(cow, cowDTO.getProfile());
-        if (cowDTO.getStatusId().equals(soldStatusId)){
+        if (cowDTO.getStatusId() != null && cowDTO.getStatusId().equals(soldStatusId)){
             createSaleTransaction(
                 cowDTO.getProfile().getSaleAmount(), 
                 mpesaPaymentChannelId, 
