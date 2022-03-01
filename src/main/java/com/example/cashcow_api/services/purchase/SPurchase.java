@@ -52,7 +52,8 @@ public class SPurchase implements IPurchase {
     public EPurchase create(PurchaseDTO purchaseDTO) {
         
         EPurchase purchase = new EPurchase();
-        purchase.setCreatedOn(LocalDateTime.now());
+        LocalDateTime purchaseDate = purchaseDTO.getCreatedOn();
+        purchase.setCreatedOn(purchaseDate);
         purchase.setName(purchaseDTO.getName());
         if (purchaseDTO.getQuantity() != null){
             purchase.setQuantity(purchaseDTO.getQuantity());
@@ -60,7 +61,8 @@ public class SPurchase implements IPurchase {
         if (purchaseDTO.getTransportCost() != null){
             purchase.setTransportCost(purchaseDTO.getTransportCost());
             createTransaction(
-                purchaseDTO.getTransportCost(), 
+                purchaseDTO.getTransportCost(),
+                purchaseDate,
                 mpesaPaymentChannelId, 
                 transportTypeId, 
                 String.format("Transport: %s", purchaseDTO.getName())
@@ -73,6 +75,7 @@ public class SPurchase implements IPurchase {
 
         createTransaction(
             (purchaseDTO.getQuantity() * purchaseDTO.getUnitPrice()),
+            purchaseDate,
             mpesaPaymentChannelId, 
             productPaymentTypeId, 
             String.format("Product: %s", purchaseDTO.getName())
@@ -81,10 +84,11 @@ public class SPurchase implements IPurchase {
         return purchase;
     }
 
-    public void createTransaction(Float amount, Integer paymentChannelId, 
-            Integer transactionTypeId, String reference){
+    public void createTransaction(Float amount, LocalDateTime createdOn, 
+            Integer paymentChannelId, Integer transactionTypeId, String reference){
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setAmount(amount);
+        transactionDTO.setCreatedOn(createdOn);
         transactionDTO.setPaymentChannelId(paymentChannelId);
         transactionDTO.setReference(reference);
         transactionDTO.setTransactionTypeId(transactionTypeId);
