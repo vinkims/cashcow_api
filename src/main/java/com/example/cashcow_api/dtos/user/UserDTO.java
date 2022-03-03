@@ -76,6 +76,7 @@ public class UserDTO {
         if (user.getShop() != null){
             this.setShop(new ShopDTO(user.getShop()));
         }
+        setStatus(user.getStatus().getName());
         this.setUserId(user.getId());
     }
 
