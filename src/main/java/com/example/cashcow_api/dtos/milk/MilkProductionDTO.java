@@ -39,6 +39,7 @@ public class MilkProductionDTO {
     public MilkProductionDTO(EMilkProduction production){
         setCow(new CowBasicDTO(production.getCow()));
         setId(production.getId());
+        setProductionDate(production.getCreatedOn());
         setSession(production.getMilkingSession().getName());
         setQuantity(production.getQuantity());
         setUser(new UserBasicDTO(production.getUser()));
