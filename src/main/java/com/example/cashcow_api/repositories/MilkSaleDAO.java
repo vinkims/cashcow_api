@@ -68,7 +68,7 @@ public interface MilkSaleDAO extends JpaRepository<EMilkSale, Integer>, JpaSpeci
                 + "AND ms.createdOn < :endDate "
                 + "AND s.id = :shopId "
             + "GROUP BY cast(ms.createdOn as LocalDate), st.name "
-            + "ORDER BY cast(ms.createdOn as LocalDate) ASC"
+            + "ORDER BY cast(ms.createdOn as LocalDate) DESC"
     )
     List<MilkSaleTypeDTO> findMilkSaleTypeSummary(LocalDateTime startDate, LocalDateTime endDate, Integer shopId);
 
