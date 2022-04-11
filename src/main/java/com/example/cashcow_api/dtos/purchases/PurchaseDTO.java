@@ -42,5 +42,6 @@ public class PurchaseDTO {
             setSupplier(new UserBasicDTO(purchase.getSupplier()));
         }
         setTransportCost(purchase.getTransportCost());
+        setUnitPrice(purchase.getUnitPrice());
     }
 }

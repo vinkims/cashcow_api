@@ -82,3 +82,6 @@ public class EUser implements Serializable{
     }
 
 }
+
+// TODO: Create shopUser model: To add a user to a shop
+// With user_id and shop_id
