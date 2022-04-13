@@ -40,6 +40,20 @@ public class CTransaction {
             .body(new SuccessResponse(201, "successfully created transaction", new TransactionDTO(transaction)));
     }
 
+    @GetMapping(path = "/transaction/expense", produces = "application/json")
+    public ResponseEntity<SuccessPaginatedResponse> getExpenses(@RequestParam Map<String, Object> params) 
+        throws InstantiationException, IllegalAccessException, IllegalArgumentException, 
+        InvocationTargetException, NoSuchMethodException, SecurityException {
+
+        PageDTO pageDTO = new PageDTO(params);
+
+        Page<ETransaction> expenses = sTransaction.getAllExpenses(pageDTO);
+
+        return ResponseEntity
+            .ok()
+            .body(new SuccessPaginatedResponse(200, "fetched all expenses", expenses, TransactionDTO.class, ETransaction.class));
+    }
+
     @GetMapping(path = "/transaction/{id}", produces = "application/json")
     public ResponseEntity<SuccessResponse> getTransactionById(@PathVariable Integer id){
 

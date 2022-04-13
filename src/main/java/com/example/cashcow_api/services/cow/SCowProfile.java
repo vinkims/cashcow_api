@@ -59,7 +59,7 @@ public class SCowProfile {
                 completeStatusId, 
                 mpesaPaymentChannelId, 
                 cowPurchaseTransactionTypeId,
-                String.format("Cow id: %s", cow.getId())
+                String.format("Cow Name: %s", cow.getName())
             );
         }
 

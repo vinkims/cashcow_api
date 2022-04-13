@@ -16,6 +16,8 @@ public interface ITransaction {
     
     ETransaction create(TransactionDTO transactionDTO);
 
+    Page<ETransaction> getAllExpenses(PageDTO pageDTO);
+
     Optional<ETransaction> getById(Integer transactionId);
 
     List<EmployeeTransactionDTO> getEmployeeExpenses(LocalDateTime startDate, LocalDateTime endDate, Integer userId);

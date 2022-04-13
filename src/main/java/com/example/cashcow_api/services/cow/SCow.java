@@ -228,7 +228,7 @@ public class SCow implements ICow {
                 cowDTO.getProfile().getSaleAmount(), 
                 mpesaPaymentChannelId, 
                 cowSaleTypeId,
-                String.format("Cow id: %s", cow.getId())
+                String.format("Cow Name: %s", cow.getName())
             );
         }
 

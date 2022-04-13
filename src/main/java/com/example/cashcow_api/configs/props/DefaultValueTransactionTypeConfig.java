@@ -26,5 +26,9 @@ public class DefaultValueTransactionTypeConfig {
 
     private Integer staffSalaryTypeId;
 
+    private Integer systemLossTypeId;
+
     private Integer transportTypeId;
+
+    private Integer utilityTypeId;
 }

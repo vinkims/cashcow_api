@@ -1,6 +1,8 @@
 package com.example.cashcow_api.services.transaction;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,11 +38,26 @@ public class STransaction implements ITransaction {
     @Value(value = "${default.value.status.complete-id}")
     private Integer completeStatusId;
 
+    @Value(value = "${default.value.transaction-type.cow-purchase-type-id}")
+    private Integer cowPurchaseTypeId;
+
+    @Value(value = "${default.value.transaction-type.milk-transport-type-id}")
+    private Integer milkTransportTypeId;
+
+    @Value(value = "${default.value.transaction-type.transport-type-id}")
+    private Integer productTransportTypeId;
+
     @Value(value = "${default.value.transaction-type.staff-advance-type-id}")
     private Integer staffAdvanceTypeId;
 
     @Value(value = "${default.value.transaction-type.staff-salary-type-id}")
     private Integer staffSalaryTypeId;
+
+    @Value(value = "${default.value.transaction-type.system-loss-type-id}")
+    private Integer systemLossTypeId;
+
+    @Value(value = "${default.value.transaction-type.utility-type-id}")
+    private Integer utilityTypeId;
 
     @Autowired
     private TransactionDAO transactionDAO;
@@ -90,6 +107,19 @@ public class STransaction implements ITransaction {
         updateCustomerBalance(transactionDTO.getCustomerId(), transactionDTO.getAmount());
 
         return transaction;
+    }
+
+    @Override
+    public Page<ETransaction> getAllExpenses(PageDTO pageDTO) {
+
+        List<Integer> expenseTypes = new ArrayList<>(Arrays.asList(
+            cowPurchaseTypeId, milkTransportTypeId, productTransportTypeId, staffAdvanceTypeId, 
+            staffSalaryTypeId, systemLossTypeId, utilityTypeId)
+        );
+
+        PageRequest pageRequest = PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize(),
+            Sort.by(pageDTO.getDirection(), "created_on"));
+        return transactionDAO.findExpenses(expenseTypes, pageRequest);
     }
 
     @Override

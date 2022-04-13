@@ -7,6 +7,8 @@ import com.example.cashcow_api.dtos.transaction.EmployeeTransactionDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionSummaryDTO;
 import com.example.cashcow_api.models.ETransaction;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -38,6 +40,13 @@ public interface TransactionDAO extends JpaRepository<ETransaction, Integer>, Jp
         + "GROUP BY cast(t.createdOn as LocalDate), amount, tt.name, a.firstName"
     )
     List<EmployeeTransactionDTO> findAllEmployeeExpenses(LocalDateTime startDate, LocalDateTime endDate, Integer advanceTypeId, Integer salaryTypeId);
+
+    @Query(
+        value = "SELECT * FROM transactions t "
+            + "WHERE t.transaction_type_id IN(:expenseTypes)",
+        nativeQuery = true
+    )
+    Page<ETransaction> findExpenses(List<Integer> expenseTypes, Pageable pageable);
 
     @Query(
         value = "SELECT new com.example.cashcow_api.dtos.transaction.TransactionSummaryDTO(sum(t.amount), tt.name) "
