@@ -72,3 +72,43 @@ CREATE TABLE IF NOT EXISTS cow_feeding_feed_items (
     "quantity" NUMERIC(11,4),
     PRIMARY KEY("cow_feeding_id", "feed_item_id")
 );
+
+-- cow_deaths
+CREATE TABLE IF NOT EXISTS cow_deaths (
+    "id" SERIAL PRIMARY KEY,
+    "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    "updated_on" TIMESTAMPTZ,
+    "cow_id" INTEGER REFERENCES cows("id") ON DELETE SET NULL,
+    "description" VARCHAR(200),
+    "status_id" SMALLINT REFERENCES statuses("id") ON DELETE SET NULL
+);
+
+-- cow_sales
+CREATE TABLE IF NOT EXISTS cow_sales (
+    "id" SERIAL PRIMARY KEY,
+    "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    "updated_on" TIMESTAMPTZ,
+    "cow_id" INTEGER REFERENCES cows("id") ON DELETE SET NULL,
+    "sale_amount" NUMERIC(11,4),
+    "buyer_id" INTEGER REFERENCES users("id") ON DELETE SET NULL,
+    "status_id" SMALLINT REFERENCES statuses("id") ON DELETE SET NULL
+);
+
+-- breeding_types
+CREATE TABLE IF NOT EXISTS breeding_types (
+    "id" SMALLSERIAL PRIMARY KEY,
+    "name" VARCHAR(40),
+    "description" VARCHAR(100)
+);
+
+-- cow_breedings
+CREATE TABLE IF NO EXISTS cow_breedings (
+    "id" SERIAL PRIMARY KEY,
+    "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    "updated_on" TIMESTAMPTZ,
+    "breeding_type_id" SMALLINT REFERENCES breeding_types("id") ON DELETE SET NULL,
+    "cow_id" INTEGER REFERENCES cows("id") ON DELETE SET NULL,
+    "bull_id" INTEGER REFERENCES cows("id") ON DELETE SET NULL,
+    "description" VARCHAR(200),
+    "status_id" SMALLINT REFERENCES statuses("id") ON DELETE SET NULL
+);
