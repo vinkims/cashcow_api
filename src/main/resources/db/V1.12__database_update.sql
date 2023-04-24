@@ -6,8 +6,10 @@ ADD COLUMN status_id SMALLINT REFERENCES statuses("id") ON DELETE SET NULL;
 -- add cow_breeds
 CREATE TABLE IF NOT EXISTS cow_breeds (
     "id" SMALLSERIAL PRIMARY KEY,
+    "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     "name" VARCHAR(40),
-    "description" VARCHAR(100)
+    "description" VARCHAR(100),
+    "status_id" SMALLINT REFERENCES statuses("id") ON DELETE SET NULL
 );
 
 -- alter cows

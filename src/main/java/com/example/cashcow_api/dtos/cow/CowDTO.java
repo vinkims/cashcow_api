@@ -1,5 +1,7 @@
 package com.example.cashcow_api.dtos.cow;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,7 @@ import javax.validation.constraints.NotBlank;
 
 import com.example.cashcow_api.annotations.IsCowNameValid;
 import com.example.cashcow_api.dtos.farm.FarmDTO;
+import com.example.cashcow_api.dtos.status.StatusDTO;
 import com.example.cashcow_api.dtos.user.UserBasicDTO;
 import com.example.cashcow_api.models.ECow;
 import com.example.cashcow_api.models.ECowCategory;
@@ -37,36 +40,59 @@ public class CowDTO {
 
     private Integer id;
 
+    private LocalDateTime createdOn;
+
+    private LocalDateTime updatedOn;
+
     @NotBlank
     @IsCowNameValid
     private String name;
+
+    private LocalDate dateOfBirth;
+
+    private String gender;
+
+    private CowBreedDTO breed;
+
+    private Integer breedId;
+
+    private String color;
 
     private CowDTO parent;
 
     private Integer parentId;
 
+    private String otherDetails;
+
     private @Valid CowProfileDTO profile;
 
     private List<CowServiceDTO> services = new ArrayList<>();
 
-    private String status;
+    @JsonIgnoreProperties("description")
+    private StatusDTO status;
 
     private Integer statusId;
 
     private Float weight;
 
     public CowDTO(ECow cow){
+        setBreed(new CowBreedDTO(cow.getBreed()));
         setCalvesList(cow.getCalves());
         setCategory(cow.getCategory());
+        setColor(cow.getColor());
+        setCreatedOn(cow.getCreatedOn());
+        setDateOfBirth(cow.getDateOfBirth());
+        setGender(cow.getGender());
         setId(cow.getId());
         setFarm(new FarmDTO(cow.getFarm()));
         if (cow.getParent() != null){
             setParent(cow.getParent());
         }
         setName(cow.getName());
-        setProfile(new CowProfileDTO(cow.getProfile()));
+        setOtherDetails(cow.getOtherDetails());
         setServicesData(cow.getServices());
-        setStatus(cow.getStatus().getName());
+        setStatus(new StatusDTO(cow.getStatus()));
+        setUpdatedOn(cow.getUpdatedOn());
     }
 
     public void setCalvesList(List<ECow> calvesList){

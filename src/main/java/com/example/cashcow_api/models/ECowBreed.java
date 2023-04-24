@@ -12,19 +12,21 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Entity(name = "cow_breeds")
 @Data
-@Entity(name = "farms")
-@JsonIgnoreProperties(value = {"hibernateLazyInitializer"})
-public class EFarm implements Serializable {
+@NoArgsConstructor
+public class ECowBreed implements Serializable {
     
     private static final long serialVersionUID = 1L;
 
     @Column(name = "created_on")
     private LocalDateTime createdOn;
+    
+    @Column(name = "description")
+    private String description;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,7 +39,4 @@ public class EFarm implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id", referencedColumnName = "id")
     private EStatus status;
-
-    @Column(name = "updated_on")
-    private LocalDateTime updatedOn;
 }

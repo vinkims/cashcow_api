@@ -7,4 +7,6 @@ import com.example.cashcow_api.models.EStatus;
 public interface IStatus {
     
     Optional<EStatus> getById(Integer statusId);
+
+    EStatus getById(Integer statusId, Boolean handleException);
 }
