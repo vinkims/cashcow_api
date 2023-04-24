@@ -15,7 +15,7 @@ import com.example.cashcow_api.dtos.report.ReportDTO;
 import com.example.cashcow_api.dtos.transaction.EmployeeTransactionDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionSummaryDTO;
 import com.example.cashcow_api.dtos.user.SummaryUserDTO;
-import com.example.cashcow_api.models.EWeight;
+import com.example.cashcow_api.models.ECowWeight;
 
 public interface IReport {
 

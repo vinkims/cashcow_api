@@ -12,8 +12,10 @@ import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.ECow;
 import com.example.cashcow_api.models.ECowService;
 import com.example.cashcow_api.models.ECowServiceType;
+import com.example.cashcow_api.models.EStatus;
 import com.example.cashcow_api.models.EUser;
 import com.example.cashcow_api.repositories.CowServiceDAO;
+import com.example.cashcow_api.services.status.IStatus;
 import com.example.cashcow_api.services.transaction.ITransaction;
 import com.example.cashcow_api.services.user.IUser;
 import com.example.cashcow_api.specifications.SpecBuilder;
@@ -29,6 +31,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SCowService implements ICowService {
+
+    @Value(value = "${default.value.status.active-id}")
+    private Integer activeStatusId;
 
     @Value(value = "${default.value.transaction-type.cow-service-type-id}")
     private Integer cowServiceTypeId;
@@ -49,6 +54,9 @@ public class SCowService implements ICowService {
     private SpecFactory specFactory;
 
     @Autowired
+    private IStatus sStatus;
+
+    @Autowired
     private ITransaction sTransaction;
 
     @Autowired
@@ -58,18 +66,16 @@ public class SCowService implements ICowService {
     public ECowService create(CowServiceDTO cowServiceDTO) {
         
         ECowService cowService = new ECowService();
-        if (cowServiceDTO.getAmount() != null){
-            cowService.setAmount(cowServiceDTO.getAmount());
-        }
+        cowService.setCost(cowServiceDTO.getCost());
         cowService.setCreatedOn(cowServiceDTO.getCreatedOn());
-        if (cowServiceDTO.getResults() != null){
-            cowService.setResults(cowServiceDTO.getResults());
-        }
+        cowService.setRemarks(cowServiceDTO.getRemarks());
         setBull(cowService, cowServiceDTO.getBullId());
         setCalvingDate(cowService, cowServiceDTO.getCalvingDate());
         setCow(cowService, cowServiceDTO.getCowId());
         setCowServiceType(cowService, cowServiceDTO.getCowServiceTypeId());
         setObservationDate(cowService, cowServiceDTO.getObservationDate());
+        Integer statusId = cowServiceDTO.getStatusId() == null ? activeStatusId : cowServiceDTO.getStatusId();
+        setStatus(cowService, statusId);
         setUser(cowService, cowServiceDTO.getUserId());
 
         save(cowService);
@@ -104,6 +110,15 @@ public class SCowService implements ICowService {
     @Override
     public Optional<ECowService> getById(Integer cowServiceId) {
         return cowServiceDAO.findById(cowServiceId);
+    }
+
+    @Override
+    public ECowService getById(Integer cowServiceId, Boolean handleException) {
+        Optional<ECowService> cowService = getById(cowServiceId);
+        if (!cowService.isPresent() && handleException) {
+            throw new NotFoundException("cow service with specified id not found", "cowServiceId");
+        }
+        return cowService.get();
     }
 
     @Override
@@ -167,6 +182,13 @@ public class SCowService implements ICowService {
         }
     }
 
+    public void setStatus(ECowService cowService, Integer statusId) {
+        if (statusId == null) { return; }
+
+        EStatus status = sStatus.getById(statusId, true);
+        cowService.setStatus(status);
+    }
+
     public void setUser(ECowService cowService, Integer userId){
 
         if (userId == null){ return; }
@@ -178,9 +200,24 @@ public class SCowService implements ICowService {
     }
 
     @Override
-    public ECowService update(ECowService cowService, CowServiceDTO cowServiceDTO) {
-        // TODO Auto-generated method stub
-        return null;
+    public ECowService update(Integer cowServiceId, CowServiceDTO cowServiceDTO) {
+        
+        ECowService cowService = getById(cowServiceId, true);
+        if (cowServiceDTO.getCost() != null) {
+            cowService.setCost(cowServiceDTO.getCost());
+        }
+        if (cowServiceDTO.getRemarks() != null) {
+            cowService.setRemarks(cowServiceDTO.getRemarks());
+        }
+        cowService.setUpdatedOn(LocalDateTime.now());
+
+        setCow(cowService, cowServiceDTO.getCowId());
+        setCowServiceType(cowService, cowServiceDTO.getCowServiceTypeId());
+        setStatus(cowService, cowServiceDTO.getStatusId());
+        setUser(cowService, cowServiceDTO.getUserId());
+
+        save(cowService);
+        return cowService;
     }
     
 }

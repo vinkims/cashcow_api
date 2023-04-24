@@ -19,6 +19,8 @@ public interface IUser {
 
     Optional<EUser> getById(Integer userId);
 
+    EUser getById(Integer userId, Boolean handleException);
+
     Optional<EUser> getByIdOrContact(String userValue);
 
     Page<EUser> getPaginatedList(PageDTO pageDTO, List<String> allowableFields);

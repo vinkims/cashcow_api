@@ -44,5 +44,7 @@ public interface UserDAO extends JpaRepository<EUser, Integer>, JpaSpecification
             + "GROUP BY role"
     )
     List<SummaryUserDTO> findUserCountByRole();
+
+    List<EUser> findByFirstName(String firstName);
     
 }

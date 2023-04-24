@@ -208,6 +208,15 @@ public class SUser implements IUser {
     }
 
     @Override
+    public EUser getById(Integer userId, Boolean handleException) {
+        Optional<EUser> user = getById(userId);
+        if (!user.isPresent() && handleException) {
+            throw new NotFoundException("user with specified id not found", "userId");
+        }
+        return user.get();
+    }
+
+    @Override
     public Optional<EUser> getByContactValue(String contactValue){
         return userDAO.findByContactValue(contactValue);
     }

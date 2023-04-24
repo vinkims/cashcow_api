@@ -4,13 +4,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.example.cashcow_api.dtos.weight.WeightSummaryDTO;
-import com.example.cashcow_api.models.EWeight;
+import com.example.cashcow_api.models.ECowWeight;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
-public interface WeightDAO extends JpaRepository<EWeight, Integer>, JpaSpecificationExecutor<EWeight> {
+public interface CowWeightDAO extends JpaRepository<ECowWeight, Integer>, JpaSpecificationExecutor<ECowWeight> {
     
     @Query(
         value = "SELECT new com.example.cashcow_api.dtos.weight.WeightSummaryDTO(cast(w.createdOn as LocalDate), w.weight) "

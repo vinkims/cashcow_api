@@ -15,7 +15,7 @@ import com.example.cashcow_api.dtos.milk.MilkSaleTypeDTO;
 import com.example.cashcow_api.dtos.transaction.EmployeeTransactionDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionSummaryDTO;
 import com.example.cashcow_api.dtos.user.SummaryUserDTO;
-import com.example.cashcow_api.models.EWeight;
+import com.example.cashcow_api.models.ECowWeight;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -61,5 +61,5 @@ public class ReportDTO {
 
     private List<SummaryUserDTO> userSummary;
 
-    private List<EWeight> weightSummary;
+    private List<ECowWeight> weightSummary;
 }

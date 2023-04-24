@@ -19,11 +19,13 @@ public interface ICow {
 
     Optional<ECow> getById(Integer cowId);
 
+    ECow getById(Integer cowId, Boolean handleException);
+
     List<ECow> getCowsByGender(String gender);
 
     Page<ECow> getPaginatedList(PageDTO pageDTO, List<String> allowableFields);
 
     void save(ECow cow);
 
-    ECow update(ECow cow, CowDTO cowDTO);
+    ECow update(Integer cowId, CowDTO cowDTO);
 }

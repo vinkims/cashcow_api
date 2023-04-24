@@ -6,9 +6,9 @@ import java.util.Optional;
 
 import com.example.cashcow_api.dtos.cow.CowDTO;
 import com.example.cashcow_api.dtos.cow.CowProfileDTO;
+import com.example.cashcow_api.dtos.cow.CowWeightDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionDTO;
-import com.example.cashcow_api.dtos.weight.WeightDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.ECow;
 import com.example.cashcow_api.models.ECowCategory;
@@ -19,7 +19,6 @@ import com.example.cashcow_api.repositories.CowDAO;
 import com.example.cashcow_api.services.farm.IFarm;
 import com.example.cashcow_api.services.status.IStatus;
 import com.example.cashcow_api.services.transaction.ITransaction;
-import com.example.cashcow_api.services.weight.IWeight;
 import com.example.cashcow_api.specifications.SpecBuilder;
 import com.example.cashcow_api.specifications.SpecFactory;
 
@@ -59,6 +58,9 @@ public class SCow implements ICow {
     private ICowCategory sCowCategory;
 
     @Autowired
+    private ICowWeight sCowWeight;
+
+    @Autowired
     private SCowProfile sCowProfile;
 
     @Autowired
@@ -72,9 +74,6 @@ public class SCow implements ICow {
 
     @Autowired
     private ITransaction sTransaction;
-
-    @Autowired
-    private IWeight sWeight;
 
     @Override
     public Boolean checkExistsByName(String cowName){
@@ -124,6 +123,15 @@ public class SCow implements ICow {
     }
 
     @Override
+    public ECow getById(Integer cowId, Boolean handleException) {
+        Optional<ECow> cow = getById(cowId);
+        if (!cow.isPresent() && handleException) {
+            throw new NotFoundException("cow with specified id not found", "cowid");
+        }
+        return cow.get();
+    }
+
+    @Override
     public List<ECow> getCowsByGender(String gender){
         return cowDAO.findCowsByGender(gender);
     }
@@ -146,11 +154,11 @@ public class SCow implements ICow {
 
     public void recordWeight(Integer cowId, Float weight){
 
-        WeightDTO weightDTO = new WeightDTO();
+        CowWeightDTO weightDTO = new CowWeightDTO();
         weightDTO.setCowId(cowId);
         weightDTO.setWeight(weight);
 
-        sWeight.create(weightDTO);
+        sCowWeight.create(weightDTO);
     }
 
     @Override
@@ -213,7 +221,9 @@ public class SCow implements ICow {
     }
 
     @Override
-    public ECow update(ECow cow, CowDTO cowDTO){
+    public ECow update(Integer cowId, CowDTO cowDTO){
+
+        ECow cow = getById(cowId, true);
 
         if (cowDTO.getName() != null){
             cow.setName(cowDTO.getName());
@@ -242,7 +252,7 @@ public class SCow implements ICow {
             cowDTO.setCategoryId(categoryCowId);
         }
 
-        update(cow, cowDTO);
+        update(cow.getId(), cowDTO);
     }
     
 }

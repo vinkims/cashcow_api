@@ -15,25 +15,38 @@ import javax.persistence.ManyToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Entity(name = "feed_items")
 @Data
 @NoArgsConstructor
-@Entity(name = "weight_progression")
-public class EWeight implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class EFeedItem implements Serializable {
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cow_id", referencedColumnName = "id")
-    private ECow cow;
+    private static final long serialVersionUID = 1L;
 
     @Column(name = "created_on")
     private LocalDateTime createdOn;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "farm_id", referencedColumnName = "id")
+    private EFarm farm;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false, name = "id")
     private Integer id;
 
-    @Column(name = "weight")
-    private Float weight;
+    @Column(name = "measurement_unit")
+    private String measurementUnit;
+
+    @Column(name = "name")
+    private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_id", referencedColumnName = "id")
+    private EStatus status;
+
+    @Column(name = "stock")
+    private Float stock;
+
+    @Column(name = "updated_on")
+    private LocalDateTime updatedOn;
 }

@@ -1,9 +1,11 @@
 package com.example.cashcow_api.dtos.cow;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.validation.constraints.Pattern;
 
+import com.example.cashcow_api.dtos.status.StatusDTO;
 import com.example.cashcow_api.dtos.user.UserBasicDTO;
 import com.example.cashcow_api.models.ECowService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -19,8 +21,6 @@ import lombok.NoArgsConstructor;
 @JsonInclude(value = Include.NON_NULL)
 public class CowServiceDTO {
 
-    private Float amount;
-
     private CowBasicDTO bull;
 
     private Integer bullId;
@@ -30,6 +30,8 @@ public class CowServiceDTO {
         message = "date must take the format YYYY-MM-dd"
     )
     private String calvingDate;
+
+    private BigDecimal cost;
     
     private CowBasicDTO cow;
 
@@ -49,30 +51,30 @@ public class CowServiceDTO {
     )
     private String observationDate;
 
-    private String results;
+    private String remarks;
 
     private UserBasicDTO user;
 
     private Integer userId;
 
+    @JsonIgnoreProperties("description")
+    private StatusDTO status;
+
+    private Integer statusId;
+
     public CowServiceDTO(ECowService cowService){
-        if (cowService.getAmount() != null){
-            setAmount(cowService.getAmount());
-        }
         if (cowService.getBull() != null){
             setBull(new CowBasicDTO(cowService.getBull()));
         }
-        if (cowService.getCalvingDate() != null){
-            setCalvingDate(cowService.getCalvingDate().toString());
-        }
+        setCalvingDate(cowService.getCalvingDate().toString());
+        setCost(cowService.getCost());
         setCow(new CowBasicDTO(cowService.getCow()));
         setCowServiceType(cowService.getCowServiceType().getName());
         setCreatedOn(cowService.getCreatedOn());
-        if (cowService.getObservationDate() != null){
-            setObservationDate(cowService.getObservationDate().toString());
-        }
-        if (cowService.getResults() != null){
-            setResults(cowService.getResults());
+        setObservationDate(cowService.getObservationDate().toString());
+        setRemarks(cowService.getRemarks());
+        if (cowService.getStatus() != null) {
+            setStatus(new StatusDTO(cowService.getStatus()));
         }
         if (cowService.getUser() != null){
             setUser(new UserBasicDTO(cowService.getUser()));
