@@ -20,28 +20,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.cashcow_api.dtos.cow.CowBreedDTO;
+import com.example.cashcow_api.dtos.cow.CowDeathDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
-import com.example.cashcow_api.models.ECowBreed;
+import com.example.cashcow_api.models.ECowDeath;
 import com.example.cashcow_api.responses.SuccessPaginatedResponse;
 import com.example.cashcow_api.responses.SuccessResponse;
-import com.example.cashcow_api.services.cow.ICowBreed;
+import com.example.cashcow_api.services.cow.ICowDeath;
 
 @RestController
-@RequestMapping(path = "/cow/breed")
-public class CCowBreed {
-
-    @Autowired
-    private ICowBreed sCowBreed;
+@RequestMapping(path = "/cow/death")
+public class CCowDeath {
     
-    @PostMapping(path = "", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<SuccessResponse> createCowBreed(@RequestBody CowBreedDTO cowBreedDTO) throws URISyntaxException {
+    @Autowired
+    private ICowDeath sCowDeath;
 
-        ECowBreed cowBreed = sCowBreed.create(cowBreedDTO);
+    @PostMapping(path = "", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<SuccessResponse> createCowDeath(@RequestBody CowDeathDTO cowDeathDTO) throws URISyntaxException {
+
+        ECowDeath cowDeath = sCowDeath.create(cowDeathDTO);
 
         return ResponseEntity
-            .created(new URI("/" + cowBreed.getId()))
-            .body(new SuccessResponse(200, "successfully created cow breed", new CowBreedDTO(cowBreed)));
+            .created(new URI("/" + cowDeath.getId()))
+            .body(new SuccessResponse(201, "successfully created cow death", new CowDeathDTO(cowDeath)));
     }
 
     @GetMapping(path = "", produces = "application/json")
@@ -51,33 +51,33 @@ public class CCowBreed {
 
         PageDTO pageDTO = new PageDTO(params);
 
-        List<String> allowedFields = new ArrayList<>(Arrays.asList("createdOn", "status.id"));
+        List<String> allowedFields = new ArrayList<>(Arrays.asList("cow.id", "createdOn", "status.id", "updatedOn"));
 
-        Page<ECowBreed> cowBreeds = sCowBreed.getPaginatedList(pageDTO, allowedFields);
+        Page<ECowDeath> deaths = sCowDeath.getPaginatedList(pageDTO, allowedFields);
 
         return ResponseEntity
             .ok()
-            .body(new SuccessPaginatedResponse(200, "successfully fetched cow breeds", cowBreeds, 
-                CowBreedDTO.class, ECowBreed.class));
+            .body(new SuccessPaginatedResponse(200, "successfully fetched cow deaths", deaths, 
+                CowDeathDTO.class, ECowDeath.class));
     }
 
-    @GetMapping(path = "/{breedId}", produces = "application/json")
-    public ResponseEntity<SuccessResponse> getCowBreed(@PathVariable Integer breedId) {
+    @GetMapping(path = "/{deathId}", produces = "application/json")
+    public ResponseEntity<SuccessResponse> getCowDeath(@PathVariable Integer deathId) {
 
-        ECowBreed cowBreed = sCowBreed.getById(breedId, true);
+        ECowDeath cowDeath = sCowDeath.getById(deathId, true);
 
         return ResponseEntity
             .ok()
-            .body(new SuccessResponse(200, "successfully fetched cow breed", new CowBreedDTO(cowBreed)));
+            .body(new SuccessResponse(200, "successfully fetched cow death", new CowDeathDTO(cowDeath)));
     }
 
-    @PatchMapping(path = "/{breedId}", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<SuccessResponse> updateCowBreed(@PathVariable Integer breedId, @RequestBody CowBreedDTO cowBreedDTO) {
+    @PatchMapping(path = "/{deathId}", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<SuccessResponse> updateCowDeath(@PathVariable Integer deathId, @RequestBody CowDeathDTO cowDeathDTO) {
 
-        ECowBreed cowBreed = sCowBreed.update(breedId, cowBreedDTO);
+        ECowDeath cowDeath = sCowDeath.update(deathId, cowDeathDTO);
 
         return ResponseEntity
             .ok()
-            .body(new SuccessResponse(200, "successfully updated cow breed", new CowBreedDTO(cowBreed)));
+            .body(new SuccessResponse(200, "successfully updated cow death", new CowDeathDTO(cowDeath)));
     }
 }

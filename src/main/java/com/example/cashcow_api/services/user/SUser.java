@@ -109,6 +109,17 @@ public class SUser implements IUser {
         return user;
     }
 
+    public Boolean checkContactExists(EUser user){
+
+        Optional<EContact> userContact = sContact.getByUserAndContactType(
+            user.getId(), mobileTypeId);
+        if (userContact.isPresent()){
+            return true;
+        }
+
+        return false;
+    }
+
     public void deleteContact(EUser user, List <ContactDTO> contactList){
         List<EContact> contacts = user.getContacts();
         if (contacts != null){
