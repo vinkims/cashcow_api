@@ -15,40 +15,28 @@ import javax.persistence.ManyToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Entity(name = "cow_breeds")
 @Data
 @NoArgsConstructor
-@Entity(name = "milk_productions")
-public class EMilkProduction implements Serializable {
+public class EBreed implements Serializable {
     
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cow_id", referencedColumnName = "id")
-    private ECow cow;
-
     @Column(name = "created_on")
     private LocalDateTime createdOn;
+    
+    @Column(name = "description")
+    private String description;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false, name = "id")
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "session_id", referencedColumnName = "id")
-    private EMilkingSession milkingSession;
-
-    @Column(name = "quantity")
-    private Float quantity;
+    @Column(name = "name")
+    private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "status_id", referencedColumnName = "id")
     private EStatus status;
-
-    @Column(name = "updated_on")
-    private LocalDateTime updatedOn;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private EUser user;
 }

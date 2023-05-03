@@ -52,7 +52,7 @@ public class CowDTO {
 
     private String gender;
 
-    private CowBreedDTO breed;
+    private BreedDTO breed;
 
     private Integer breedId;
 
@@ -76,7 +76,7 @@ public class CowDTO {
     private Float weight;
 
     public CowDTO(ECow cow){
-        setBreed(new CowBreedDTO(cow.getBreed()));
+        setBreed(new BreedDTO(cow.getBreed()));
         setCalvesList(cow.getCalves());
         setCategory(cow.getCategory());
         setColor(cow.getColor());

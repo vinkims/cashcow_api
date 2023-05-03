@@ -18,6 +18,8 @@ public interface IMilkProduction {
 
     Optional<EMilkProduction> getById(Integer productionId);
 
+    EMilkProduction getById(Integer productionId, Boolean handleException);
+
     List<DailyCowProductionDTO> getDailyCowProduction(LocalDateTime startDate, LocalDateTime endDate, Integer cowId);
 
     List<MilkProductionSummaryDTO> getMilkProductionSummary(LocalDateTime startDate, LocalDateTime endDate);
@@ -27,4 +29,6 @@ public interface IMilkProduction {
     List<MilkProductionSummaryDTO> getProductionSummaryByCow(LocalDateTime startDate, LocalDateTime endDate, Integer cowId);
 
     void save(EMilkProduction production);
+
+    EMilkProduction update(Integer productionId, MilkProductionDTO productionDTO);
 }

@@ -51,7 +51,7 @@ public class CCowService {
         PageDTO pageDTO = new PageDTO(params);
 
         ArrayList<String> allowableFields = new ArrayList<>(
-            Arrays.asList("cow.id", "cowServiceType.id", "user.id", "createdOn", "updatedOn", "status.id", "cost")
+            Arrays.asList("cow.id", "cowServiceType.id", "user.id", "createdOn", "updatedOn", "status.id", "cost", "cow.farm.id")
         );
 
         Page<ECowService> page = sCowService.getPaginatedList(pageDTO, allowableFields);

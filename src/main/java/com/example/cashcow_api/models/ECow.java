@@ -34,7 +34,7 @@ public class ECow implements Serializable{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cow_breed_id", referencedColumnName = "id")
-    private ECowBreed breed;
+    private EBreed breed;
 
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
     private List<ECow> calves;

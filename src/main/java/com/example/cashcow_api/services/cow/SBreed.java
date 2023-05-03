@@ -12,24 +12,24 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.example.cashcow_api.dtos.cow.CowBreedDTO;
+import com.example.cashcow_api.dtos.cow.BreedDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
-import com.example.cashcow_api.models.ECowBreed;
+import com.example.cashcow_api.models.EBreed;
 import com.example.cashcow_api.models.EStatus;
-import com.example.cashcow_api.repositories.CowBreedDAO;
+import com.example.cashcow_api.repositories.BreedDAO;
 import com.example.cashcow_api.services.status.IStatus;
 import com.example.cashcow_api.specifications.SpecBuilder;
 import com.example.cashcow_api.specifications.SpecFactory;
 
 @Service
-public class SCowBreed implements ICowBreed {
+public class SBreed implements IBreed {
 
     @Value(value = "${default.value.status.active-id}")
     private Integer activeStatusId;
 
     @Autowired
-    private CowBreedDAO cowBreedDAO;
+    private BreedDAO cowBreedDAO;
 
     @Autowired
     private IStatus sStatus;
@@ -43,8 +43,8 @@ public class SCowBreed implements ICowBreed {
     }
 
     @Override
-    public ECowBreed create(CowBreedDTO cowBreedDTO) {
-        ECowBreed cowBreed = new ECowBreed();
+    public EBreed create(BreedDTO cowBreedDTO) {
+        EBreed cowBreed = new EBreed();
         cowBreed.setCreatedOn(LocalDateTime.now());
         cowBreed.setDescription(cowBreedDTO.getDescription());
         cowBreed.setName(cowBreedDTO.getName());
@@ -56,13 +56,13 @@ public class SCowBreed implements ICowBreed {
     }
 
     @Override
-    public Optional<ECowBreed> getById(Integer breedId) {
+    public Optional<EBreed> getById(Integer breedId) {
         return cowBreedDAO.findById(breedId);
     }
 
     @Override
-    public ECowBreed getById(Integer breedId, Boolean handleException) {
-        Optional<ECowBreed> cowBreed = getById(breedId);
+    public EBreed getById(Integer breedId, Boolean handleException) {
+        Optional<EBreed> cowBreed = getById(breedId);
         if (!cowBreed.isPresent() && handleException) {
             throw new NotFoundException("cow breed with specified id not found", "cowBreedId");
         }
@@ -71,16 +71,16 @@ public class SCowBreed implements ICowBreed {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Page<ECowBreed> getPaginatedList(PageDTO pageDTO, List<String> allowedFields) {
+    public Page<EBreed> getPaginatedList(PageDTO pageDTO, List<String> allowedFields) {
 
         String search = pageDTO.getSearch();
 
-        SpecBuilder<ECowBreed> specBuilder = new SpecBuilder<>();
+        SpecBuilder<EBreed> specBuilder = new SpecBuilder<>();
 
-        specBuilder = (SpecBuilder<ECowBreed>) specFactory.generateSpecification(search, 
+        specBuilder = (SpecBuilder<EBreed>) specFactory.generateSpecification(search, 
             specBuilder, allowedFields, "cowBreed");
 
-        Specification<ECowBreed> spec = specBuilder.build();
+        Specification<EBreed> spec = specBuilder.build();
 
         PageRequest pageRequest = PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize(), 
             Sort.by(pageDTO.getDirection(), pageDTO.getSortVal()));
@@ -89,11 +89,11 @@ public class SCowBreed implements ICowBreed {
     }
 
     @Override
-    public void save(ECowBreed cowBreed) {
+    public void save(EBreed cowBreed) {
         cowBreedDAO.save(cowBreed);
     }
 
-    public void setStatus(ECowBreed cowBreed, Integer statusId) {
+    public void setStatus(EBreed cowBreed, Integer statusId) {
         if (statusId == null) { return; }
 
         EStatus status = sStatus.getById(statusId, true);
@@ -101,9 +101,9 @@ public class SCowBreed implements ICowBreed {
     }
 
     @Override
-    public ECowBreed update(Integer breedId, CowBreedDTO cowBreedDTO) {
+    public EBreed update(Integer breedId, BreedDTO cowBreedDTO) {
 
-        ECowBreed cowBreed = getById(breedId, true);
+        EBreed cowBreed = getById(breedId, true);
         if (cowBreedDTO.getDescription() != null) {
             cowBreed.setDescription(cowBreedDTO.getDescription());
         }

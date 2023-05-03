@@ -3,6 +3,7 @@ package com.example.cashcow_api.dtos.milk;
 import java.time.LocalDateTime;
 
 import com.example.cashcow_api.dtos.cow.CowBasicDTO;
+import com.example.cashcow_api.dtos.status.StatusDTO;
 import com.example.cashcow_api.dtos.user.UserBasicDTO;
 import com.example.cashcow_api.models.EMilkProduction;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -18,15 +19,18 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MilkProductionDTO {
     
+    private Integer id;
+
     private CowBasicDTO cow;
 
     private Integer cowId;
 
-    private Integer id;
-
     private LocalDateTime productionDate;
 
-    private String session;
+    private LocalDateTime updatedOn;
+
+    @JsonIgnoreProperties(value = {"createdOn", "updatedOn", "description", "farm", "status"})
+    private MilkingSessionDTO milkingSession;
 
     private Integer sessionId;
 
@@ -36,12 +40,21 @@ public class MilkProductionDTO {
 
     private Integer userId;
 
+    @JsonIgnoreProperties("description")
+    private StatusDTO status;
+
+    private Integer statusId;
+
     public MilkProductionDTO(EMilkProduction production){
         setCow(new CowBasicDTO(production.getCow()));
         setId(production.getId());
+        setMilkingSession(new MilkingSessionDTO(production.getMilkingSession()));
         setProductionDate(production.getCreatedOn());
-        setSession(production.getMilkingSession().getName());
         setQuantity(production.getQuantity());
+        if (production.getStatus() != null) {
+            setStatus(new StatusDTO(production.getStatus()));
+        }
+        setUpdatedOn(production.getUpdatedOn());
         setUser(new UserBasicDTO(production.getUser()));
     }
 }

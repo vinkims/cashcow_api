@@ -20,28 +20,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.cashcow_api.dtos.cow.CowBreedDTO;
+import com.example.cashcow_api.dtos.cow.BreedDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
-import com.example.cashcow_api.models.ECowBreed;
+import com.example.cashcow_api.models.EBreed;
 import com.example.cashcow_api.responses.SuccessPaginatedResponse;
 import com.example.cashcow_api.responses.SuccessResponse;
-import com.example.cashcow_api.services.cow.ICowBreed;
+import com.example.cashcow_api.services.cow.IBreed;
 
 @RestController
-@RequestMapping(path = "/cow/breed")
-public class CCowBreed {
+@RequestMapping(path = "/breed")
+public class CBreed {
 
     @Autowired
-    private ICowBreed sCowBreed;
+    private IBreed sCowBreed;
     
     @PostMapping(path = "", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<SuccessResponse> createCowBreed(@RequestBody CowBreedDTO cowBreedDTO) throws URISyntaxException {
+    public ResponseEntity<SuccessResponse> createBreed(@RequestBody BreedDTO cowBreedDTO) throws URISyntaxException {
 
-        ECowBreed cowBreed = sCowBreed.create(cowBreedDTO);
+        EBreed cowBreed = sCowBreed.create(cowBreedDTO);
 
         return ResponseEntity
             .created(new URI("/" + cowBreed.getId()))
-            .body(new SuccessResponse(200, "successfully created cow breed", new CowBreedDTO(cowBreed)));
+            .body(new SuccessResponse(200, "successfully created cow breed", new BreedDTO(cowBreed)));
     }
 
     @GetMapping(path = "", produces = "application/json")
@@ -53,31 +53,31 @@ public class CCowBreed {
 
         List<String> allowedFields = new ArrayList<>(Arrays.asList("createdOn", "status.id"));
 
-        Page<ECowBreed> cowBreeds = sCowBreed.getPaginatedList(pageDTO, allowedFields);
+        Page<EBreed> cowBreeds = sCowBreed.getPaginatedList(pageDTO, allowedFields);
 
         return ResponseEntity
             .ok()
             .body(new SuccessPaginatedResponse(200, "successfully fetched cow breeds", cowBreeds, 
-                CowBreedDTO.class, ECowBreed.class));
+                BreedDTO.class, EBreed.class));
     }
 
     @GetMapping(path = "/{breedId}", produces = "application/json")
-    public ResponseEntity<SuccessResponse> getCowBreed(@PathVariable Integer breedId) {
+    public ResponseEntity<SuccessResponse> getBreed(@PathVariable Integer breedId) {
 
-        ECowBreed cowBreed = sCowBreed.getById(breedId, true);
+        EBreed cowBreed = sCowBreed.getById(breedId, true);
 
         return ResponseEntity
             .ok()
-            .body(new SuccessResponse(200, "successfully fetched cow breed", new CowBreedDTO(cowBreed)));
+            .body(new SuccessResponse(200, "successfully fetched cow breed", new BreedDTO(cowBreed)));
     }
 
     @PatchMapping(path = "/{breedId}", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<SuccessResponse> updateCowBreed(@PathVariable Integer breedId, @RequestBody CowBreedDTO cowBreedDTO) {
+    public ResponseEntity<SuccessResponse> updateBreed(@PathVariable Integer breedId, @RequestBody BreedDTO cowBreedDTO) {
 
-        ECowBreed cowBreed = sCowBreed.update(breedId, cowBreedDTO);
+        EBreed cowBreed = sCowBreed.update(breedId, cowBreedDTO);
 
         return ResponseEntity
             .ok()
-            .body(new SuccessResponse(200, "successfully updated cow breed", new CowBreedDTO(cowBreed)));
+            .body(new SuccessResponse(200, "successfully updated cow breed", new BreedDTO(cowBreed)));
     }
 }
