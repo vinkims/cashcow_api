@@ -33,7 +33,7 @@ public class SUserDetails implements UserDetailsService {
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 
         // converts to org.springframework.security.core.userdetails.UserDetails object
-        String passcode = user.get().getProfile().getPasscode();
+        String passcode = user.get().getPasscode();
         UserDetails userDetails = (UserDetails) new User(contactValue, passcode == null ? "" : passcode, grantedAuthorities);
         
         return userDetails;

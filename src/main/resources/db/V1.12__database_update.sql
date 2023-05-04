@@ -135,6 +135,7 @@ ADD COLUMN status_id SMALLINT REFERENCES statuses("id") ON DELETE SET NULL;
 -- alter consumption_categories
 ALTER TABLE consumption_categories 
 ADD COLUMN farm_id SMALLINT REFERENCES farms("id") ON DELETE CASCADE,
+ADD COLUMN created_on TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
 ADD COLUMN updated_on TIMESTAMPTZ,
 ADD COLUMN status_id SMALLINT REFERENCES statuses("id") ON DELETE SET NULL,
 RENAME TO milk_consumption_categories;
@@ -177,8 +178,7 @@ ALTER TABLE contact_types ADD COLUMN regex_value VARCHAR(100);
 
 -- alter contacts
 ALTER TABLE contacts
-ADD COLUMN created_on TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN updated_on TIMESTAMPTZ;
+ADD COLUMN created_on TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP;
 
 -- add user_profiles
 ALTER TABLE user_profiles
@@ -213,9 +213,6 @@ CREATE TABLE IF NOT EXISTS user_expenses (
     "expense_id" INTEGER REFERENCES expenses("id") ON DELETE SET NULL,
     PRIMARY KEY("user_id", "expense_id")
 );
-
--- alter roles
-ALTER TABLE roles ADD COLUMN farm_id SMALLINT REFERENCES farms("id") ON DELETE CASCADE;
 
 -- alter purchases
 ALTER TABLE purchases

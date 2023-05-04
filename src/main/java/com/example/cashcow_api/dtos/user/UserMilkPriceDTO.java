@@ -1,9 +1,12 @@
 package com.example.cashcow_api.dtos.user;
 
+import java.math.BigDecimal;
+
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import com.example.cashcow_api.models.EUserProfile;
+import com.example.cashcow_api.dtos.status.StatusDTO;
+import com.example.cashcow_api.models.EUserMilkPrice;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -15,9 +18,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserProfileDTO {
+public class UserMilkPriceDTO {
 
-    private Float milkPrice;
+    private BigDecimal milkPrice;
     
     @Size(min = 4, max = 30)
     private String passcode;
@@ -34,17 +37,23 @@ public class UserProfileDTO {
     )
     private String priceValidOn;
 
-    public UserProfileDTO(EUserProfile userProfile){
-        if (userProfile == null){ return; }
+    @JsonIgnoreProperties("description")
+    private StatusDTO status;
 
-        if (userProfile.getMilkPrice() != null){
-            this.setMilkPrice(userProfile.getMilkPrice());
+    private Integer statusId;
+
+    public UserMilkPriceDTO(EUserMilkPrice userMilkPrice){
+        if (userMilkPrice == null){ return; }
+
+        setMilkPrice(userMilkPrice.getMilkPrice());
+        if (userMilkPrice.getPriceExpiresOn() != null){
+            this.setPriceExpiresOn(userMilkPrice.getPriceExpiresOn().toString());
         }
-        if (userProfile.getPriceExpiresOn() != null){
-            this.setPriceExpiresOn(userProfile.getPriceExpiresOn().toString());
+        if (userMilkPrice.getPriceValidOn() != null){
+            this.setPriceValidOn(userMilkPrice.getPriceValidOn().toString());
         }
-        if (userProfile.getPriceValidOn() != null){
-            this.setPriceValidOn(userProfile.getPriceValidOn().toString());
+        if (userMilkPrice.getStatus() != null) {
+            setStatus(new StatusDTO(userMilkPrice.getStatus()));
         }
     }
 }

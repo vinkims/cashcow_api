@@ -1,6 +1,7 @@
 package com.example.cashcow_api.models;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import javax.persistence.CascadeType;
@@ -8,21 +9,21 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Entity(name = "user_profiles")
+@Entity(name = "user_milk_prices")
 @JsonIgnoreProperties(value = {"user"})
 @NoArgsConstructor
-public class EUserProfile implements Serializable {
+public class EUserMilkPrice implements Serializable {
     
     private static final long serialVersionUID = 1L;
 
@@ -35,10 +36,7 @@ public class EUserProfile implements Serializable {
     private EUser user;
 
     @Column(name = "milk_price")
-    private Float milkPrice;
-
-    @Column(name = "passcode")
-    private String passcode;
+    private BigDecimal milkPrice;
 
     @Column(name = "price_expires_on")
     private LocalDate priceExpiresOn;
@@ -46,11 +44,9 @@ public class EUserProfile implements Serializable {
     @Column(name = "price_valid_on")
     private LocalDate priceValidOn;
 
-    public void setPasscode(String passcode){
-        if (passcode != null){
-            this.passcode = new BCryptPasswordEncoder().encode(passcode);
-        }
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_id", referencedColumnName = "id")
+    private EStatus status;
 
     /**
      * Sets user
@@ -65,8 +61,8 @@ public class EUserProfile implements Serializable {
         if (this == o) return true;
         if (o == null) return false;
         if (this.getClass() != o.getClass()) return false;
-        EUserProfile userProfile = (EUserProfile) o;
-        return user.getId() == userProfile.getUser().getId();
+        EUserMilkPrice userMilkPrice = (EUserMilkPrice) o;
+        return user.getId() == userMilkPrice.getUser().getId();
     }
 
     @Override

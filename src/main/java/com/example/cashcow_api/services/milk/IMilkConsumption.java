@@ -17,9 +17,13 @@ public interface IMilkConsumption {
 
     Optional<EMilkConsumption> getById(Integer id);
 
+    EMilkConsumption getById(Integer id, Boolean handleException);
+
     List<MilkConsumptionSummaryDTO> getMilkConsumptionSummaryByDate(LocalDateTime startDate, LocalDateTime endDate);
 
     Page<EMilkConsumption> getPaginatedList(PageDTO pageDTO, List<String> allowableFields);
 
     void save(EMilkConsumption consumption);
+
+    EMilkConsumption update(Integer id, MilkConsumptionDTO consumptionDTO);
 }

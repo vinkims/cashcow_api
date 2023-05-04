@@ -25,6 +25,8 @@ public interface IMilkSale {
 
     Optional<EMilkSale> getById(Integer saleId);
 
+    EMilkSale getById(Integer saleId, Boolean handleException);
+
     List<MilkSaleSummaryDTO> getMilkSaleSummary(LocalDateTime startDate, LocalDateTime endDate);
 
     List<MilkSaleSummaryDTO> getMilkSaleSummaryByShop(LocalDateTime startDate, LocalDateTime endDate, Integer shopId);
@@ -37,5 +39,5 @@ public interface IMilkSale {
 
     void save(EMilkSale sale);
 
-    EMilkSale update(EMilkSale sale, MilkSaleDTO saleDTO);
+    EMilkSale update(Integer saleId, MilkSaleDTO saleDTO);
 }

@@ -1,6 +1,7 @@
 package com.example.cashcow_api.models;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import javax.persistence.OneToOne;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import lombok.Data;
 
@@ -31,7 +33,7 @@ public class EUser implements Serializable{
     private static final long serialVersionUID = 1L;
 
     @Column(name = "balance")
-    private Float balance;
+    private BigDecimal balance;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<EContact> contacts;
@@ -57,8 +59,8 @@ public class EUser implements Serializable{
     @Column(name = "middle_name")
     private String middleName;
 
-    @OneToOne(mappedBy = "user")
-    private EUserProfile profile;
+    @Column(name = "passcode")
+    private String passcode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", referencedColumnName = "id")
@@ -68,17 +70,30 @@ public class EUser implements Serializable{
     @JoinColumn(name = "shop_id", referencedColumnName = "id")
     private EShop shop;
 
+    @OneToOne(mappedBy = "user")
+    private EShopUser shopUser;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id", referencedColumnName = "id")
     private EStatus status;
 
-    public EUser(){
-        setCreatedOn(LocalDateTime.now());
+    @Column(name = "updated_on")
+    private LocalDateTime updatedOn;
+
+    @OneToMany(mappedBy = "user")
+    private EUserMilkPrice userMilkPrice;
+
+    public void setBalance(BigDecimal userBalance){
+        balance = balance != null ? balance : new BigDecimal("0");
+        if (userBalance != null) {
+            balance = balance.add(userBalance);
+        }
     }
 
-    public void setBalance(Float balance){
-        this.balance = this.balance == null ? 0 : this.balance;
-        this.balance += balance;
+    public void setPasscode(String pass) {
+        if (pass != null) {
+            passcode = new BCryptPasswordEncoder().encode(pass);
+        }
     }
 
 }

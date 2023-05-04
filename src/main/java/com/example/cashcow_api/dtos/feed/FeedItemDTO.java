@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import com.example.cashcow_api.dtos.farm.FarmDTO;
 import com.example.cashcow_api.dtos.status.StatusDTO;
 import com.example.cashcow_api.models.EFeedItem;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -28,10 +29,12 @@ public class FeedItemDTO {
 
     private String measurementUnit;
 
+    @JsonIgnoreProperties(value = {"createdOn", "updatedOn", "status"})
     private FarmDTO farm;
 
     private Integer farmId;
 
+    @JsonIgnoreProperties("description")
     private StatusDTO status;
 
     private Integer statusId;

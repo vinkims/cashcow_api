@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,14 +19,17 @@ public class ContactDTO {
     
     private Integer contactTypeId;
 
+    private ContactTypeDTO contactType;
+
     private String contactValue;
 
-    private String contactType;
+    private LocalDateTime createdOn;
 
     private Integer userId;
 
     public ContactDTO(EContact contact){
-        this.setContactType(contact.getContactType().getName());
-        this.setContactValue(contact.getValue());
+        setContactType(new ContactTypeDTO(contact.getContactType()));
+        setContactValue(contact.getValue());
+        setCreatedOn(contact.getCreatedOn());
     }
 }

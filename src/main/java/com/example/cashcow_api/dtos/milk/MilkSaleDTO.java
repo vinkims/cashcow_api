@@ -1,5 +1,6 @@
 package com.example.cashcow_api.dtos.milk;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.example.cashcow_api.dtos.shop.ShopBasicDTO;
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MilkSaleDTO {
     
-    private Float amount;
+    private BigDecimal amount;
 
     private UserBasicDTO attendant;
 
@@ -26,13 +27,15 @@ public class MilkSaleDTO {
 
     private LocalDateTime createdOn;
 
+    private LocalDateTime updatedOn;
+
     private UserBasicDTO customer;
 
     private Integer customerId;
 
     private Integer paymentChannelId;
 
-    private Float pricePerLitre;
+    private BigDecimal unitCost;
 
     private Float quantity;
 
@@ -66,5 +69,6 @@ public class MilkSaleDTO {
         setShop(new ShopBasicDTO(sale.getShop()));
         setStatus(sale.getStatus().getName());
         setQuantity(sale.getQuantity());
+        setUpdatedOn(sale.getUpdatedOn());
     }
 }

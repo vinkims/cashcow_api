@@ -17,8 +17,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "milk_delivery")
-public class EMilkDelivery implements Serializable {
+@Entity(name = "milk_shop_deliveries")
+public class EMilkShopDelivery implements Serializable {
     
     private static final long serialVersionUID = 1L;
 
@@ -36,6 +36,13 @@ public class EMilkDelivery implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id", referencedColumnName = "id")
     private EShop shop;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_id", referencedColumnName = "id")
+    private EStatus status;
+
+    @Column(name = "updated_on")
+    private LocalDateTime updatedOn;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")

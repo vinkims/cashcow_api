@@ -7,15 +7,11 @@ import java.util.Optional;
 import com.example.cashcow_api.dtos.expense.ExpenseDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
-import com.example.cashcow_api.models.ECow;
 import com.example.cashcow_api.models.EExpense;
 import com.example.cashcow_api.models.EExpenseType;
 import com.example.cashcow_api.models.EStatus;
-import com.example.cashcow_api.models.EUser;
 import com.example.cashcow_api.repositories.ExpenseDAO;
-import com.example.cashcow_api.services.cow.ICow;
 import com.example.cashcow_api.services.status.IStatus;
-import com.example.cashcow_api.services.user.IUser;
 import com.example.cashcow_api.specifications.SpecBuilder;
 import com.example.cashcow_api.specifications.SpecFactory;
 
@@ -37,16 +33,10 @@ public class SExpense implements IExpense {
     private ExpenseDAO expenseDAO;
 
     @Autowired
-    private ICow sCow;
-
-    @Autowired
     private IExpenseType sExpenseType;
 
     @Autowired
     private IStatus sStatus;
-
-    @Autowired
-    private IUser sUser;
 
     @Autowired
     private SpecFactory specFactory;
@@ -57,25 +47,27 @@ public class SExpense implements IExpense {
         EExpense expense = new EExpense();
         expense.setAmount(expenseDTO.getAmount());
         expense.setCreatedOn(LocalDateTime.now());
-        if (expenseDTO.getDescription() != null){
-            expense.setDescription(expenseDTO.getDescription());
-        }
-        setCow(expense, expenseDTO.getCowId());
+        expense.setDescription(expenseDTO.getDescription());
         setExpenseType(expense, expenseDTO.getExpenseTypeId());
-
         Integer statusId = expenseDTO.getStatusId() != null ? expenseDTO.getStatusId() : pendingStatusId;
         setStatus(expense, statusId);
 
-        setUser(expense, expenseDTO.getUserId());
-
         save(expense);
-
         return expense;
     }
 
     @Override
     public Optional<EExpense> getById(Integer id) {
         return expenseDAO.findById(id);
+    }
+
+    @Override
+    public EExpense getById(Integer id, Boolean handleException) {
+        Optional<EExpense> expense = getById(id);
+        if (!expense.isPresent() && handleException) {
+            throw new NotFoundException("expense with specified id not found", "expenseId");
+        }
+        return expense.get();
     }
 
     @Override
@@ -99,42 +91,38 @@ public class SExpense implements IExpense {
         expenseDAO.save(expense);
     }
 
-    public void setCow(EExpense expense, Integer cowId){
-        
-        if (cowId == null) { return; }
-        Optional<ECow> cow = sCow.getById(cowId);
-        if (!cow.isPresent()){
-            throw new NotFoundException("cow with specified id not found", "cowId");
-        }
-        expense.setCow(cow.get());
-    }
-
     public void setExpenseType(EExpense expense, Integer expenseTypeId){
-
         if (expenseTypeId == null){ return; }
-        Optional<EExpenseType> expenseType = sExpenseType.getById(expenseTypeId);
-        if (!expenseType.isPresent()){
-            throw new NotFoundException("expense type with specidied id not found", "expenseTypeId");
-        }
-        expense.setExpenseType(expenseType.get());
+
+        EExpenseType expenseType = sExpenseType.getById(expenseTypeId, true);
+        expense.setExpenseType(expenseType);
     }
 
     public void setStatus(EExpense expense, Integer statusId){
+        if (statusId == null) { return; }
 
-        Optional<EStatus> status = sStatus.getById(statusId);
-        if (!status.isPresent()){
-            throw new NotFoundException("status with specified id not found", "statusId");
-        }
-        expense.setStatus(status.get());
+        EStatus status = sStatus.getById(statusId, true);
+        expense.setStatus(status);
     }
+
+    @Override
+    public EExpense update(Integer id, ExpenseDTO expenseDTO) {
+
+        EExpense expense = getById(id, true);
+        if (expenseDTO.getAmount() != null) {
+            expense.setAmount(expenseDTO.getAmount());
+        }
+        if (expenseDTO.getDescription() != null) {
+            expense.setDescription(expenseDTO.getDescription());
+        }
+        expense.setUpdatedOn(LocalDateTime.now());
+        setExpenseType(expense, expenseDTO.getExpenseTypeId());
+        setStatus(expense, expenseDTO.getStatusId());
+
+        save(expense);
+        return expense;
+    }
+
+    // TODO: Update transaction
     
-    public void setUser(EExpense expense, Integer userId){
-        
-        if (userId == null){ return; }
-        Optional<EUser> user = sUser.getById(userId);
-        if (!user.isPresent()){
-            throw new NotFoundException("user with specified id not found", "userId");
-        }
-        expense.setUser(user.get());
-    }
 }

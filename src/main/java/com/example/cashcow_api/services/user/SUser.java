@@ -10,19 +10,21 @@ import java.util.Optional;
 
 import com.example.cashcow_api.dtos.contact.ContactDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
+import com.example.cashcow_api.dtos.user.ShopUserDTO;
 import com.example.cashcow_api.dtos.user.SummaryUserDTO;
 import com.example.cashcow_api.dtos.user.UserDTO;
-import com.example.cashcow_api.dtos.user.UserProfileDTO;
+import com.example.cashcow_api.dtos.user.UserMilkPriceDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.EContact;
 import com.example.cashcow_api.models.EFarm;
 import com.example.cashcow_api.models.ERole;
 import com.example.cashcow_api.models.EShop;
+import com.example.cashcow_api.models.EShopUser;
 import com.example.cashcow_api.models.EStatus;
 import com.example.cashcow_api.models.EUser;
-import com.example.cashcow_api.models.EUserProfile;
+import com.example.cashcow_api.models.EUserMilkPrice;
 import com.example.cashcow_api.repositories.UserDAO;
-import com.example.cashcow_api.services.contact.SContact;
+import com.example.cashcow_api.services.contact.IContact;
 import com.example.cashcow_api.services.farm.IFarm;
 import com.example.cashcow_api.services.role.IRole;
 import com.example.cashcow_api.services.shop.IShop;
@@ -60,22 +62,32 @@ public class SUser implements IUser {
     @Value(value = "${default.value.role.shop-attendant-role-id}")
     private Integer shopAttendantRoleId;
     
-    @Autowired private UserDAO userDAO;
+    @Autowired 
+    private UserDAO userDAO;
 
-    @Autowired private SContact sContact;
+    @Autowired 
+    private IContact sContact;
 
-    @Autowired private IFarm sFarm;
+    @Autowired 
+    private IFarm sFarm;
 
     @Autowired
     private SpecFactory specFactory;
 
-    @Autowired private IRole sRole;
+    @Autowired 
+    private IRole sRole;
 
-    @Autowired private IShop sShop;
+    @Autowired 
+    private IShop sShop;
 
-    @Autowired private IStatus sStatus;
+    @Autowired
+    private IShopUser sShopUser;
 
-    @Autowired private SUserProfile sUserProfile;
+    @Autowired 
+    private IStatus sStatus;
+
+    @Autowired
+    private IUserMilkPrice sUserMilkPrice;
 
     /**
      * Create EUser obj
@@ -88,12 +100,9 @@ public class SUser implements IUser {
         EUser user = new EUser();
         user.setCreatedOn(LocalDateTime.now());
         user.setFirstName(userDTO.getFirstName());
-        if (userDTO.getMiddleName() != null){
-            user.setMiddleName(userDTO.getMiddleName());
-        }
-        if (userDTO.getLastName() != null){
-            user.setLastName(userDTO.getLastName());
-        }
+        user.setMiddleName(userDTO.getMiddleName());
+        user.setLastName(userDTO.getLastName());
+        user.setPasscode(userDTO.getPasscode());
         setFarm(user, userDTO.getFarmId());
         setRole(user, userDTO.getRoleId());
         setShop(user, userDTO.getShopId());
@@ -104,7 +113,8 @@ public class SUser implements IUser {
         save(user);
 
         setContactData(user, userDTO.getContacts());
-        setProfile(user, userDTO.getProfile());
+        setShopUser(user, userDTO.getShopUser());
+        setUserMilkPrice(user, userDTO.getUserMilkPrice());
 
         return user;
     }
@@ -128,84 +138,6 @@ public class SUser implements IUser {
             }
         }
         setContactData(user, contactList);
-    }
-
-    /**
-     * Set contacts
-     * @param user
-     * @param contactList
-     */
-    public void setContactData(EUser user, List<ContactDTO> contactList){
-
-        if (contactList != null){
-            List<EContact> contacts = new ArrayList<>();
-            for (ContactDTO contactDTO : contactList){
-                EContact contact = sContact.create(user, contactDTO);
-                sContact.save(contact);
-                contacts.add(contact);
-            }
-            user.setContacts(contacts);
-        }
-    }
-
-    public void setProfile(EUser user, UserProfileDTO userProfileDTO){
-        if (userProfileDTO != null){
-            EUserProfile profile = sUserProfile.create(userProfileDTO, user);
-            sUserProfile.save(profile);
-            user.setProfile(profile);
-        }
-    }
-
-    public void setFarm(EUser user, Integer farmId){
-        
-        if (farmId == null){ return; }
-
-        Optional<EFarm> farm = sFarm.getById(farmId);
-        if (!farm.isPresent()){
-            throw new NotFoundException("farm with specified id not found", "farmId");
-        }
-        user.setFarm(farm.get());
-    }
-
-    /**
-     * Set user role
-     * @param user
-     * @param roleId
-     */
-    public void setRole(EUser user, Integer roleId){
-        
-        if (roleId == null){ return ;}
-
-        Optional<ERole> role = sRole.getById(roleId);
-        if (!role.isPresent()){
-            throw new NotFoundException("user role not found", "roleId");
-        }
-        user.setRole(role.get());
-    }
-
-    /**
-     * Set shop
-     * @param user
-     * @param shopId
-     */
-    public void setShop(EUser user, Integer shopId){
-
-        if (shopId == null){ return; }
-
-        Optional<EShop> shop = sShop.getById(shopId);
-        if (!shop.isPresent()){
-            throw new NotFoundException("shop with specified id not found", "shopId");
-        }
-        user.setShop(shop.get());
-    }
-
-    public void setStatus(EUser user, Integer statusId){
-        
-        Optional<EStatus> status = sStatus.getById(statusId);
-        if (!status.isPresent()){
-            throw new NotFoundException("Status with specified id not found", "statusId");
-        }
-        user.setStatus(status.get());
     }
 
     /**
@@ -245,6 +177,15 @@ public class SUser implements IUser {
         }
 
         return userDAO.findByIdOrContactValue(userId, userValue);
+    }
+
+    @Override
+    public EUser getByIdOrContact(String userValue, Boolean handleException) {
+        Optional<EUser> user = getByIdOrContact(userValue);
+        if (!user.isPresent() && handleException) {
+            throw new NotFoundException("user with specified id or contact value not found", "userValue");
+        }
+        return user.get();
     }
 
     public String getFirstContact(List<EContact> contactsList){
@@ -309,6 +250,77 @@ public class SUser implements IUser {
         userDAO.save(user);
     }
 
+    /**
+     * Set contacts
+     * @param user
+     * @param contactList
+     */
+    public void setContactData(EUser user, List<ContactDTO> contactList){
+
+        if (contactList != null){
+            List<EContact> contacts = new ArrayList<>();
+            for (ContactDTO contactDTO : contactList){
+                EContact contact = sContact.create(user, contactDTO);
+                sContact.save(contact);
+                contacts.add(contact);
+            }
+            user.setContacts(contacts);
+        }
+    }
+
+    public void setFarm(EUser user, Integer farmId){
+        if (farmId == null){ return; }
+
+        EFarm farm = sFarm.getById(farmId, true);
+        user.setFarm(farm);
+    }
+
+    /**
+     * Set user role
+     * @param user
+     * @param roleId
+     */
+    public void setRole(EUser user, Integer roleId){
+        if (roleId == null){ return ;}
+
+        ERole role = sRole.getById(roleId, true);
+        user.setRole(role);
+    }
+
+    /**
+     * Set shop
+     * @param user
+     * @param shopId
+     */
+    public void setShop(EUser user, Integer shopId){
+        if (shopId == null){ return; }
+
+        EShop shop = sShop.getById(shopId, true);
+        user.setShop(shop);
+    }
+
+    public void setShopUser(EUser user, ShopUserDTO shopUserDTO) {
+        if (shopUserDTO == null) { return; }
+
+        EShop shop = sShop.getById(shopUserDTO.getShopId(), true);
+        EShopUser shopUser = sShopUser.create(shop, user);
+        user.setShopUser(shopUser);
+    }
+
+    public void setStatus(EUser user, Integer statusId){
+        if (statusId == null) { return; }
+        
+        EStatus status = sStatus.getById(statusId, true);
+        user.setStatus(status);
+    }
+
+    public void setUserMilkPrice(EUser user, UserMilkPriceDTO userMilkPriceDTO) {
+        if (userMilkPriceDTO == null) { return; }
+
+        EUserMilkPrice userMilkPrice = sUserMilkPrice.create(userMilkPriceDTO, user);
+        user.setUserMilkPrice(userMilkPrice);
+    }
+
     @Override
     public EUser update(EUser user, UserDTO userDTO) 
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
@@ -325,11 +337,9 @@ public class SUser implements IUser {
                 EUser.class.getMethod("set" + field, fieldValue.getClass()).invoke(user, fieldValue);
             }
         }
-
+        user.setUpdatedOn(LocalDateTime.now());
         setShop(user, userDTO.getShopId());
-
-        Integer statusId = userDTO.getStatusId() != null ? userDTO.getStatusId() : activeStatusId;
-        setStatus(user, statusId);
+        setStatus(user, userDTO.getStatusId());
 
         save(user);
 
@@ -337,9 +347,39 @@ public class SUser implements IUser {
         //    deleteContact(user, userDTO.getContacts());
         //}
         setContactData(user, userDTO.getContacts());
-        setProfile(user, userDTO.getProfile());
         setRole(user, userDTO.getRoleId());
 
         return user;
     } 
+
+    @Override
+    public EUser update(String userValue, UserDTO userDTO) throws IllegalAccessException, 
+            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+
+        EUser user = getByIdOrContact(userValue, true);
+
+        String[] fields = {"FirstName", "MiddleName", "LastName", "Balance"};
+        for (String field : fields){
+            Method getField = UserDTO.class.getMethod(String.format("get%s", field));
+            Object fieldValue = getField.invoke(userDTO);
+
+            if (fieldValue != null){
+                fieldValue = fieldValue.getClass().equals(String.class) ? 
+                    ((String) fieldValue).trim() : fieldValue;
+                EUser.class.getMethod("set" + field, fieldValue.getClass()).invoke(user, fieldValue);
+            }
+        }
+        user.setUpdatedOn(LocalDateTime.now());
+        setRole(user, userDTO.getRoleId());
+        setShop(user, userDTO.getShopId());
+        setStatus(user, userDTO.getStatusId());
+
+        save(user);
+
+        setContactData(user, userDTO.getContacts());
+        setShopUser(user, userDTO.getShopUser());
+        setUserMilkPrice(user, userDTO.getUserMilkPrice());
+
+        return user;
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.cashcow_api.dtos.user;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +9,9 @@ import javax.validation.Valid;
 
 import com.example.cashcow_api.dtos.contact.ContactDTO;
 import com.example.cashcow_api.dtos.farm.FarmDTO;
+import com.example.cashcow_api.dtos.role.RoleDTO;
 import com.example.cashcow_api.dtos.shop.ShopDTO;
 import com.example.cashcow_api.models.EContact;
-import com.example.cashcow_api.models.ERole;
 import com.example.cashcow_api.models.EUser;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -25,12 +26,17 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDTO {
 
-    private Float balance;
+    private Integer id;
+
+    private BigDecimal balance;
     
     private List<@Valid ContactDTO> contacts = new ArrayList<ContactDTO>();
 
     private LocalDateTime createdOn;
 
+    private LocalDateTime updatedOn;
+
+    @JsonIgnoreProperties(value = {"createdOn", "updatedOn", "status"})
     private FarmDTO farm;
 
     private Integer farmId;
@@ -41,9 +47,14 @@ public class UserDTO {
 
     private String middleName;
 
-    private @Valid UserProfileDTO profile;
+    private ShopUserDTO shopUser;
 
-    private ERole role;
+    private UserMilkPriceDTO userMilkPrice;
+
+    private String passcode;
+
+    @JsonIgnoreProperties("description")
+    private RoleDTO role;
 
     private Integer roleId;
 
@@ -60,24 +71,24 @@ public class UserDTO {
     public UserDTO(EUser user){
         setBalance(user.getBalance());
         setContactData(user.getContacts());
-        this.setCreatedOn(user.getCreatedOn());
+        setCreatedOn(user.getCreatedOn());
         if (user.getFarm() != null){
-            this.setFarm(new FarmDTO(user.getFarm()));
+            setFarm(new FarmDTO(user.getFarm()));
         }
         this.setFirstName(user.getFirstName());
-        if (user.getLastName() != null){
-            this.setLastName(user.getLastName());
-        }
-        if (user.getMiddleName() != null){
-            this.setMiddleName(user.getMiddleName());
-        }
-        this.setProfile(new UserProfileDTO(user.getProfile()));
-        this.setRole(user.getRole());
+        setLastName(user.getLastName());
+        setId(user.getId());
+        setMiddleName(user.getMiddleName());
+        setRole(new RoleDTO(user.getRole()));
         if (user.getShop() != null){
-            this.setShop(new ShopDTO(user.getShop()));
+            setShop(new ShopDTO(user.getShop()));
+        }
+        if (user.getShopUser() != null) {
+            setShopUser(new ShopUserDTO(user.getShopUser()));
         }
         setStatus(user.getStatus().getName());
-        this.setUserId(user.getId());
+        setUpdatedOn(user.getUpdatedOn());
+        setUserMilkPrice(new UserMilkPriceDTO(user.getUserMilkPrice()));
     }
 
     public void setContactData(List<EContact> contactList){
