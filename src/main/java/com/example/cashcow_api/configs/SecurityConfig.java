@@ -43,6 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
             .authorizeRequests()
             .antMatchers("/user/auth").permitAll()
+            .antMatchers("/actuator/**").permitAll()
             .anyRequest().authenticated()
             .and().exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler())
             .and().addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
