@@ -8,9 +8,13 @@ import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.dtos.purchases.PurchaseDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
+import com.example.cashcow_api.models.EFarm;
 import com.example.cashcow_api.models.EPurchase;
+import com.example.cashcow_api.models.EStatus;
 import com.example.cashcow_api.models.EUser;
 import com.example.cashcow_api.repositories.PurchaseDAO;
+import com.example.cashcow_api.services.farm.IFarm;
+import com.example.cashcow_api.services.status.IStatus;
 import com.example.cashcow_api.services.transaction.ITransaction;
 import com.example.cashcow_api.services.user.IUser;
 import com.example.cashcow_api.specifications.SpecBuilder;
@@ -26,6 +30,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SPurchase implements IPurchase {
+
+    @Value(value = "${default.value.status.complete-id}")
+    private Integer completeStatusId;
 
     @Value(value = "${default.value.payment-channel.mpesa-channel-id}")
     private Integer mpesaPaymentChannelId;
@@ -43,6 +50,12 @@ public class SPurchase implements IPurchase {
     private SpecFactory specFactory;
 
     @Autowired
+    private IFarm sFarm;
+
+    @Autowired
+    private IStatus sStatus;
+
+    @Autowired
     private IUser sUser;
 
     @Autowired
@@ -54,50 +67,61 @@ public class SPurchase implements IPurchase {
         EPurchase purchase = new EPurchase();
         LocalDateTime purchaseDate = purchaseDTO.getCreatedOn();
         purchase.setCreatedOn(purchaseDate);
+        setFarm(purchase, purchaseDTO.getFarmId());
         purchase.setName(purchaseDTO.getName());
         if (purchaseDTO.getQuantity() != null){
             purchase.setQuantity(purchaseDTO.getQuantity());
         }
+        Integer statusId = purchaseDTO.getStatusId() == null ? completeStatusId : purchaseDTO.getStatusId();
+        setStatus(purchase, statusId);
         if (purchaseDTO.getTransportCost() != null){
-            purchase.setTransportCost(purchaseDTO.getTransportCost());
-            createTransaction(
-                purchaseDTO.getTransportCost(),
-                purchaseDate,
-                mpesaPaymentChannelId, 
-                transportTypeId, 
-                String.format("Transport: %s", purchaseDTO.getName())
-            );
+            // createTransaction(
+            //     purchaseDTO.getTransportCost(),
+            //     purchaseDate,
+            //     mpesaPaymentChannelId, 
+            //     transportTypeId, 
+            //     String.format("Transport: %s", purchaseDTO.getName())
+            // );
         }
-        purchase.setUnitPrice(purchaseDTO.getUnitPrice());
+        purchase.setUnitCost(purchaseDTO.getUnitCost());
         setSupplier(purchase, purchaseDTO.getSupplierId());
 
         save(purchase);
 
-        createTransaction(
-            (purchaseDTO.getQuantity() * purchaseDTO.getUnitPrice()),
-            purchaseDate,
-            mpesaPaymentChannelId, 
-            productPaymentTypeId, 
-            String.format("Product: %s", purchaseDTO.getName())
-        );
+        // createTransaction(
+        //     (purchaseDTO.getQuantity() * purchaseDTO.getUnitPrice()),
+        //     purchaseDate,
+        //     mpesaPaymentChannelId, 
+        //     productPaymentTypeId, 
+        //     String.format("Product: %s", purchaseDTO.getName())
+        // );
 
         return purchase;
     }
 
-    public void createTransaction(Float amount, LocalDateTime createdOn, 
-            Integer paymentChannelId, Integer transactionTypeId, String reference){
-        TransactionDTO transactionDTO = new TransactionDTO();
-        transactionDTO.setAmount(amount);
-        transactionDTO.setCreatedOn(createdOn);
-        transactionDTO.setPaymentChannelId(paymentChannelId);
-        transactionDTO.setReference(reference);
-        transactionDTO.setTransactionTypeId(transactionTypeId);
-        sTransaction.create(transactionDTO);
-    }
+    // public void createTransaction(Float amount, LocalDateTime createdOn, 
+    //         Integer paymentChannelId, Integer transactionTypeId, String reference){
+    //     TransactionDTO transactionDTO = new TransactionDTO();
+    //     transactionDTO.setAmount(amount);
+    //     transactionDTO.setCreatedOn(createdOn);
+    //     transactionDTO.setPaymentChannelId(paymentChannelId);
+    //     transactionDTO.setReference(reference);
+    //     transactionDTO.setTransactionTypeId(transactionTypeId);
+    //     sTransaction.create(transactionDTO);
+    // }
 
     @Override
     public Optional<EPurchase> getById(Integer purchaseId) {
         return purchaseDAO.findById(purchaseId);
+    }
+
+    @Override
+    public EPurchase getById(Integer purchaseId, Boolean handleException) {
+        Optional<EPurchase> purchase = getById(purchaseId);
+        if (!purchase.isPresent() && handleException) {
+            throw new NotFoundException("purchase with specified id not found", "purchaseId");
+        }
+        return purchase.get();
     }
 
     @Override
@@ -121,14 +145,50 @@ public class SPurchase implements IPurchase {
         purchaseDAO.save(purchase);
     }
 
-    public void setSupplier(EPurchase purchase, Integer supplierId){
+    public void setFarm(EPurchase purchase, Integer farmId) {
+        if (farmId == null) { return; }
 
-        if (supplierId == null){ return; }
-        Optional<EUser> supplier = sUser.getById(supplierId);
-        if (!supplier.isPresent()){
-            throw new NotFoundException("supplier with specified id not found", "supplierId");
-        }
-        purchase.setSupplier(supplier.get());
+        EFarm farm = sFarm.getById(farmId, true);
+        purchase.setFarm(farm);
     }
+
+    public void setStatus(EPurchase purchase, Integer statusId) {
+        if (statusId == null) { return; }
+
+        EStatus status = sStatus.getById(statusId, true);
+        purchase.setStatus(status);
+    }
+
+    public void setSupplier(EPurchase purchase, Integer supplierId){
+        if (supplierId == null){ return; }
+
+        EUser supplier = sUser.getById(supplierId, true);
+        purchase.setSupplier(supplier);
+    }
+
+    @Override
+    public EPurchase update(Integer purchaseId, PurchaseDTO purchaseDTO) {
+
+        EPurchase purchase = getById(purchaseId, true);
+        if (purchaseDTO.getName() != null) {
+            purchase.setName(purchaseDTO.getName());
+        }
+        if (purchaseDTO.getQuantity() != null) {
+            purchase.setQuantity(purchaseDTO.getQuantity());
+        }
+        if (purchaseDTO.getUnitCost() != null) {
+            purchase.setUnitCost(purchaseDTO.getUnitCost());
+        }
+        purchase.setUpdatedOn(LocalDateTime.now());
+
+        setFarm(purchase, purchaseDTO.getFarmId());
+        setStatus(purchase, purchaseDTO.getStatusId());
+        setSupplier(purchase, purchaseDTO.getSupplierId());
+
+        save(purchase);
+        return purchase;
+    }
+
+    // TODO: Complete transaction and expense creation
     
 }

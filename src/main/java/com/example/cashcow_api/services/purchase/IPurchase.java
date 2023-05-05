@@ -15,7 +15,11 @@ public interface IPurchase {
 
     Optional<EPurchase> getById(Integer purchaseId);
 
+    EPurchase getById(Integer purchaseId, Boolean handleExcpetion);
+
     Page<EPurchase> getPaginatedList(PageDTO pageDTO, List<String> allowableFields);
 
     void save(EPurchase purchase);
+
+    EPurchase update(Integer purchaseId, PurchaseDTO purchaseDTO);
 }

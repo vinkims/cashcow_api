@@ -16,12 +16,15 @@ import javax.persistence.ManyToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Entity(name = "incomes")
 @Data
 @NoArgsConstructor
-@Entity(name = "purchases")
-public class EPurchase implements Serializable{
+public class EIncome implements Serializable {
     
     private static final long serialVersionUID = 1L;
+
+    @Column(name = "amount")
+    private BigDecimal amount;
 
     @Column(name = "created_on")
     private LocalDateTime createdOn;
@@ -35,22 +38,16 @@ public class EPurchase implements Serializable{
     @Column(nullable = false, updatable = false, name = "id")
     private Integer id;
 
-    @Column(name = "name")
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "income_type_id", referencedColumnName = "id")
+    private EIncomeType incomeType;
 
-    @Column(name = "quantity")
-    private Float quantity;
+    @Column(name = "reference")
+    private String reference;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id", referencedColumnName = "id")
     private EStatus status;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "supplier_id", referencedColumnName = "id")
-    private EUser supplier;
-
-    @Column(name = "unit_cost")
-    private BigDecimal unitCost;
 
     @Column(name = "updated_on")
     private LocalDateTime updatedOn;

@@ -20,6 +20,8 @@ public interface ITransaction {
 
     Optional<ETransaction> getById(Integer transactionId);
 
+    ETransaction getById(Integer transactionId, Boolean handleException);
+
     List<EmployeeTransactionDTO> getEmployeeExpenses(LocalDateTime startDate, LocalDateTime endDate, Integer userId);
 
     Page<ETransaction> getPaginatedList(PageDTO pageDTO, List<String> allowableFields);
@@ -28,5 +30,5 @@ public interface ITransaction {
 
     void save(ETransaction transaction);
 
-    ETransaction update(ETransaction transaction, TransactionDTO transactionDTO);
+    ETransaction update(Integer transactionId, TransactionDTO transactionDTO);
 }

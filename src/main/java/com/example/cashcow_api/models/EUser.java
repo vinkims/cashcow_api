@@ -80,8 +80,11 @@ public class EUser implements Serializable{
     @Column(name = "updated_on")
     private LocalDateTime updatedOn;
 
-    @OneToMany(mappedBy = "user")
+    @OneToOne(mappedBy = "user")
     private EUserMilkPrice userMilkPrice;
+
+    @OneToMany(mappedBy = "user")
+    private List<EUserExpense> userExpenses;
 
     public void setBalance(BigDecimal userBalance){
         balance = balance != null ? balance : new BigDecimal("0");
@@ -97,6 +100,3 @@ public class EUser implements Serializable{
     }
 
 }
-
-// TODO: Create shopUser model: To add a user to a shop
-// With user_id and shop_id

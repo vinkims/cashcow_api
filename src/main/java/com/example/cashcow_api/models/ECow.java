@@ -46,6 +46,9 @@ public class ECow implements Serializable{
     @Column(name = "color")
     private String color;
 
+    @OneToMany(mappedBy = "cow")
+    private List<ECowExpense> cowExpenses;
+
     @Column(name = "created_on")
     private LocalDateTime createdOn;
 

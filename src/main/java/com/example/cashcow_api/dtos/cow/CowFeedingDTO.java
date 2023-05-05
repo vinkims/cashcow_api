@@ -9,6 +9,7 @@ import com.example.cashcow_api.dtos.status.StatusDTO;
 import com.example.cashcow_api.dtos.user.UserBasicDTO;
 import com.example.cashcow_api.models.ECowFeeding;
 import com.example.cashcow_api.models.ECowFeedingFeedItem;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -26,6 +27,7 @@ public class CowFeedingDTO {
 
     private LocalDateTime updatedOn;
 
+    @JsonIgnoreProperties(value = {"createdOn", "updatedOn", "status"})
     private FarmDTO farm;
 
     private Integer farmId;
@@ -36,6 +38,7 @@ public class CowFeedingDTO {
 
     private Integer userId;
 
+    @JsonIgnoreProperties("description")
     private StatusDTO status;
 
     private Integer statusId;

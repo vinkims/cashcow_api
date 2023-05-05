@@ -7,11 +7,19 @@ import java.util.Optional;
 import com.example.cashcow_api.dtos.expense.ExpenseDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
+import com.example.cashcow_api.models.ECow;
+import com.example.cashcow_api.models.ECowExpense;
 import com.example.cashcow_api.models.EExpense;
 import com.example.cashcow_api.models.EExpenseType;
 import com.example.cashcow_api.models.EStatus;
+import com.example.cashcow_api.models.EUser;
+import com.example.cashcow_api.models.EUserExpense;
 import com.example.cashcow_api.repositories.ExpenseDAO;
+import com.example.cashcow_api.services.cow.ICow;
+import com.example.cashcow_api.services.cow.ICowExpense;
 import com.example.cashcow_api.services.status.IStatus;
+import com.example.cashcow_api.services.user.IUser;
+import com.example.cashcow_api.services.user.IUserExpense;
 import com.example.cashcow_api.specifications.SpecBuilder;
 import com.example.cashcow_api.specifications.SpecFactory;
 
@@ -33,10 +41,22 @@ public class SExpense implements IExpense {
     private ExpenseDAO expenseDAO;
 
     @Autowired
+    private ICow sCow;
+
+    @Autowired
+    private ICowExpense sCowExpense;
+
+    @Autowired
     private IExpenseType sExpenseType;
 
     @Autowired
     private IStatus sStatus;
+
+    @Autowired
+    private IUser sUser;
+
+    @Autowired
+    private IUserExpense sUserExpense;
 
     @Autowired
     private SpecFactory specFactory;
@@ -53,6 +73,10 @@ public class SExpense implements IExpense {
         setStatus(expense, statusId);
 
         save(expense);
+
+        setCowExpense(expense, expenseDTO.getCowId());
+        setUserExpense(expense, expenseDTO.getUserId());
+
         return expense;
     }
 
@@ -91,6 +115,14 @@ public class SExpense implements IExpense {
         expenseDAO.save(expense);
     }
 
+    public void setCowExpense(EExpense expense, Integer cowId) {
+        if (cowId == null) { return; }
+
+        ECow cow = sCow.getById(cowId, true);
+        ECowExpense cowExpense = sCowExpense.create(cow, expense);
+        
+    }
+
     public void setExpenseType(EExpense expense, Integer expenseTypeId){
         if (expenseTypeId == null){ return; }
 
@@ -103,6 +135,13 @@ public class SExpense implements IExpense {
 
         EStatus status = sStatus.getById(statusId, true);
         expense.setStatus(status);
+    }
+
+    public void setUserExpense(EExpense expense, Integer userId) {
+        if (userId == null) { return; }
+
+        EUser user = sUser.getById(userId, true);
+        EUserExpense userExpense = sUserExpense.create(user, expense);
     }
 
     @Override
@@ -120,9 +159,13 @@ public class SExpense implements IExpense {
         setStatus(expense, expenseDTO.getStatusId());
 
         save(expense);
+
+        setCowExpense(expense, expenseDTO.getCowId());
+        setUserExpense(expense, expenseDTO.getUserId());
+        
         return expense;
     }
 
-    // TODO: Update transaction
+    // TODO: Update transaction with expense update
     
 }

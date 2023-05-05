@@ -13,6 +13,7 @@ import com.example.cashcow_api.dtos.role.RoleDTO;
 import com.example.cashcow_api.dtos.shop.ShopDTO;
 import com.example.cashcow_api.models.EContact;
 import com.example.cashcow_api.models.EUser;
+import com.example.cashcow_api.models.EUserExpense;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -66,7 +67,7 @@ public class UserDTO {
 
     private Integer statusId;
 
-    private Integer userId;
+    private List<UserExpenseDTO> userExpenses;
 
     public UserDTO(EUser user){
         setBalance(user.getBalance());
@@ -95,6 +96,15 @@ public class UserDTO {
         if (contactList == null || contactList.isEmpty()){ return; }
         for (EContact contact : contactList){
             contacts.add(new ContactDTO(contact));
+        }
+    }
+
+    public void setUserExpensesData(List<EUserExpense> userExpenseList) {
+        if (userExpenseList == null || userExpenseList.isEmpty()) { return; }
+
+        userExpenses = new ArrayList<>();
+        for (EUserExpense userExpense : userExpenseList) {
+            userExpenses.add(new UserExpenseDTO(userExpense));
         }
     }
 }

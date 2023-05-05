@@ -14,6 +14,7 @@ import com.example.cashcow_api.dtos.status.StatusDTO;
 import com.example.cashcow_api.dtos.user.UserBasicDTO;
 import com.example.cashcow_api.models.ECow;
 import com.example.cashcow_api.models.ECowCategory;
+import com.example.cashcow_api.models.ECowExpense;
 import com.example.cashcow_api.models.ECowService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -36,6 +37,7 @@ public class CowDTO {
 
     private Integer farmId;
 
+    @JsonIgnoreProperties(value = {"createdOn", "updatedOn", "status"})
     private FarmDTO farm;
 
     private Integer id;
@@ -67,6 +69,8 @@ public class CowDTO {
     private @Valid CowProfileDTO profile;
 
     private List<CowServiceDTO> services = new ArrayList<>();
+
+    private List<CowExpenseDTO> cowExpenses;
 
     @JsonIgnoreProperties("description")
     private StatusDTO status;
@@ -105,6 +109,15 @@ public class CowDTO {
             calfDTO.setName(calf.getName());
             calfDTO.setProfile(new CowProfileDTO(calf.getProfile()));
             calves.add(calfDTO);
+        }
+    }
+
+    public void setCowExpensesData(List<ECowExpense> cowExpenseList) {
+        if (cowExpenseList == null || cowExpenseList.isEmpty()) { return; }
+
+        cowExpenses = new ArrayList<>();
+        for (ECowExpense cowExpense : cowExpenseList) {
+            cowExpenses.add(new CowExpenseDTO(cowExpense));
         }
     }
 
