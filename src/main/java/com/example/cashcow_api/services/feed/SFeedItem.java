@@ -53,7 +53,7 @@ public class SFeedItem implements IFeedItem {
         feedItem.setName(feedItemDTO.getName());
         feedItem.setStock(feedItemDTO.getStock());
         setFarm(feedItem, feedItemDTO.getFarmId());
-        Integer statusId = feedItemDTO.getStatusId == null ? activeStatusId : feedItemDTO.getStatusId;
+        Integer statusId = feedItemDTO.getStatusId() == null ? activeStatusId : feedItemDTO.getStatusId();
         setStatus(feedItem, statusId);
 
         save(feedItem);

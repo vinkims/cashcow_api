@@ -143,7 +143,10 @@ public class SCow implements ICow {
         String search = pageDTO.getSearch();
 
         SpecBuilder<ECow> specBuilder = new SpecBuilder<>();
-        specBuilder = (SpecBuilder<ECow>) specFactory.generateSpecification(search, specBuilder, allowableFields, "cow");
+
+        specBuilder = (SpecBuilder<ECow>) specFactory.generateSpecification(search, 
+            specBuilder, allowableFields, "cow");
+        
         Specification<ECow> spec = specBuilder.build();
 
         PageRequest pageRequest = PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize(),

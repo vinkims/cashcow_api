@@ -70,7 +70,7 @@ public class SMilkShopDelivery implements IMilkShopDelivery {
 
         save(delivery);
 
-        if (deliveryDTO.getTransportCost() != null && deliveryDTO.getTransportCost() != 0){
+        // if (deliveryDTO.getTransportCost() != null && deliveryDTO.getTransportCost() != 0){
             // createTransaction(
             //     deliveryDTO.getTransportCost(), 
             //     deliveryDTO.getUserId(), 
@@ -79,24 +79,24 @@ public class SMilkShopDelivery implements IMilkShopDelivery {
             //     milkTransportTypeId,
             //     delivery.getId()
             // );
-        }
+        // }
 
         return delivery;
     }
 
-    public void createTransaction(Float amount, Integer attendantId, Integer shopId, 
-            Integer paymentChannelId, Integer transactionTypeId, Integer deliveryId){
+    // public void createTransaction(Float amount, Integer attendantId, Integer shopId, 
+    //         Integer paymentChannelId, Integer transactionTypeId, Integer deliveryId){
 
-        TransactionDTO transactionDTO = new TransactionDTO();
-        transactionDTO.setAmount(amount);
-        transactionDTO.setAttendantId(attendantId);
-        transactionDTO.setShopId(shopId);
-        transactionDTO.setPaymentChannelId(paymentChannelId);
-        transactionDTO.setTransactionTypeId(transactionTypeId);
-        transactionDTO.setReference(String.format("Delivery id: %s", deliveryId));
+    //     TransactionDTO transactionDTO = new TransactionDTO();
+    //     transactionDTO.setAmount(amount);
+    //     transactionDTO.setAttendantId(attendantId);
+    //     transactionDTO.setShopId(shopId);
+    //     transactionDTO.setPaymentChannelId(paymentChannelId);
+    //     transactionDTO.setTransactionTypeId(transactionTypeId);
+    //     transactionDTO.setReference(String.format("Delivery id: %s", deliveryId));
 
-        sTransaction.create(transactionDTO);
-    }
+    //     sTransaction.create(transactionDTO);
+    // }
 
     @Override
     public Optional<EMilkShopDelivery> getById(Integer deliveryId) {
