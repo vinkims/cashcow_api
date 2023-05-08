@@ -1,24 +1,24 @@
 package com.example.cashcow_api.services.cow;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import com.example.cashcow_api.dtos.cow.CowDTO;
-import com.example.cashcow_api.dtos.cow.CowProfileDTO;
 import com.example.cashcow_api.dtos.cow.CowWeightDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
-import com.example.cashcow_api.dtos.transaction.TransactionDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
+import com.example.cashcow_api.models.EBreed;
 import com.example.cashcow_api.models.ECow;
 import com.example.cashcow_api.models.ECowCategory;
-import com.example.cashcow_api.models.ECowProfile;
+import com.example.cashcow_api.models.ECowImage;
 import com.example.cashcow_api.models.EFarm;
 import com.example.cashcow_api.models.EStatus;
 import com.example.cashcow_api.repositories.CowDAO;
 import com.example.cashcow_api.services.farm.IFarm;
 import com.example.cashcow_api.services.status.IStatus;
-import com.example.cashcow_api.services.transaction.ITransaction;
 import com.example.cashcow_api.specifications.SpecBuilder;
 import com.example.cashcow_api.specifications.SpecFactory;
 
@@ -39,29 +39,20 @@ public class SCow implements ICow {
     @Value(value = "${default.value.category.cow-id}")
     private Integer categoryCowId;
 
-    @Value(value = "${default.value.transaction-type.cow-sale-type-id}")
-    private Integer cowSaleTypeId;
-
-    @Value(value = "${default.value.payment-channel.mpesa-channel-id}")
-    private Integer mpesaPaymentChannelId;
-
-    @Value(value = "${default.value.status.pre-calving-id}")
-    private Integer preCalvingStatusId;
-
-    @Value(value = "${default.value.status.sold-id}")
-    private Integer soldStatusId;
-
     @Autowired
     private CowDAO cowDAO;
+
+    @Autowired
+    private IBreed sBreed;
 
     @Autowired
     private ICowCategory sCowCategory;
 
     @Autowired
-    private ICowWeight sCowWeight;
+    private ICowImage sCowImage;
 
     @Autowired
-    private SCowProfile sCowProfile;
+    private ICowWeight sCowWeight;
 
     @Autowired
     private IFarm sFarm;
@@ -72,9 +63,6 @@ public class SCow implements ICow {
     @Autowired
     private IStatus sStatus;
 
-    @Autowired
-    private ITransaction sTransaction;
-
     @Override
     public Boolean checkExistsByName(String cowName){
         return cowDAO.existsByName(cowName);
@@ -84,12 +72,18 @@ public class SCow implements ICow {
     public ECow create(CowDTO cowDTO) {
 
         ECow cow = new ECow();
+        cow.setColor(cowDTO.getColor());
         cow.setCreatedOn(LocalDateTime.now());
+        cow.setDateOfBirth(cowDTO.getDateOfBirth());
+        cow.setGender(cowDTO.getGender());
         cow.setName(cowDTO.getName().toUpperCase());
+        cow.setOtherDetails(cowDTO.getOtherDetails());
         Integer categoryId = cowDTO.getCategoryId() == null ?
-                categoryCowId : cowDTO.getCategoryId();
+            categoryCowId : cowDTO.getCategoryId();
+        setBreed(cow, cowDTO.getBreedId());
         setCowCategory(cow, categoryId);
         setFarm(cow, cowDTO.getFarmId());
+        setImage(cow, cowDTO.getImageId());
         setParent(cow, cowDTO.getParentId());
 
         Integer statusId = cowDTO.getStatusId() != null ? cowDTO.getStatusId() : activeStatusId;
@@ -97,19 +91,8 @@ public class SCow implements ICow {
 
         save(cow);
 
-        setProfile(cow, cowDTO.getProfile());
         recordWeight(cow.getId(), cowDTO.getWeight());
         return cow;
-    }
-
-    public void createSaleTransaction(Float amount, Integer paymentChannelId, 
-            Integer transactionTypeId, String reference){
-        TransactionDTO transactionDTO = new TransactionDTO();
-        transactionDTO.setAmount(amount);
-        transactionDTO.setPaymentChannelId(paymentChannelId);
-        transactionDTO.setReference(reference);
-        transactionDTO.setTransactionTypeId(transactionTypeId);
-        sTransaction.create(transactionDTO);
     }
 
     @Override
@@ -129,11 +112,6 @@ public class SCow implements ICow {
             throw new NotFoundException("cow with specified id not found", "cowid");
         }
         return cow.get();
-    }
-
-    @Override
-    public List<ECow> getCowsByGender(String gender){
-        return cowDAO.findCowsByGender(gender);
     }
 
     @Override
@@ -169,6 +147,13 @@ public class SCow implements ICow {
         cowDAO.save(cow);
     }
 
+    public void setBreed(ECow cow, Integer breedId) {
+        if (breedId == null) { return; }
+
+        EBreed breed = sBreed.getById(breedId, true);
+        cow.setBreed(breed);
+    }
+
     /**
      * Sets the cow category
      * @param cow
@@ -193,6 +178,13 @@ public class SCow implements ICow {
         cow.setFarm(farm.get());
     }
 
+    public void setImage(ECow cow, Integer imageId) {
+        if (imageId == null) { return; }
+
+        ECowImage image = sCowImage.getById(imageId, true);
+        cow.setCowImage(image);
+    }
+
     public void setParent(ECow cow, Integer parentId){
 
         if (parentId == null) { return; }
@@ -201,16 +193,6 @@ public class SCow implements ICow {
             throw new NotFoundException("parent not found", "parentId");
         }
         cow.setParent(parent.get());
-
-        //updateParent(parent.get());
-    }
-
-    public void setProfile(ECow cow, CowProfileDTO cowProfileDTO){
-        if (cowProfileDTO  != null){
-            ECowProfile profile = sCowProfile.create(cowProfileDTO, cow);
-            sCowProfile.save(profile);
-            cow.setProfile(profile);
-        }
     }
 
     public void setStatus(ECow cow, Integer statusId){
@@ -224,38 +206,32 @@ public class SCow implements ICow {
     }
 
     @Override
-    public ECow update(Integer cowId, CowDTO cowDTO){
+    public ECow update(Integer cowId, CowDTO cowDTO) 
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
+            NoSuchMethodException, SecurityException{
 
         ECow cow = getById(cowId, true);
 
-        if (cowDTO.getName() != null){
-            cow.setName(cowDTO.getName());
+        String[] fields = {"Color", "DateOfBirth", "Gender", "Name", "OtherDetails"};
+        for (String field : fields) {
+            Method getField = CowDTO.class.getMethod(String.format("get%s", field));
+            Object fieldValue = getField.invoke(cowDTO);
+
+            if (fieldValue != null) {
+                fieldValue = fieldValue.getClass().equals(String.class) ? ((String) fieldValue).trim() : fieldValue;
+                ECow.class.getMethod("set" + field, fieldValue.getClass()).invoke(cow, fieldValue);
+            }
         }
+
+        cow.setUpdatedOn(LocalDateTime.now());
+        setBreed(cow, cowDTO.getBreedId());
         setCowCategory(cow, cowDTO.getCategoryId());
+        setFarm(cow, cowDTO.getFarmId());
+        setImage(cow, cowDTO.getImageId());
         setStatus(cow, cowDTO.getStatusId());
         save(cow);
 
-        setProfile(cow, cowDTO.getProfile());
-        if (cowDTO.getStatusId() != null && cowDTO.getStatusId().equals(soldStatusId)){
-            createSaleTransaction(
-                cowDTO.getProfile().getSaleAmount(), 
-                mpesaPaymentChannelId, 
-                cowSaleTypeId,
-                String.format("Cow Name: %s", cow.getName())
-            );
-        }
-
         return cow;
-    }
-
-    public void updateParent(ECow cow){
-
-        CowDTO cowDTO = new CowDTO();
-        if (!cow.getCategory().getId().equals(categoryCowId)){
-            cowDTO.setCategoryId(categoryCowId);
-        }
-
-        update(cow.getId(), cowDTO);
     }
     
 }

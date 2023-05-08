@@ -1,5 +1,6 @@
 package com.example.cashcow_api.services.transaction;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,14 +14,12 @@ import com.example.cashcow_api.dtos.transaction.TransactionSummaryDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.EFarm;
 import com.example.cashcow_api.models.EPaymentChannel;
-import com.example.cashcow_api.models.EShop;
 import com.example.cashcow_api.models.EStatus;
 import com.example.cashcow_api.models.ETransaction;
 import com.example.cashcow_api.models.ETransactionType;
 import com.example.cashcow_api.models.EUser;
 import com.example.cashcow_api.repositories.TransactionDAO;
 import com.example.cashcow_api.services.farm.IFarm;
-import com.example.cashcow_api.services.shop.IShop;
 import com.example.cashcow_api.services.status.IStatus;
 import com.example.cashcow_api.services.user.IUser;
 import com.example.cashcow_api.specifications.SpecBuilder;
@@ -45,6 +44,9 @@ public class STransaction implements ITransaction {
 
     @Value(value = "${default.value.transaction-type.milk-transport-type-id}")
     private Integer milkTransportTypeId;
+
+    @Value(value = "${default.value.payment-channel.mpesa-channel-id}")
+    private Integer mpesaPaymentChannelId;
 
     @Value(value = "${default.value.transaction-type.transport-type-id}")
     private Integer productTransportTypeId;
@@ -91,11 +93,11 @@ public class STransaction implements ITransaction {
             transactionDTO.getCreatedOn() : LocalDateTime.now();
         transaction.setCreatedOn(transDate);
         transaction.setReference(transactionDTO.getReference());
-        if (transactionDTO.getTransactionCode() != null){
-            transaction.setTransactionCode(transactionDTO.getTransactionCode());
-        }
+        transaction.setTransactionCode(transactionDTO.getTransactionCode());
         setFarm(transaction, transactionDTO.getFarmId());
-        setPaymentChannel(transaction, transactionDTO.getPaymentChannelId());
+        Integer paymentChannelId = transactionDTO.getPaymentChannelId() == null 
+            ? mpesaPaymentChannelId : transactionDTO.getPaymentChannelId();
+        setPaymentChannel(transaction, paymentChannelId);
         Integer statusId = transactionDTO.getStatusId() != null ? transactionDTO.getStatusId() : completeStatusId;
         setStatus(transaction, statusId);
         setTransactionType(transaction, transactionDTO.getTransactionTypeId());
@@ -210,7 +212,7 @@ public class STransaction implements ITransaction {
         return null;
     }
 
-    public void updateCustomerBalance(Integer customerId, Float amount){
+    public void updateCustomerBalance(Integer customerId, BigDecimal amount){
         if (customerId != null && amount != null){
             EUser customer = sUser.getById(customerId).get();
             customer.setBalance(amount);

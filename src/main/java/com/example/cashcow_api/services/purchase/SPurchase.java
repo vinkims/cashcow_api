@@ -1,21 +1,22 @@
 package com.example.cashcow_api.services.purchase;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.cashcow_api.dtos.expense.ExpenseDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.dtos.purchases.PurchaseDTO;
-import com.example.cashcow_api.dtos.transaction.TransactionDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.EFarm;
 import com.example.cashcow_api.models.EPurchase;
 import com.example.cashcow_api.models.EStatus;
 import com.example.cashcow_api.models.EUser;
 import com.example.cashcow_api.repositories.PurchaseDAO;
+import com.example.cashcow_api.services.expense.IExpense;
 import com.example.cashcow_api.services.farm.IFarm;
 import com.example.cashcow_api.services.status.IStatus;
-import com.example.cashcow_api.services.transaction.ITransaction;
 import com.example.cashcow_api.services.user.IUser;
 import com.example.cashcow_api.specifications.SpecBuilder;
 import com.example.cashcow_api.specifications.SpecFactory;
@@ -34,20 +35,20 @@ public class SPurchase implements IPurchase {
     @Value(value = "${default.value.status.complete-id}")
     private Integer completeStatusId;
 
-    @Value(value = "${default.value.payment-channel.mpesa-channel-id}")
-    private Integer mpesaPaymentChannelId;
+    @Value(value = "${default.value.expense.product-purchase-type-id}")
+    private Integer purchaseExpenseTypeId;
 
-    @Value(value = "${default.value.transaction-type.product-payment-type-id}")
-    private Integer productPaymentTypeId;
-
-    @Value(value = "${default.value.transaction-type.transport-type-id}")
-    private Integer transportTypeId;
+    @Value(value = "${default.value.expense.transport-type-id}")
+    private Integer transportExpenseTypeId;
 
     @Autowired
     private PurchaseDAO purchaseDAO;
 
     @Autowired
     private SpecFactory specFactory;
+
+    @Autowired
+    private IExpense sExpense;
 
     @Autowired
     private IFarm sFarm;
@@ -58,9 +59,6 @@ public class SPurchase implements IPurchase {
     @Autowired
     private IUser sUser;
 
-    @Autowired
-    private ITransaction sTransaction;
-
     @Override
     public EPurchase create(PurchaseDTO purchaseDTO) {
         
@@ -69,46 +67,51 @@ public class SPurchase implements IPurchase {
         purchase.setCreatedOn(purchaseDate);
         setFarm(purchase, purchaseDTO.getFarmId());
         purchase.setName(purchaseDTO.getName());
-        if (purchaseDTO.getQuantity() != null){
-            purchase.setQuantity(purchaseDTO.getQuantity());
-        }
+        purchase.setQuantity(purchaseDTO.getQuantity());
         Integer statusId = purchaseDTO.getStatusId() == null ? completeStatusId : purchaseDTO.getStatusId();
         setStatus(purchase, statusId);
-        if (purchaseDTO.getTransportCost() != null){
-            // createTransaction(
-            //     purchaseDTO.getTransportCost(),
-            //     purchaseDate,
-            //     mpesaPaymentChannelId, 
-            //     transportTypeId, 
-            //     String.format("Transport: %s", purchaseDTO.getName())
-            // );
-        }
         purchase.setUnitCost(purchaseDTO.getUnitCost());
         setSupplier(purchase, purchaseDTO.getSupplierId());
 
         save(purchase);
 
-        // createTransaction(
-        //     (purchaseDTO.getQuantity() * purchaseDTO.getUnitPrice()),
-        //     purchaseDate,
-        //     mpesaPaymentChannelId, 
-        //     productPaymentTypeId, 
-        //     String.format("Product: %s", purchaseDTO.getName())
-        // );
+        BigDecimal quantity = purchaseDTO.getQuantity() != null 
+            ? new BigDecimal("1") 
+            : new BigDecimal(purchaseDTO.getQuantity());
+        BigDecimal totalCost = quantity.multiply(purchaseDTO.getUnitCost());
+
+        createExpense(
+            totalCost, 
+            purchaseExpenseTypeId, 
+            purchase.getFarm().getId(), 
+            String.format("Purchase id: %s", purchase.getId())
+        );
+
+        if (purchaseDTO.getTransportCost() != null){
+            createExpense(
+                purchaseDTO.getTransportCost(), 
+                transportExpenseTypeId, 
+                purchase.getFarm().getId(), 
+                String.format("Purchase id: %s transport cost", purchase.getId())
+            );
+        }
 
         return purchase;
     }
 
-    // public void createTransaction(Float amount, LocalDateTime createdOn, 
-    //         Integer paymentChannelId, Integer transactionTypeId, String reference){
-    //     TransactionDTO transactionDTO = new TransactionDTO();
-    //     transactionDTO.setAmount(amount);
-    //     transactionDTO.setCreatedOn(createdOn);
-    //     transactionDTO.setPaymentChannelId(paymentChannelId);
-    //     transactionDTO.setReference(reference);
-    //     transactionDTO.setTransactionTypeId(transactionTypeId);
-    //     sTransaction.create(transactionDTO);
-    // }
+    /**
+     * Creates an expense
+     */
+    public void createExpense(BigDecimal amount, Integer expenseTypeId, Integer farmId, String description) {
+
+        ExpenseDTO expenseDTO = new ExpenseDTO();
+        expenseDTO.setAmount(amount);
+        expenseDTO.setDescription(description);
+        expenseDTO.setExpenseTypeId(expenseTypeId);
+        expenseDTO.setFarmId(farmId);
+
+        sExpense.create(expenseDTO);
+    }
 
     @Override
     public Optional<EPurchase> getById(Integer purchaseId) {

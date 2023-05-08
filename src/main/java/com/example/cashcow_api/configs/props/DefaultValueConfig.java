@@ -11,6 +11,10 @@ public class DefaultValueConfig {
     private DefaultValueCategoryConfig category;
 
     private DefaultValueContactConfig contact;
+
+    private DefaultValueExpenseConfig expense;
+
+    private DefaultValueIncomeConfig income;
     
     private DefaultValueLogConfig logging;
 

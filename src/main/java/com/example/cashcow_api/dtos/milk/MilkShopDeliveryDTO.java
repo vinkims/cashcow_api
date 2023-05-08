@@ -49,7 +49,7 @@ public class MilkShopDeliveryDTO {
         setQuantity(delivery.getQuantity());
         setShop(new ShopBasicDTO(delivery.getShop()));
         if (delivery.getStatus() != null) {
-            setStatus(new Status(delivery.getStatus()));
+            setStatus(new StatusDTO(delivery.getStatus()));
         }
         setUpdatedOn(delivery.getUpdatedOn());
         setUser(new UserBasicDTO(delivery.getUser()));

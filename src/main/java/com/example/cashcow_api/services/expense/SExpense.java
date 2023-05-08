@@ -1,23 +1,28 @@
 package com.example.cashcow_api.services.expense;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import com.example.cashcow_api.dtos.expense.ExpenseDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
+import com.example.cashcow_api.dtos.transaction.TransactionDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.ECow;
 import com.example.cashcow_api.models.ECowExpense;
 import com.example.cashcow_api.models.EExpense;
 import com.example.cashcow_api.models.EExpenseType;
+import com.example.cashcow_api.models.EFarm;
 import com.example.cashcow_api.models.EStatus;
 import com.example.cashcow_api.models.EUser;
 import com.example.cashcow_api.models.EUserExpense;
 import com.example.cashcow_api.repositories.ExpenseDAO;
 import com.example.cashcow_api.services.cow.ICow;
 import com.example.cashcow_api.services.cow.ICowExpense;
+import com.example.cashcow_api.services.farm.IFarm;
 import com.example.cashcow_api.services.status.IStatus;
+import com.example.cashcow_api.services.transaction.ITransaction;
 import com.example.cashcow_api.services.user.IUser;
 import com.example.cashcow_api.services.user.IUserExpense;
 import com.example.cashcow_api.specifications.SpecBuilder;
@@ -33,6 +38,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SExpense implements IExpense {
+
+    @Value(value = "${default.value.transaction-type.expense-type-id}")
+    private Integer expenseTransactionTypeId;
 
     @Value(value = "${default.value.status.pending-id}")
     private Integer pendingStatusId;
@@ -50,7 +58,13 @@ public class SExpense implements IExpense {
     private IExpenseType sExpenseType;
 
     @Autowired
+    private IFarm sFarm;
+
+    @Autowired
     private IStatus sStatus;
+
+    @Autowired
+    private ITransaction sTransaction;
 
     @Autowired
     private IUser sUser;
@@ -69,15 +83,52 @@ public class SExpense implements IExpense {
         expense.setCreatedOn(LocalDateTime.now());
         expense.setDescription(expenseDTO.getDescription());
         setExpenseType(expense, expenseDTO.getExpenseTypeId());
+        setFarm(expense, expenseDTO.getFarmId());
         Integer statusId = expenseDTO.getStatusId() != null ? expenseDTO.getStatusId() : pendingStatusId;
         setStatus(expense, statusId);
 
         save(expense);
 
+        createTransaction(
+            expenseDTO.getAmount(), 
+            String.format("Expense id: %s", expense.getId()), 
+            expense.getFarm().getId()
+        );
+
         setCowExpense(expense, expenseDTO.getCowId());
         setUserExpense(expense, expenseDTO.getUserId());
 
         return expense;
+    }
+
+    /**
+     * Creates an expense type transaction
+     */
+    public void createTransaction(BigDecimal amount, String reference, Integer farmId) {
+
+        TransactionDTO transactionDTO = new TransactionDTO();
+        transactionDTO.setAmount(amount);
+        transactionDTO.setFarmId(farmId);
+        transactionDTO.setReference(reference);
+        transactionDTO.setTransactionCode(generateTransactionCode());
+        transactionDTO.setTransactionTypeId(expenseTransactionTypeId);
+
+        sTransaction.create(transactionDTO);
+    }
+
+    public String generateTransactionCode() {
+        String dateStr = LocalDateTime.now().toString();
+        String year = dateStr.substring(0, 4);
+        String month = dateStr.substring(5, 7);
+        String day = dateStr.substring(8, 10);
+        String hour = dateStr.substring(11, 13);
+        String minute = dateStr.substring(14, 16);
+        String second = dateStr.substring(17, 19);
+
+        String code = String.format("EX%s%s%s%s%s%s",
+            year, month, day, hour, minute, second);
+        
+        return code;
     }
 
     @Override
@@ -130,6 +181,13 @@ public class SExpense implements IExpense {
         expense.setExpenseType(expenseType);
     }
 
+    public void setFarm(EExpense expense, Integer farmId) {
+        if (farmId == null) { return; }
+
+        EFarm farm = sFarm.getById(farmId, true);
+        expense.setFarm(farm);
+    }
+
     public void setStatus(EExpense expense, Integer statusId){
         if (statusId == null) { return; }
 
@@ -156,6 +214,7 @@ public class SExpense implements IExpense {
         }
         expense.setUpdatedOn(LocalDateTime.now());
         setExpenseType(expense, expenseDTO.getExpenseTypeId());
+        setFarm(expense, expenseDTO.getFarmId());
         setStatus(expense, expenseDTO.getStatusId());
 
         save(expense);

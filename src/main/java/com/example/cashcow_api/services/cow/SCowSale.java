@@ -1,5 +1,6 @@
 package com.example.cashcow_api.services.cow;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -12,14 +13,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.example.cashcow_api.dtos.cow.CowDTO;
 import com.example.cashcow_api.dtos.cow.CowSaleDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
+import com.example.cashcow_api.dtos.income.IncomeDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.ECow;
 import com.example.cashcow_api.models.ECowSale;
 import com.example.cashcow_api.models.EStatus;
 import com.example.cashcow_api.models.EUser;
 import com.example.cashcow_api.repositories.CowSaleDAO;
+import com.example.cashcow_api.services.income.IIncome;
 import com.example.cashcow_api.services.status.IStatus;
 import com.example.cashcow_api.services.user.IUser;
 import com.example.cashcow_api.specifications.SpecBuilder;
@@ -27,6 +31,9 @@ import com.example.cashcow_api.specifications.SpecFactory;
 
 @Service
 public class SCowSale implements ICowSale {
+
+    @Value(value = "${default.value.income.cow-sale-type-id}")
+    private Integer cowSaleIncomeTypeId;
 
     @Value(value = "${default.value.status.complete-id}")
     private Integer completeStatusId;
@@ -39,6 +46,9 @@ public class SCowSale implements ICowSale {
 
     @Autowired
     private ICow sCow;
+
+    @Autowired
+    private IIncome sIncome;
 
     @Autowired
     private IStatus sStatus;
@@ -61,7 +71,25 @@ public class SCowSale implements ICowSale {
         setStatus(cowSale, statusId);
 
         save(cowSale);
+
+        createIncome(cowSaleDTO, cowSale.getCow());
         return cowSale;
+    }
+
+    /**
+     * Creates an income record
+     */
+    public void createIncome(CowSaleDTO cowSaleDTO, ECow cow) {
+
+        IncomeDTO incomeDTO = new IncomeDTO();
+        incomeDTO.setAmount(cowSaleDTO.getSaleAmount());
+        incomeDTO.setFarmId(cow.getFarm().getId());
+        incomeDTO.setIncomeTypeId(cowSaleIncomeTypeId);
+        if (cowSaleDTO.getReference() != null) {
+            incomeDTO.setReference(cowSaleDTO.getReference());
+        }
+
+        sIncome.create(incomeDTO);
     }
 
     @Override
@@ -114,6 +142,8 @@ public class SCowSale implements ICowSale {
 
         ECow cow = sCow.getById(cowId, true);
         cowSale.setCow(cow);
+
+        updateCow(cowId);
     }
 
     public void setStatus(ECowSale cowSale, Integer statusId) {
@@ -138,6 +168,21 @@ public class SCowSale implements ICowSale {
         save(cowSale);
         return cowSale;
     }
- 
-    // TODO: Create transaction
+
+    /**
+     * Updates the cow status to sold
+     */
+    public void updateCow(Integer cowId) {
+
+        CowDTO cowDTO = new CowDTO();
+        cowDTO.setStatusId(soldStatusId);
+        try {
+            sCow.update(cowId, cowDTO);
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+                | SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }
+

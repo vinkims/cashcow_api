@@ -1,5 +1,6 @@
 package com.example.cashcow_api.services.income;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.dtos.income.IncomeDTO;
+import com.example.cashcow_api.dtos.transaction.TransactionDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.EFarm;
 import com.example.cashcow_api.models.EIncome;
@@ -22,6 +24,7 @@ import com.example.cashcow_api.models.EStatus;
 import com.example.cashcow_api.repositories.IncomeDAO;
 import com.example.cashcow_api.services.farm.IFarm;
 import com.example.cashcow_api.services.status.IStatus;
+import com.example.cashcow_api.services.transaction.ITransaction;
 import com.example.cashcow_api.specifications.SpecBuilder;
 import com.example.cashcow_api.specifications.SpecFactory;
 
@@ -30,6 +33,9 @@ public class SIncome implements IIncome {
 
     @Value(value = "${default.value.status.complete-id}")
     private Integer completeStatusId;
+
+    @Value(value = "${default.value.transaction-type.income-type-id}")
+    private Integer incomeTransactionTypeId;
 
     @Autowired
     private IFarm sFarm;
@@ -42,6 +48,9 @@ public class SIncome implements IIncome {
 
     @Autowired
     private IStatus sStatus;
+
+    @Autowired
+    private ITransaction sTransaction;
 
     @Autowired
     private SpecFactory specFactory;
@@ -59,7 +68,44 @@ public class SIncome implements IIncome {
         setStatus(income, statusId);
 
         save(income);
+
+        createTransaction(
+            incomeDTO.getAmount(), 
+            String.format("Income id: %s", income.getId()), 
+            income.getFarm().getId()
+        );
+
         return income;
+    }
+
+    /**
+     * Creates an income type transaction
+     */
+    public void createTransaction(BigDecimal amount, String reference, Integer farmId) {
+
+        TransactionDTO transactionDTO = new TransactionDTO();
+        transactionDTO.setAmount(amount);
+        transactionDTO.setFarmId(farmId);
+        transactionDTO.setReference(reference);
+        transactionDTO.setTransactionCode(generateTransactionCode());
+        transactionDTO.setTransactionTypeId(incomeTransactionTypeId);
+
+        sTransaction.create(transactionDTO);
+    }
+
+    public String generateTransactionCode() {
+        String dateStr = LocalDateTime.now().toString();
+        String year = dateStr.substring(0, 4);
+        String month = dateStr.substring(5, 7);
+        String day = dateStr.substring(8, 10);
+        String hour = dateStr.substring(11, 13);
+        String minute = dateStr.substring(14, 16);
+        String second = dateStr.substring(17, 19);
+
+        String code = String.format("IN%s%s%s%s%s%s",
+            year, month, day, hour, minute, second);
+        
+        return code;
     }
 
     @Override

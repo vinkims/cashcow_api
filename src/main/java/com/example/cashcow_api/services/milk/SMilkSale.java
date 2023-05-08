@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.cashcow_api.dtos.general.PageDTO;
+import com.example.cashcow_api.dtos.income.IncomeDTO;
 import com.example.cashcow_api.dtos.milk.CustomerSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.CustomerSaleTotalDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTotalDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTypeDTO;
-import com.example.cashcow_api.dtos.transaction.TransactionDTO;
 import com.example.cashcow_api.exceptions.InvalidInputException;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.EMilkSale;
@@ -21,10 +21,10 @@ import com.example.cashcow_api.models.EShop;
 import com.example.cashcow_api.models.EStatus;
 import com.example.cashcow_api.models.EUser;
 import com.example.cashcow_api.repositories.MilkSaleDAO;
+import com.example.cashcow_api.services.income.IIncome;
 import com.example.cashcow_api.services.sale.ISaleType;
 import com.example.cashcow_api.services.shop.IShop;
 import com.example.cashcow_api.services.status.IStatus;
-import com.example.cashcow_api.services.transaction.ITransaction;
 import com.example.cashcow_api.services.user.IUser;
 import com.example.cashcow_api.specifications.SpecBuilder;
 import com.example.cashcow_api.specifications.SpecFactory;
@@ -46,17 +46,11 @@ public class SMilkSale implements IMilkSale {
     @Value(value = "${default.value.sale.credit-sale-type-id}")
     private Integer creditSaleTypeId;
 
-    @Value(value = "${default.value.transaction-type.credit-transaction-type-id}")
-    private Integer creditTransactiontypeId;
+    @Value(value = "${default.value.income.milk-sale-type-id}")
+    private Integer milkSaleIncomeTypeId;
 
-    @Value(value = "${default.value.transaction-type.milk-sale-transaction-type-id}")
-    private Integer milkSaleTransactionTypeId;
-
-    @Value(value = "${default.value.status.pending-id}")
-    private Integer pendingStatusId;
-
-    @Value(value = "${default.value.milk.price-per-litre}")
-    private Float pricePerLitre;
+    @Autowired
+    private IIncome sIncome;
 
     @Autowired
     private MilkSaleDAO milkSaleDAO;
@@ -72,9 +66,6 @@ public class SMilkSale implements IMilkSale {
 
     @Autowired
     private IStatus sStatus;
-
-    @Autowired
-    private ITransaction sTransaction;
 
     @Autowired
     private IUser sUser;
@@ -110,50 +101,24 @@ public class SMilkSale implements IMilkSale {
         // update customer balance
         if (saleDTO.getSaleTypeId().equals(creditSaleTypeId)){
             EUser milkCustomer = milkSale.getCustomer();
-            BigDecimal custBalance = milkCustomer.getBalance().subtract(expectedAmount);
-            milkCustomer.setBalance(custBalance);
+            milkCustomer.setBalance(expectedAmount.negate());
             sUser.save(milkCustomer);
         }
-
-        Integer transactionTypeId = saleDTO.getStatusId().equals(pendingStatusId) ?
-            creditTransactiontypeId : milkSaleTransactionTypeId;
-
-        String transactionCode = saleDTO.getTransactionCode() != null ? saleDTO.getTransactionCode() : null;
-        
-        // if (amount != 0){
-            // createTransaction(
-            //     amount, 
-            //     saleDTO.getAttendantId(),
-            //     saleDTO.getCreatedOn(),
-            //     saleDTO.getCustomerId(), 
-            //     milkSale.getId(), 
-            //     saleDTO.getShopId(),
-            //     statusId,
-            //     saleDTO.getPaymentChannelId(),
-            //     transactionTypeId,
-            //     transactionCode
-            // );
-        // }
 
         return milkSale;
     }
 
-    public void createTransaction(Float amount, Integer attendantId, LocalDateTime createdOn, Integer customerId, Integer saleId, 
-            Integer shopId, Integer statusId, Integer paymentChannelId, Integer transactionTypeId, String transactionCode){
-        
-        TransactionDTO transactionDTO = new TransactionDTO();
-        transactionDTO.setAmount(amount);
-        transactionDTO.setAttendantId(attendantId);
-        transactionDTO.setCreatedOn(createdOn);
-        transactionDTO.setCustomerId(customerId);
-        transactionDTO.setReference(String.format("Sale id: %s", saleId.toString()));
-        transactionDTO.setShopId(shopId);
-        transactionDTO.setStatusId(statusId);
-        transactionDTO.setPaymentChannelId(paymentChannelId);
-        transactionDTO.setTransactionTypeId(transactionTypeId);
-        transactionDTO.setTransactionCode(transactionCode);
+    public void createIncome(BigDecimal amount, Integer farmId, Integer customerId) {
 
-        sTransaction.create(transactionDTO);
+        IncomeDTO incomeDTO = new IncomeDTO();
+        incomeDTO.setAmount(amount);
+        incomeDTO.setFarmId(farmId);
+        incomeDTO.setIncomeTypeId(milkSaleIncomeTypeId);
+        if (customerId != null) {
+            incomeDTO.setReference(String.format("Customer id: %s", customerId));
+        }
+
+        sIncome.create(incomeDTO);
     }
 
     @Override
@@ -284,5 +249,3 @@ public class SMilkSale implements IMilkSale {
     }
     
 }
-
-// TODO: Create income

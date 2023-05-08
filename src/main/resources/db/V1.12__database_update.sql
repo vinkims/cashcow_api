@@ -19,7 +19,8 @@ ADD COLUMN cow_breed_id SMALLINT REFERENCES cow_breeds("id") ON DELETE SET NULL,
 ADD COLUMN gender VARCHAR(10) NOT NULL,
 ADD COLUMN date_of_birth DATE,
 ADD COLUMN color VARCHAR(40),
-ADD COLUMN other_details VARCHAR;
+ADD COLUMN other_details VARCHAR,
+ADD COLUMN cow_image_id INTEGER REFERENCES cow_images("id") ON DELETE SET NULL;
 
 -- add cow_purchases
 CREATE TABLE IF NOT EXISTS cow_purchases (
@@ -277,3 +278,6 @@ DROP COLUMN shop_id,
 DROP COLUMN customer_id,
 RENAME COLUMN attendant_id TO user_id,
 ADD COLUMN farm_id SMALLINT REFERENCES farms("id") ON DELETE SET NULL;
+
+-- drop cow_profiles table
+DROP TABLE IF EXISTS cow_profiles;

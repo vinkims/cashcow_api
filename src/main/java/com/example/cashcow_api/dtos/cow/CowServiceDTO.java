@@ -21,6 +21,8 @@ import lombok.NoArgsConstructor;
 @JsonInclude(value = Include.NON_NULL)
 public class CowServiceDTO {
 
+    private Integer id;
+
     private CowBasicDTO bull;
 
     private Integer bullId;
@@ -37,13 +39,14 @@ public class CowServiceDTO {
 
     private Integer cowId;
 
-    private String cowServiceType;
+    @JsonIgnoreProperties(value = {"createdOn", "farm", "status"})
+    private CowServiceTypeDTO cowServiceType;
 
     private Integer cowServiceTypeId;
 
     private LocalDateTime createdOn;
 
-    private Integer id;
+    private LocalDateTime updatedOn;
 
     @Pattern(
         regexp = "^(?<year>(?<ya>1|2)(?<yb>[0-9]{3}))-(?<month>(?<ma>0?[1-9])|1[0-2])-(?<day>(?<da>0?[1-9])|(?<db>(1|2)[0-9])|(?<dc>3[0-2]))$",
@@ -69,7 +72,7 @@ public class CowServiceDTO {
         setCalvingDate(cowService.getCalvingDate().toString());
         setCost(cowService.getCost());
         setCow(new CowBasicDTO(cowService.getCow()));
-        setCowServiceType(cowService.getCowServiceType().getName());
+        setCowServiceType(new CowServiceTypeDTO(cowService.getCowServiceType()));
         setCreatedOn(cowService.getCreatedOn());
         setObservationDate(cowService.getObservationDate().toString());
         setRemarks(cowService.getRemarks());
@@ -79,5 +82,6 @@ public class CowServiceDTO {
         if (cowService.getUser() != null){
             setUser(new UserBasicDTO(cowService.getUser()));
         }
+        setUpdatedOn(cowService.getUpdatedOn());
     }
 }

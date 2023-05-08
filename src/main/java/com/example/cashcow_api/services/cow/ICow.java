@@ -1,5 +1,6 @@
 package com.example.cashcow_api.services.cow;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,11 +22,10 @@ public interface ICow {
 
     ECow getById(Integer cowId, Boolean handleException);
 
-    List<ECow> getCowsByGender(String gender);
-
     Page<ECow> getPaginatedList(PageDTO pageDTO, List<String> allowableFields);
 
     void save(ECow cow);
 
-    ECow update(Integer cowId, CowDTO cowDTO);
+    ECow update(Integer cowId, CowDTO cowDTO) throws IllegalAccessException, IllegalArgumentException, 
+        InvocationTargetException, NoSuchMethodException, SecurityException;
 }

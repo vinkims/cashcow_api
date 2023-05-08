@@ -40,7 +40,9 @@ public class IncomeTypeDTO {
     public IncomeTypeDTO(EIncomeType incomeType) {
         setCreatedOn(incomeType.getCreatedOn());
         setDescription(incomeType.getDescription());
-        setFarm(new FarmDTO(incomeType.getFarm()));
+        if (incomeType.getFarm() != null) {
+            setFarm(new FarmDTO(incomeType.getFarm()));
+        }
         setId(incomeType.getId());
         setName(incomeType.getName());
         setStatus(new StatusDTO(incomeType.getStatus()));

@@ -56,18 +56,6 @@ public class CCow {
             .body(new SuccessResponse(200, "cow fetched", new CowDTO(cow)));
     }
 
-    @GetMapping(path = "/gender/{gender}", produces = "application/json")
-    public ResponseEntity<SuccessPaginatedResponse> getCowsByGender(@PathVariable String gender) 
-            throws InstantiationException, IllegalAccessException, IllegalArgumentException, 
-            InvocationTargetException, NoSuchMethodException, SecurityException{
-
-        List<ECow> cows = sCow.getCowsByGender(gender);
-
-        return ResponseEntity
-            .ok()
-            .body(new SuccessPaginatedResponse(200, "returned list of cows", cows, CowDTO.class, ECow.class));
-    }
-
     @GetMapping(path = "", produces = "application/json")
     public ResponseEntity<SuccessPaginatedResponse> getPaginatedList(@RequestParam Map<String, Object> params) 
             throws InstantiationException, IllegalAccessException, IllegalArgumentException, 
@@ -75,19 +63,23 @@ public class CCow {
 
         PageDTO pageDTO = new PageDTO(params);
 
-        ArrayList<String> allowableFields = new ArrayList<>(
-            Arrays.asList("status.id", "status.name", "createdOn", "profile.breed", "category.id", "category.name", "profile.gender")
+        List<String> allowableFields = new ArrayList<>(
+            Arrays.asList("status.id", "status.name", "createdOn", "breed.id", "breed.name", "category.id", 
+            "category.name", "gender", "color", "dateOfBirth", "farm.id", "parent.id", "updatedOn")
         );
 
         Page<ECow> cowPage = sCow.getPaginatedList(pageDTO, allowableFields);
 
         return ResponseEntity
             .ok()
-            .body(new SuccessPaginatedResponse(200, "fetched list of cows", cowPage, CowDTO.class, ECow.class));
+            .body(new SuccessPaginatedResponse(200, "fetched list of cows", cowPage, 
+                CowDTO.class, ECow.class));
     }
 
     @PatchMapping(path = "/{cowId}", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<SuccessResponse> updateCow(@PathVariable Integer cowId, @RequestBody CowDTO cowDTO){
+    public ResponseEntity<SuccessResponse> updateCow(@PathVariable Integer cowId, @RequestBody CowDTO cowDTO) 
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, 
+            SecurityException{
 
         ECow cow = sCow.update(cowId, cowDTO);
 

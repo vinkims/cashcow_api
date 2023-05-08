@@ -49,6 +49,10 @@ public class ECow implements Serializable{
     @OneToMany(mappedBy = "cow")
     private List<ECowExpense> cowExpenses;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cow_image_id", referencedColumnName = "id")
+    private ECowImage cowImage;
+
     @Column(name = "created_on")
     private LocalDateTime createdOn;
 
@@ -77,9 +81,6 @@ public class ECow implements Serializable{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id", referencedColumnName = "id")
     private ECow parent;
-
-    @OneToOne(mappedBy = "cow")
-    private ECowProfile profile;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id", referencedColumnName = "id")

@@ -30,6 +30,8 @@ public class CowSaleDTO {
 
     private BigDecimal saleAmount;
 
+    private String reference;
+
     private UserBasicDTO buyer;
 
     private Integer buyerId;

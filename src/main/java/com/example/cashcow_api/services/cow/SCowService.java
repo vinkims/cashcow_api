@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.cashcow_api.dtos.cow.CowServiceDTO;
+import com.example.cashcow_api.dtos.expense.ExpenseDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
-import com.example.cashcow_api.dtos.transaction.TransactionDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.ECow;
 import com.example.cashcow_api.models.ECowService;
@@ -15,8 +15,8 @@ import com.example.cashcow_api.models.ECowServiceType;
 import com.example.cashcow_api.models.EStatus;
 import com.example.cashcow_api.models.EUser;
 import com.example.cashcow_api.repositories.CowServiceDAO;
+import com.example.cashcow_api.services.expense.IExpense;
 import com.example.cashcow_api.services.status.IStatus;
-import com.example.cashcow_api.services.transaction.ITransaction;
 import com.example.cashcow_api.services.user.IUser;
 import com.example.cashcow_api.specifications.SpecBuilder;
 import com.example.cashcow_api.specifications.SpecFactory;
@@ -35,11 +35,8 @@ public class SCowService implements ICowService {
     @Value(value = "${default.value.status.active-id}")
     private Integer activeStatusId;
 
-    @Value(value = "${default.value.transaction-type.cow-service-type-id}")
-    private Integer cowServiceTypeId;
-
-    @Value(value = "${default.value.payment-channel.mpesa-channel-id}")
-    private Integer mpesaPaymentChannelId;
+    @Value(value = "${default.value.expense.service-expense-type-id}")
+    private Integer serviceExpenseTypeId;
 
     @Autowired
     private CowServiceDAO cowServiceDAO;
@@ -51,13 +48,13 @@ public class SCowService implements ICowService {
     private ICowServiceType sCowServiceType;
 
     @Autowired
+    private IExpense sExpense;
+
+    @Autowired
     private SpecFactory specFactory;
 
     @Autowired
     private IStatus sStatus;
-
-    @Autowired
-    private ITransaction sTransaction;
 
     @Autowired
     private IUser sUser;
@@ -80,13 +77,11 @@ public class SCowService implements ICowService {
 
         save(cowService);
 
-        if (cowServiceDTO.getAmount() != null){
-            createServiceTransaction(
-                cowServiceDTO.getAmount(),
-                cowServiceDTO.getCreatedOn(),
-                mpesaPaymentChannelId, 
-                cowServiceTypeId, 
-                String.format("Service id: %s", cowService.getId())
+        if (cowServiceDTO.getCost() != null){
+            createExpense(
+                cowServiceDTO, 
+                cowService.getCow(), 
+                String.format("Cow service id: %s", cowService.getId())
             );
         }
 
@@ -94,17 +89,18 @@ public class SCowService implements ICowService {
     }
 
     /**
-     * Create cow service payment transaction
+     * Creates an expense record
      */
-    public void createServiceTransaction(Float amount, LocalDateTime createdOn, 
-            Integer paymentChannelId, Integer transactionTypeId, String reference){
-        TransactionDTO transactionDTO = new TransactionDTO();
-        transactionDTO.setAmount(amount);
-        transactionDTO.setCreatedOn(createdOn);
-        transactionDTO.setPaymentChannelId(paymentChannelId);
-        transactionDTO.setReference(reference);
-        transactionDTO.setTransactionTypeId(transactionTypeId);
-        sTransaction.create(transactionDTO);
+    public void createExpense(CowServiceDTO cowServiceDTO, ECow cow, String description) {
+
+        ExpenseDTO expenseDTO = new ExpenseDTO();
+        expenseDTO.setAmount(cowServiceDTO.getCost());
+        expenseDTO.setCowId(cow.getId());
+        expenseDTO.setExpenseTypeId(serviceExpenseTypeId);
+        expenseDTO.setFarmId(cow.getFarm().getId());
+        expenseDTO.setDescription(description);
+
+        sExpense.create(expenseDTO);
     }
 
     @Override

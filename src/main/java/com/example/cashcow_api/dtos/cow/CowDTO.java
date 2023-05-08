@@ -5,13 +5,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import com.example.cashcow_api.annotations.IsCowNameValid;
 import com.example.cashcow_api.dtos.farm.FarmDTO;
 import com.example.cashcow_api.dtos.status.StatusDTO;
-import com.example.cashcow_api.dtos.user.UserBasicDTO;
 import com.example.cashcow_api.models.ECow;
 import com.example.cashcow_api.models.ECowCategory;
 import com.example.cashcow_api.models.ECowExpense;
@@ -60,14 +58,17 @@ public class CowDTO {
 
     private String color;
 
+    private CowImageDTO image;
+
+    private Integer imageId;
+
     private CowDTO parent;
 
     private Integer parentId;
 
     private String otherDetails;
 
-    private @Valid CowProfileDTO profile;
-
+    @JsonIgnoreProperties(value = {"bull", "calvingDate", "cow", "createdOn", "updatedOn", "status", "user"})
     private List<CowServiceDTO> services = new ArrayList<>();
 
     private List<CowExpenseDTO> cowExpenses;
@@ -84,6 +85,9 @@ public class CowDTO {
         setCalvesList(cow.getCalves());
         setCategory(cow.getCategory());
         setColor(cow.getColor());
+        if (cow.getCowImage() != null) {
+            setImage(new CowImageDTO(cow.getCowImage()));
+        }
         setCreatedOn(cow.getCreatedOn());
         setDateOfBirth(cow.getDateOfBirth());
         setGender(cow.getGender());
@@ -107,7 +111,6 @@ public class CowDTO {
             CowDTO calfDTO = new CowDTO();
             calfDTO.setCategory(calf.getCategory());
             calfDTO.setName(calf.getName());
-            calfDTO.setProfile(new CowProfileDTO(calf.getProfile()));
             calves.add(calfDTO);
         }
     }
@@ -131,17 +134,7 @@ public class CowDTO {
     public void setServicesData(List<ECowService> servicesList){
         if (servicesList == null || servicesList.isEmpty()){ return; }
         for (ECowService cowService : servicesList){
-            CowServiceDTO cowServiceDTO = new CowServiceDTO();
-            cowServiceDTO.setCreatedOn(cowService.getCreatedOn());
-            cowServiceDTO.setCowServiceType(cowService.getCowServiceType().getName());
-            if (cowService.getResults() != null){
-                cowServiceDTO.setResults(cowService.getResults());
-            }
-            if (cowService.getUser() != null){
-                cowServiceDTO.setUser(new UserBasicDTO(cowService.getUser()));
-            }
-
-            services.add(cowServiceDTO);
+            services.add(new CowServiceDTO(cowService));
         }
     }
 
