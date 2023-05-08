@@ -42,7 +42,7 @@ public class CowPurchaseDTO {
         setId(cowPurchase.getId());
         setPurchaseAmount(cowPurchase.getPurchaseAmount());
         setPurchaseLocation(cowPurchase.getPurchaseLocation());
-        setStatus(new StatusDTO(cowPurchase.getStatus()))
+        setStatus(new StatusDTO(cowPurchase.getStatus()));
         setUpdatedOn(cowPurchase.getUpdatedOn());
     }
 }
