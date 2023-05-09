@@ -5,6 +5,7 @@ import com.example.cashcow_api.handlers.ApiAccessDeniedHandler;
 import com.example.cashcow_api.services.auth.SUserDetails;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.audit.InMemoryAuditEventRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -70,5 +71,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .allowCredentials(true);
             }
         };
+    }
+
+    @Bean
+    public InMemoryAuditEventRepository repository() {
+        return new InMemoryAuditEventRepository();
     }
 }
