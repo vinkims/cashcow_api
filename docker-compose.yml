@@ -26,7 +26,7 @@ services:
       - FLYWAY_URL=jdbc:postgresql://pgsqlserver:5432/cashcow
       - FLYWAY_HOST=pgsqlserver
     volumes:
-      - ./src/main/resources/db/migration:/flyway/sql
+      - ./src/main/resources/db:/flyway/sql
     depends_on:
       pgsqlserver:
         condition: service_healthy
