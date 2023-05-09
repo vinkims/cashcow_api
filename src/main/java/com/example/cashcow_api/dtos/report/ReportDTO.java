@@ -12,7 +12,6 @@ import com.example.cashcow_api.dtos.milk.MilkProductionSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTotalDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTypeDTO;
-import com.example.cashcow_api.dtos.transaction.EmployeeTransactionDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionSummaryDTO;
 import com.example.cashcow_api.dtos.user.SummaryUserDTO;
 import com.example.cashcow_api.models.ECowWeight;
@@ -40,8 +39,6 @@ public class ReportDTO {
     private List<CustomerSaleTotalDTO> customerSaleTotal;
 
     private List<DailyCowProductionDTO> dailyCowProduction;
-
-    private List<EmployeeTransactionDTO> employeeExpenses;
 
     private List<MilkConsumptionSummaryDTO> milkConsumptionSummary;
 

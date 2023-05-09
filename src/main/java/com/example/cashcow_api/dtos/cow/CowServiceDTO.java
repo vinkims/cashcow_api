@@ -23,16 +23,6 @@ public class CowServiceDTO {
 
     private Integer id;
 
-    private CowBasicDTO bull;
-
-    private Integer bullId;
-
-    @Pattern(
-        regexp = "^(?<year>(?<ya>1|2)(?<yb>[0-9]{3}))-(?<month>(?<ma>0?[1-9])|1[0-2])-(?<day>(?<da>0?[1-9])|(?<db>(1|2)[0-9])|(?<dc>3[0-2]))$",
-        message = "date must take the format YYYY-MM-dd"
-    )
-    private String calvingDate;
-
     private BigDecimal cost;
     
     private CowBasicDTO cow;
@@ -66,15 +56,10 @@ public class CowServiceDTO {
     private Integer statusId;
 
     public CowServiceDTO(ECowService cowService){
-        if (cowService.getBull() != null){
-            setBull(new CowBasicDTO(cowService.getBull()));
-        }
-        setCalvingDate(cowService.getCalvingDate().toString());
         setCost(cowService.getCost());
         setCow(new CowBasicDTO(cowService.getCow()));
         setCowServiceType(new CowServiceTypeDTO(cowService.getCowServiceType()));
         setCreatedOn(cowService.getCreatedOn());
-        setObservationDate(cowService.getObservationDate().toString());
         setRemarks(cowService.getRemarks());
         if (cowService.getStatus() != null) {
             setStatus(new StatusDTO(cowService.getStatus()));

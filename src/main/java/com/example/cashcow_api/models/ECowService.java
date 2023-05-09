@@ -2,7 +2,6 @@ package com.example.cashcow_api.models;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -24,13 +23,6 @@ public class ECowService implements Serializable{
     
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bull_id", referencedColumnName = "id")
-    private ECow bull;
-
-    @Column(name = "calving_date")
-    private LocalDate calvingDate;
-
     @Column(name = "cost")
     private BigDecimal cost;
 
@@ -49,9 +41,6 @@ public class ECowService implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false, name = "id")
     private Integer id;
-
-    @Column(name = "observation_date")
-    private LocalDate observationDate;
 
     @Column(name = "remarks")
     private String remarks;

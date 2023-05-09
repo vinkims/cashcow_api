@@ -1,5 +1,6 @@
 package com.example.cashcow_api.dtos.milk;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @JsonInclude(value = Include.NON_NULL)
 public class MilkSaleSummaryDTO {
 
-    private Double amount;
+    private BigDecimal amount;
 
     private LocalDate createdOn;
 
@@ -21,7 +22,7 @@ public class MilkSaleSummaryDTO {
 
     private String shop;
 
-    public MilkSaleSummaryDTO(Double amount, LocalDate createdOn, Double quantity, String shop){
+    public MilkSaleSummaryDTO(BigDecimal amount, LocalDate createdOn, Double quantity, String shop){
         setAmount(amount);
         setCreatedOn(createdOn);
         setQuantity(quantity);

@@ -1,12 +1,14 @@
 package com.example.cashcow_api.services.cow;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.example.cashcow_api.models.ECow;
 import com.example.cashcow_api.models.ECowExpense;
 import com.example.cashcow_api.models.EExpense;
 import com.example.cashcow_api.repositories.CowExpenseDAO;
 
+@Service
 public class SCowExpense implements ICowExpense {
 
     @Autowired

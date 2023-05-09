@@ -33,9 +33,6 @@ public interface IUser {
 
     void save(EUser user);
 
-    EUser update(EUser user, UserDTO userDTO) throws IllegalAccessException, 
-        IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
-
     EUser update(String userValue, UserDTO userDTO) throws IllegalAccessException, 
         IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
 }

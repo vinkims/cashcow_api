@@ -8,5 +8,5 @@ import com.example.cashcow_api.models.EAuditEventType;
 
 public interface AuditEventTypeDAO extends JpaRepository<EAuditEventType, Integer> {
     
-    Optional<EAuditEventType> findyName(String name);
+    Optional<EAuditEventType> findByName(String name);
 }

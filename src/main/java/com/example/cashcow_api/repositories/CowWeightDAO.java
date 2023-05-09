@@ -14,7 +14,7 @@ public interface CowWeightDAO extends JpaRepository<ECowWeight, Integer>, JpaSpe
     
     @Query(
         value = "SELECT new com.example.cashcow_api.dtos.weight.WeightSummaryDTO(cast(w.createdOn as LocalDate), w.weight) "
-            + "FROM com.example.cashcow_api.models.EWeight w "
+            + "FROM com.example.cashcow_api.models.ECowWeight w "
             + "LEFT JOIN w.cow c "
             + "WHERE w.createdOn > :startDate "
                 + "AND w.createdOn < :endDate "

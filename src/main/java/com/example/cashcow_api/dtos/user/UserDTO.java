@@ -10,7 +10,6 @@ import javax.validation.Valid;
 import com.example.cashcow_api.dtos.contact.ContactDTO;
 import com.example.cashcow_api.dtos.farm.FarmDTO;
 import com.example.cashcow_api.dtos.role.RoleDTO;
-import com.example.cashcow_api.dtos.shop.ShopDTO;
 import com.example.cashcow_api.models.EContact;
 import com.example.cashcow_api.models.EUser;
 import com.example.cashcow_api.models.EUserExpense;
@@ -59,10 +58,6 @@ public class UserDTO {
 
     private Integer roleId;
 
-    private ShopDTO shop;
-
-    private Integer shopId;
-
     private String status;
 
     private Integer statusId;
@@ -81,9 +76,6 @@ public class UserDTO {
         setId(user.getId());
         setMiddleName(user.getMiddleName());
         setRole(new RoleDTO(user.getRole()));
-        if (user.getShop() != null){
-            setShop(new ShopDTO(user.getShop()));
-        }
         if (user.getShopUser() != null) {
             setShopUser(new ShopUserDTO(user.getShopUser()));
         }

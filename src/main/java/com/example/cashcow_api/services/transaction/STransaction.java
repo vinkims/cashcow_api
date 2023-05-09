@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.cashcow_api.dtos.general.PageDTO;
-import com.example.cashcow_api.dtos.transaction.EmployeeTransactionDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionSummaryDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
@@ -135,11 +134,6 @@ public class STransaction implements ITransaction {
             throw new NotFoundException("transaction with specified id not found", "transactionId");
         }
         return transaction.get();
-    }
-
-    @Override
-    public List<EmployeeTransactionDTO> getEmployeeExpenses(LocalDateTime startDate, LocalDateTime endDate, Integer userId){
-        return transactionDAO.findEmployeeExpenses(startDate, endDate, staffAdvanceTypeId, staffSalaryTypeId, userId);
     }
 
     @Override

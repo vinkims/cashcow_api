@@ -42,7 +42,7 @@ public class EMilkProduction implements Serializable {
     private Float quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "status_id", referencedColumnName = "id")
     private EStatus status;
 
     @Column(name = "updated_on")

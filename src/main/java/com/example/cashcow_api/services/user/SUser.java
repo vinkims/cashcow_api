@@ -105,7 +105,6 @@ public class SUser implements IUser {
         user.setPasscode(userDTO.getPasscode());
         setFarm(user, userDTO.getFarmId());
         setRole(user, userDTO.getRoleId());
-        setShop(user, userDTO.getShopId());
 
         Integer statusId = userDTO.getStatusId() != null ? userDTO.getStatusId() : activeStatusId;
         setStatus(user, statusId);
@@ -287,18 +286,6 @@ public class SUser implements IUser {
         user.setRole(role);
     }
 
-    /**
-     * Set shop
-     * @param user
-     * @param shopId
-     */
-    public void setShop(EUser user, Integer shopId){
-        if (shopId == null){ return; }
-
-        EShop shop = sShop.getById(shopId, true);
-        user.setShop(shop);
-    }
-
     public void setShopUser(EUser user, ShopUserDTO shopUserDTO) {
         if (shopUserDTO == null) { return; }
 
@@ -322,37 +309,6 @@ public class SUser implements IUser {
     }
 
     @Override
-    public EUser update(EUser user, UserDTO userDTO) 
-            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
-            NoSuchMethodException, SecurityException{
-
-        String[] fields = {"FirstName", "MiddleName", "LastName", "Balance"};
-        for (String field : fields){
-            Method getField = UserDTO.class.getMethod(String.format("get%s", field));
-            Object fieldValue = getField.invoke(userDTO);
-
-            if (fieldValue != null){
-                fieldValue = fieldValue.getClass().equals(String.class) ? 
-                    ((String) fieldValue).trim() : fieldValue;
-                EUser.class.getMethod("set" + field, fieldValue.getClass()).invoke(user, fieldValue);
-            }
-        }
-        user.setUpdatedOn(LocalDateTime.now());
-        setShop(user, userDTO.getShopId());
-        setStatus(user, userDTO.getStatusId());
-
-        save(user);
-
-        //if (userDTO.getContacts() != null){
-        //    deleteContact(user, userDTO.getContacts());
-        //}
-        setContactData(user, userDTO.getContacts());
-        setRole(user, userDTO.getRoleId());
-
-        return user;
-    } 
-
-    @Override
     public EUser update(String userValue, UserDTO userDTO) throws IllegalAccessException, 
             IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 
@@ -371,7 +327,6 @@ public class SUser implements IUser {
         }
         user.setUpdatedOn(LocalDateTime.now());
         setRole(user, userDTO.getRoleId());
-        setShop(user, userDTO.getShopId());
         setStatus(user, userDTO.getStatusId());
 
         save(user);

@@ -66,10 +66,6 @@ public class EUser implements Serializable{
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     private ERole role;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shop_id", referencedColumnName = "id")
-    private EShop shop;
-
     @OneToOne(mappedBy = "user")
     private EShopUser shopUser;
 

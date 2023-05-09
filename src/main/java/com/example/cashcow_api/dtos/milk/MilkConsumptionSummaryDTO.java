@@ -1,5 +1,6 @@
 package com.example.cashcow_api.dtos.milk;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import lombok.Data;
@@ -15,18 +16,18 @@ public class MilkConsumptionSummaryDTO {
 
     private LocalDate createdOn;
 
-    private Float litrePrice;
+    private BigDecimal unitCost;
 
     private Float quantity;
 
     private String session;
 
-    public MilkConsumptionSummaryDTO(Float litrePrice, String category, LocalDate createdOn, Float quantity, String session, Float amount){
+    public MilkConsumptionSummaryDTO(BigDecimal unitCost, String category, LocalDate createdOn, Float quantity, String session, Float amount){
         setAmount(amount);
         setCategory(category);
         setCreatedOn(createdOn);
-        setLitrePrice(litrePrice);
         setQuantity(quantity);
         setSession(session);
+        setUnitCost(unitCost);
     }
 }

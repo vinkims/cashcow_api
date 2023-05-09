@@ -29,7 +29,7 @@ public class SContactType implements IContactType {
     @Autowired
     private SpecFactory specFactory;
 
-    @Autowired
+    @Override
     public EContactType create(ContactTypeDTO contactTypeDTO) {
 
         EContactType contactType = new EContactType();

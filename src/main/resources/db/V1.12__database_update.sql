@@ -41,15 +41,18 @@ ADD COLUMN status_id SMALLINT REFERENCES statuses("id") ON DELETE SET NULL;
 -- alter cow_services
 ALTER TABLE cow_services 
 ADD COLUMN updated_on TIMESTAMPTZ,
-RENAME COLUMN amount TO cost,
-RENAME COLUMN results TO remarks,
-ADD COLUMN status_id SMALLINT REFERENCES statuses("id") ON DELETE SET NULL;
+ADD COLUMN status_id SMALLINT REFERENCES statuses("id") ON DELETE SET NULL,
+DROP COLUMN bull_id,
+DROP COLUMN calving_date,
+DROP COLUMN observation_date;
+ALTER TABLE cow_services RENAME COLUMN amount TO cost;
+ALTER TABLE cow_services RENAME COLUMN results TO remarks;
 
 -- alter weight_progressions table
-ALTER TABLE weight_progressions 
+ALTER TABLE weight_progression 
 ADD COLUMN updated_on TIMESTAMPTZ,
-ADD COLUMN status_id SMALLINT REFERENCES statuses("id") ON DELETE SET NULL,
-ALTER TABLE weight_progressions RENAME TO cow_weights;
+ADD COLUMN status_id SMALLINT REFERENCES statuses("id") ON DELETE SET NULL;
+ALTER TABLE weight_progression RENAME TO cow_weights;
 
 -- add feed_items
 CREATE TABLE IF NOT EXISTS feed_items (
@@ -110,7 +113,7 @@ CREATE TABLE IF NOT EXISTS breeding_types (
 );
 
 -- add cow_breedings
-CREATE TABLE IF NO EXISTS cow_breedings (
+CREATE TABLE IF NOT EXISTS cow_breedings (
     "id" SERIAL PRIMARY KEY,
     "created_on" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     "updated_on" TIMESTAMPTZ,
@@ -138,21 +141,21 @@ ALTER TABLE consumption_categories
 ADD COLUMN farm_id SMALLINT REFERENCES farms("id") ON DELETE CASCADE,
 ADD COLUMN created_on TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
 ADD COLUMN updated_on TIMESTAMPTZ,
-ADD COLUMN status_id SMALLINT REFERENCES statuses("id") ON DELETE SET NULL,
-RENAME TO milk_consumption_categories;
+ADD COLUMN status_id SMALLINT REFERENCES statuses("id") ON DELETE SET NULL;
+ALTER TABLE consumption_categories RENAME TO milk_consumption_categories;
 
 -- alter milk_consumptions
 ALTER TABLE milk_consumptions 
 ADD COLUMN updated_on TIMESTAMPTZ,
 ADD COLUMN farm_id SMALLINT REFERENCES farms("id") ON DELETE CASCADE,
-RENAME COLUMN price_per_litre TO unit_cost,
 ADD COLUMN status_id SMALLINT REFERENCES statuses("id") ON DELETE SET NULL;
+ALTER TABLE milk_consumptions RENAME COLUMN price_per_litre TO unit_cost;
 
 -- alter milk_delivery 
-ALTER TABLE milk_delivery
+ALTER TABLE milk_delivery 
 ADD COLUMN updated_on TIMESTAMPTZ,
-ADD COLUMN status_id SMALLINT REFERENCES statuses("id") ON DELETE SET NULL,
-RENAME TO milk_shop_deliveries;
+ADD COLUMN status_id SMALLINT REFERENCES statuses("id") ON DELETE SET NULL;
+ALTER TABLE milk_delivery RENAME TO milk_shop_deliveries;
 
 -- alter milk_sales
 ALTER TABLE milk_sales ADD COLUMN updated_on TIMESTAMPTZ;
@@ -172,7 +175,8 @@ CREATE TABLE IF NOT EXISTS shop_users (
 -- alter users
 ALTER TABLE users
 ADD COLUMN updated_on TIMESTAMPTZ,
-ADD COLUMN passcode VARCHAR;
+ADD COLUMN passcode VARCHAR,
+DROP COLUMN shop_id;
 
 -- alter contact_types
 ALTER TABLE contact_types ADD COLUMN regex_value VARCHAR(100);
@@ -184,8 +188,8 @@ ADD COLUMN created_on TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP;
 -- add user_profiles
 ALTER TABLE user_profiles
 DROP COLUMN passcode,
-ADD COLUMN status_id SMALLINT REFERENCES statuses("id") ON DELETE SET NULL,
-RENAME TO user_milk_prices;
+ADD COLUMN status_id SMALLINT REFERENCES statuses("id") ON DELETE SET NULL;
+ALTER TABLE user_profiles RENAME TO user_milk_prices;
 
 -- alter expense_types
 ALTER TABLE expense_types
@@ -218,10 +222,10 @@ CREATE TABLE IF NOT EXISTS user_expenses (
 -- alter purchases
 ALTER TABLE purchases
 ADD COLUMN updated_on TIMESTAMPTZ,
-RENAME COLUMN unit_price TO unit_cost,
 DROP COLUMN transport_cost,
 ADD COLUMN farm_id SMALLINT REFERENCES farms("id") ON DELETE SET NULL,
 ADD COLUMN status_id SMALLINT REFERENCES statuses("id") ON DELETE SET NULL;
+ALTER TABLE purchases RENAME COLUMN unit_price TO unit_cost;
 
 -- add income_types
 CREATE TABLE IF NOT EXISTS income_types (
@@ -276,8 +280,8 @@ ALTER TABLE transactions
 ADD COLUMN updated_on TIMESTAMPTZ,
 DROP COLUMN shop_id,
 DROP COLUMN customer_id,
-RENAME COLUMN attendant_id TO user_id,
 ADD COLUMN farm_id SMALLINT REFERENCES farms("id") ON DELETE SET NULL;
+ALTER TABLE transactions RENAME COLUMN attendant_id TO user_id;
 
 -- drop cow_profiles table
 DROP TABLE IF EXISTS cow_profiles;

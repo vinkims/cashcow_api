@@ -1,6 +1,5 @@
 package com.example.cashcow_api.services.cow;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -66,11 +65,8 @@ public class SCowService implements ICowService {
         cowService.setCost(cowServiceDTO.getCost());
         cowService.setCreatedOn(cowServiceDTO.getCreatedOn());
         cowService.setRemarks(cowServiceDTO.getRemarks());
-        setBull(cowService, cowServiceDTO.getBullId());
-        setCalvingDate(cowService, cowServiceDTO.getCalvingDate());
         setCow(cowService, cowServiceDTO.getCowId());
         setCowServiceType(cowService, cowServiceDTO.getCowServiceTypeId());
-        setObservationDate(cowService, cowServiceDTO.getObservationDate());
         Integer statusId = cowServiceDTO.getStatusId() == null ? activeStatusId : cowServiceDTO.getStatusId();
         setStatus(cowService, statusId);
         setUser(cowService, cowServiceDTO.getUserId());
@@ -124,7 +120,10 @@ public class SCowService implements ICowService {
         String search = pageDTO.getSearch();
 
         SpecBuilder<ECowService> specBuilder = new SpecBuilder<>();
-        specBuilder = (SpecBuilder<ECowService>) specFactory.generateSpecification(search, specBuilder, allowableFields, "cowService");
+
+        specBuilder = (SpecBuilder<ECowService>) specFactory.generateSpecification(search, 
+            specBuilder, allowableFields, "cowService");
+        
         Specification<ECowService> spec = specBuilder.build();
 
         PageRequest pageRequest = PageRequest.of(pageDTO.getPageNumber(), pageDTO.getPageSize(),
@@ -138,44 +137,18 @@ public class SCowService implements ICowService {
         cowServiceDAO.save(cowService);
     }
 
-    public void setBull(ECowService cowService, Integer bullId){
-
-        if (bullId == null){ return; }
-        Optional<ECow> bull = sCow.getById(bullId);
-        if (!bull.isPresent()){
-            throw new NotFoundException("bull with specified id not found", "bullId");
-        }
-        cowService.setBull(bull.get());
-    }
-
-    public void setCalvingDate(ECowService cowService, String calvingDate){
-        if (calvingDate != null){
-            cowService.setCalvingDate(LocalDate.parse(calvingDate));
-        }
-    }
-
     public void setCow(ECowService cowService, Integer cowId){
+        if (cowId == null) { return; }
 
-        Optional<ECow> cow = sCow.getById(cowId);
-        if (!cow.isPresent()){
-            throw new NotFoundException("cow with specified id not found", "cowId");
-        }
-        cowService.setCow(cow.get());
+        ECow cow = sCow.getById(cowId, true);
+        cowService.setCow(cow);
     }
 
     public void setCowServiceType(ECowService cowService, Integer serviceTypeId){
+        if (serviceTypeId == null) { return; }
 
-        Optional<ECowServiceType> serviceType = sCowServiceType.getById(serviceTypeId);
-        if (!serviceType.isPresent()){
-            throw new NotFoundException("service type with specified id not found", "servicetypeId");
-        }
-        cowService.setCowServiceType(serviceType.get());
-    }
-
-    public void setObservationDate(ECowService cowService, String observationDate){
-        if (observationDate != null){
-            cowService.setObservationDate(LocalDate.parse(observationDate));
-        }
+        ECowServiceType serviceType = sCowServiceType.getById(serviceTypeId, true);
+        cowService.setCowServiceType(serviceType);
     }
 
     public void setStatus(ECowService cowService, Integer statusId) {
@@ -186,13 +159,10 @@ public class SCowService implements ICowService {
     }
 
     public void setUser(ECowService cowService, Integer userId){
-
         if (userId == null){ return; }
-        Optional<EUser> user = sUser.getById(userId);
-        if (!user.isPresent()){
-            throw new NotFoundException("user with specified id not found", "userId");
-        }
-        cowService.setUser(user.get());
+
+        EUser user = sUser.getById(userId, true);
+        cowService.setUser(user);
     }
 
     @Override
