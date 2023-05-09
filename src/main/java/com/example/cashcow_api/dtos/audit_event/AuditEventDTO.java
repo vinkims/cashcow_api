@@ -48,7 +48,9 @@ public class AuditEventDTO {
         if (auditEvent.getEventType() != null) {
             setEventType(new AuditEventTypeDTO(auditEvent.getEventType()));
         }
-        setFarm(new FarmDTO(auditEvent.getFarm()));
+        if (auditEvent.getFarm() != null) {
+            setFarm(new FarmDTO(auditEvent.getFarm()));
+        }
         setId(auditEvent.getId());
         setPrincipal(auditEvent.getPrincipal());
         setStatus(new StatusDTO(auditEvent.getStatus()));
