@@ -13,15 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping(path = "/user/auth")
 public class CAuth {
     
     @Autowired
     private IAuth sAuth;
 
-    @PostMapping(path = "/user/auth", consumes = "application/json", produces = "application/json")
+    @PostMapping(path = "", consumes = "application/json", produces = "application/json")
     public ResponseEntity<SuccessResponse> authenticateUser(@RequestBody AuthDTO authDTO){
 
         String token = sAuth.authenticateUser(authDTO);
@@ -34,7 +36,7 @@ public class CAuth {
             .body(new SuccessResponse(200, "successfully authenticated user", res));
     }
 
-    @PostMapping(path = "/user/auth/sign-out", consumes = "application/json", produces = "application/json")
+    @PostMapping(path = "/sign-out", consumes = "application/json", produces = "application/json")
     public ResponseEntity<SuccessResponse> signoutUser(@RequestBody SignoutDTO signoutDTO){
 
         Boolean isSignout = sAuth.signoutUser(signoutDTO);
