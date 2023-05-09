@@ -1,6 +1,7 @@
 package com.example.cashcow_api.models;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -22,6 +23,13 @@ public class EPurchase implements Serializable{
     
     private static final long serialVersionUID = 1L;
 
+    @Column(name = "created_on")
+    private LocalDateTime createdOn;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "farm_id", referencedColumnName = "id")
+    private EFarm farm;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false, name = "id")
@@ -30,19 +38,20 @@ public class EPurchase implements Serializable{
     @Column(name = "name")
     private String name;
 
-    @Column(name = "created_on")
-    private LocalDateTime createdOn;
+    @Column(name = "quantity")
+    private Float quantity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_id", referencedColumnName = "id")
+    private EStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supplier_id", referencedColumnName = "id")
     private EUser supplier;
 
-    @Column(name = "unit_price")
-    private Float unitPrice;
+    @Column(name = "unit_cost")
+    private BigDecimal unitCost;
 
-    @Column(name = "quantity")
-    private Float quantity;
-
-    @Column(name = "transport_cost")
-    private Float transportCost;
+    @Column(name = "updated_on")
+    private LocalDateTime updatedOn;
 }

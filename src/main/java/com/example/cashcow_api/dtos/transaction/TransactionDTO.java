@@ -1,8 +1,10 @@
 package com.example.cashcow_api.dtos.transaction;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.example.cashcow_api.dtos.shop.ShopDTO;
+import com.example.cashcow_api.dtos.farm.FarmDTO;
+import com.example.cashcow_api.dtos.status.StatusDTO;
 import com.example.cashcow_api.dtos.user.UserBasicDTO;
 import com.example.cashcow_api.models.ETransaction;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -17,60 +19,62 @@ import lombok.NoArgsConstructor;
 @JsonInclude(value = Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TransactionDTO {
-    
-    private Float amount;
-
-    private UserBasicDTO attendant;
-
-    private Integer attendantId;
-
-    private LocalDateTime createdOn;
-
-    private UserBasicDTO customer;
-
-    private Integer customerId;
 
     private Integer id;
 
-    private String paymentChannel;
+    private LocalDateTime createdOn;
 
-    private Integer paymentChannelId;
+    private LocalDateTime updatedOn;
+
+    private String transactionCode;
+    
+    private BigDecimal amount;
 
     private String reference;
 
-    private ShopDTO shop;
+    @JsonIgnoreProperties(value = {"createdOn", "updatedOn", "status"})
+    private FarmDTO farm;
 
-    private Integer shopId;
+    private Integer farmId;
 
-    private String status;
+    private UserBasicDTO user;
 
-    private Integer statusId;
+    private Integer userId;
 
-    private String transactionCode;
-
-    private String transactionType;
+    @JsonIgnoreProperties("description")
+    private TransactionTypeDTO transactionType;
 
     private Integer transactionTypeId;
 
+    @JsonIgnoreProperties("description")
+    private PaymentChannelDTO paymentChannel;
+
+    private Integer paymentChannelId;
+
+    @JsonIgnoreProperties("description")
+    private StatusDTO status;
+
+    private Integer statusId;
+
     public TransactionDTO(ETransaction transaction){
         setAmount(transaction.getAmount());
-        if (transaction.getAttendant() != null){
-            setAttendant(new UserBasicDTO(transaction.getAttendant()));
-        }
         setCreatedOn(transaction.getCreatedOn());
-        if (transaction.getCustomer() != null){
-            setCustomer(new UserBasicDTO(transaction.getCustomer()));
+        if (transaction.getFarm() != null) {
+            setFarm(new FarmDTO(transaction.getFarm()));
         }
         setId(transaction.getId());
-        setPaymentChannel(transaction.getPaymentChannel().getName());
+        if (transaction.getPaymentChannel() != null) {
+            setPaymentChannel(new PaymentChannelDTO(transaction.getPaymentChannel()));
+        }
         setReference(transaction.getReference());
-        if (transaction.getShop() != null){
-            setShop(new ShopDTO(transaction.getShop()));
+        setStatus(new StatusDTO(transaction.getStatus()));
+        setTransactionCode(transaction.getTransactionCode());
+        if (transaction.getTransactionType() != null) {
+            setTransactionType(new TransactionTypeDTO(transaction.getTransactionType()));
         }
-        setStatus(transaction.getStatus().getName());
-        if (transaction.getTransactionCode() != null){
-            setTransactionCode(transaction.getTransactionCode());
+        setUpdatedOn(transaction.getUpdatedOn());
+        if (transaction.getUser() != null) {
+            setUser(new UserBasicDTO(transaction.getUser()));
         }
-        setTransactionType(transaction.getTransactionType().getName());
     }
 }

@@ -1,21 +1,30 @@
 package com.example.cashcow_api.services.expense;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import com.example.cashcow_api.dtos.expense.ExpenseDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
+import com.example.cashcow_api.dtos.transaction.TransactionDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.ECow;
+import com.example.cashcow_api.models.ECowExpense;
 import com.example.cashcow_api.models.EExpense;
 import com.example.cashcow_api.models.EExpenseType;
+import com.example.cashcow_api.models.EFarm;
 import com.example.cashcow_api.models.EStatus;
 import com.example.cashcow_api.models.EUser;
+import com.example.cashcow_api.models.EUserExpense;
 import com.example.cashcow_api.repositories.ExpenseDAO;
 import com.example.cashcow_api.services.cow.ICow;
+import com.example.cashcow_api.services.cow.ICowExpense;
+import com.example.cashcow_api.services.farm.IFarm;
 import com.example.cashcow_api.services.status.IStatus;
+import com.example.cashcow_api.services.transaction.ITransaction;
 import com.example.cashcow_api.services.user.IUser;
+import com.example.cashcow_api.services.user.IUserExpense;
 import com.example.cashcow_api.specifications.SpecBuilder;
 import com.example.cashcow_api.specifications.SpecFactory;
 
@@ -30,6 +39,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class SExpense implements IExpense {
 
+    @Value(value = "${default.value.transaction-type.expense-type-id}")
+    private Integer expenseTransactionTypeId;
+
     @Value(value = "${default.value.status.pending-id}")
     private Integer pendingStatusId;
 
@@ -40,13 +52,25 @@ public class SExpense implements IExpense {
     private ICow sCow;
 
     @Autowired
+    private ICowExpense sCowExpense;
+
+    @Autowired
     private IExpenseType sExpenseType;
+
+    @Autowired
+    private IFarm sFarm;
 
     @Autowired
     private IStatus sStatus;
 
     @Autowired
+    private ITransaction sTransaction;
+
+    @Autowired
     private IUser sUser;
+
+    @Autowired
+    private IUserExpense sUserExpense;
 
     @Autowired
     private SpecFactory specFactory;
@@ -57,25 +81,68 @@ public class SExpense implements IExpense {
         EExpense expense = new EExpense();
         expense.setAmount(expenseDTO.getAmount());
         expense.setCreatedOn(LocalDateTime.now());
-        if (expenseDTO.getDescription() != null){
-            expense.setDescription(expenseDTO.getDescription());
-        }
-        setCow(expense, expenseDTO.getCowId());
+        expense.setDescription(expenseDTO.getDescription());
         setExpenseType(expense, expenseDTO.getExpenseTypeId());
-
+        setFarm(expense, expenseDTO.getFarmId());
         Integer statusId = expenseDTO.getStatusId() != null ? expenseDTO.getStatusId() : pendingStatusId;
         setStatus(expense, statusId);
 
-        setUser(expense, expenseDTO.getUserId());
-
         save(expense);
 
+        createTransaction(
+            expenseDTO.getAmount(), 
+            String.format("Expense id: %s", expense.getId()), 
+            expense.getFarm().getId()
+        );
+
+        setCowExpense(expense, expenseDTO.getCowId());
+        setUserExpense(expense, expenseDTO.getUserId());
+
         return expense;
+    }
+
+    /**
+     * Creates an expense type transaction
+     */
+    public void createTransaction(BigDecimal amount, String reference, Integer farmId) {
+
+        TransactionDTO transactionDTO = new TransactionDTO();
+        transactionDTO.setAmount(amount);
+        transactionDTO.setFarmId(farmId);
+        transactionDTO.setReference(reference);
+        transactionDTO.setTransactionCode(generateTransactionCode());
+        transactionDTO.setTransactionTypeId(expenseTransactionTypeId);
+
+        sTransaction.create(transactionDTO);
+    }
+
+    public String generateTransactionCode() {
+        String dateStr = LocalDateTime.now().toString();
+        String year = dateStr.substring(0, 4);
+        String month = dateStr.substring(5, 7);
+        String day = dateStr.substring(8, 10);
+        String hour = dateStr.substring(11, 13);
+        String minute = dateStr.substring(14, 16);
+        String second = dateStr.substring(17, 19);
+
+        String code = String.format("EX%s%s%s%s%s%s",
+            year, month, day, hour, minute, second);
+        
+        return code;
     }
 
     @Override
     public Optional<EExpense> getById(Integer id) {
         return expenseDAO.findById(id);
+    }
+
+    @Override
+    public EExpense getById(Integer id, Boolean handleException) {
+        Optional<EExpense> expense = getById(id);
+        if (!expense.isPresent() && handleException) {
+            throw new NotFoundException("expense with specified id not found", "expenseId");
+        }
+        return expense.get();
     }
 
     @Override
@@ -99,42 +166,65 @@ public class SExpense implements IExpense {
         expenseDAO.save(expense);
     }
 
-    public void setCow(EExpense expense, Integer cowId){
-        
+    public void setCowExpense(EExpense expense, Integer cowId) {
         if (cowId == null) { return; }
-        Optional<ECow> cow = sCow.getById(cowId);
-        if (!cow.isPresent()){
-            throw new NotFoundException("cow with specified id not found", "cowId");
-        }
-        expense.setCow(cow.get());
+
+        ECow cow = sCow.getById(cowId, true);
+        ECowExpense cowExpense = sCowExpense.create(cow, expense);
+        
     }
 
     public void setExpenseType(EExpense expense, Integer expenseTypeId){
-
         if (expenseTypeId == null){ return; }
-        Optional<EExpenseType> expenseType = sExpenseType.getById(expenseTypeId);
-        if (!expenseType.isPresent()){
-            throw new NotFoundException("expense type with specidied id not found", "expenseTypeId");
-        }
-        expense.setExpenseType(expenseType.get());
+
+        EExpenseType expenseType = sExpenseType.getById(expenseTypeId, true);
+        expense.setExpenseType(expenseType);
+    }
+
+    public void setFarm(EExpense expense, Integer farmId) {
+        if (farmId == null) { return; }
+
+        EFarm farm = sFarm.getById(farmId, true);
+        expense.setFarm(farm);
     }
 
     public void setStatus(EExpense expense, Integer statusId){
+        if (statusId == null) { return; }
 
-        Optional<EStatus> status = sStatus.getById(statusId);
-        if (!status.isPresent()){
-            throw new NotFoundException("status with specified id not found", "statusId");
-        }
-        expense.setStatus(status.get());
+        EStatus status = sStatus.getById(statusId, true);
+        expense.setStatus(status);
     }
-    
-    public void setUser(EExpense expense, Integer userId){
+
+    public void setUserExpense(EExpense expense, Integer userId) {
+        if (userId == null) { return; }
+
+        EUser user = sUser.getById(userId, true);
+        EUserExpense userExpense = sUserExpense.create(user, expense);
+    }
+
+    @Override
+    public EExpense update(Integer id, ExpenseDTO expenseDTO) {
+
+        EExpense expense = getById(id, true);
+        if (expenseDTO.getAmount() != null) {
+            expense.setAmount(expenseDTO.getAmount());
+        }
+        if (expenseDTO.getDescription() != null) {
+            expense.setDescription(expenseDTO.getDescription());
+        }
+        expense.setUpdatedOn(LocalDateTime.now());
+        setExpenseType(expense, expenseDTO.getExpenseTypeId());
+        setFarm(expense, expenseDTO.getFarmId());
+        setStatus(expense, expenseDTO.getStatusId());
+
+        save(expense);
+
+        setCowExpense(expense, expenseDTO.getCowId());
+        setUserExpense(expense, expenseDTO.getUserId());
         
-        if (userId == null){ return; }
-        Optional<EUser> user = sUser.getById(userId);
-        if (!user.isPresent()){
-            throw new NotFoundException("user with specified id not found", "userId");
-        }
-        expense.setUser(user.get());
+        return expense;
     }
+
+    // TODO: Update transaction with expense update
+    
 }

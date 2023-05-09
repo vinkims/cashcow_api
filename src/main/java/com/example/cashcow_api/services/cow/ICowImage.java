@@ -12,6 +12,8 @@ public interface ICowImage {
 
     Optional<ECowImage> getById(Integer id);
 
+    ECowImage getById(Integer id, Boolean handleException);
+
     List<ECowImage> getList();
 
     void save(ECowImage cowImage);

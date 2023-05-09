@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import javax.validation.constraints.NotBlank;
 
 import com.example.cashcow_api.annotations.IsCowServiceTypeNameValid;
+import com.example.cashcow_api.dtos.farm.FarmDTO;
+import com.example.cashcow_api.dtos.status.StatusDTO;
 import com.example.cashcow_api.models.ECowServiceType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -18,24 +20,33 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(value = Include.NON_NULL)
 public class CowServiceTypeDTO {
-    
-    private LocalDateTime createdOn;
-
-    private String description;
 
     private Integer id;
+
+    private LocalDateTime createdOn;
 
     @NotBlank
     @IsCowServiceTypeNameValid
     private String name;
 
-    public CowServiceTypeDTO(ECowServiceType cowServiceType){
+    private String description;
 
+    @JsonIgnoreProperties(value = {"createdOn", "updatedOn", "status"})
+    private FarmDTO farm;
+
+    private Integer farmId;
+
+    @JsonIgnoreProperties("description")
+    private StatusDTO status;
+
+    private Integer statusId;
+
+    public CowServiceTypeDTO(ECowServiceType cowServiceType){
         setCreatedOn(cowServiceType.getCreatedOn());
-        if (cowServiceType.getDescription() != null){
-            setDescription(cowServiceType.getDescription());
-        }
+        setDescription(cowServiceType.getDescription());
+        setFarm(new FarmDTO(cowServiceType.getFarm()));
         setId(cowServiceType.getId());
         setName(cowServiceType.getName());
+        setStatus(new StatusDTO(cowServiceType.getStatus()));
     }
 }

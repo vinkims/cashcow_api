@@ -18,6 +18,9 @@ public class EPaymentChannel implements Serializable{
     
     private static final long serialVersionUID = 1L;
 
+    @Column(name = "description")
+    private String description;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false, name = "id")
@@ -25,7 +28,4 @@ public class EPaymentChannel implements Serializable{
 
     @Column(name = "name")
     private String name;
-
-    @Column(name = "description")
-    private String description;
 }

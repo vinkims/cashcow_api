@@ -12,6 +12,8 @@ public class DefaultValueStatusConfig {
 
     private Integer completeStatusId;
 
+    private Integer deadId;
+
     private Integer pendingStatusId;
     
     private Integer preCalvingStatusId;

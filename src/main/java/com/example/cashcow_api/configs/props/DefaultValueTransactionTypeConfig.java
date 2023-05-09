@@ -14,7 +14,11 @@ public class DefaultValueTransactionTypeConfig {
 
     private Integer cowServiceTypeId;
     
-    private Integer creditTransactiontypeId;
+    private Integer creditTransactionTypeId;
+
+    private Integer expenseTypeId;
+
+    private Integer incomeTypeId;
 
     private Integer milkSaleTransactionTypeId;
 

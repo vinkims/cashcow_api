@@ -1,6 +1,7 @@
 package com.example.cashcow_api.models;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -23,18 +24,14 @@ public class ETransaction implements Serializable{
     private static final long serialVersionUID = 1L;
 
     @Column(name = "amount")
-    private Float amount;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "attendant_id", referencedColumnName = "id")
-    private EUser attendant;
+    private BigDecimal amount;
 
     @Column(name = "created_on")
     private LocalDateTime createdOn;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", referencedColumnName = "id")
-    private EUser customer;
+    @JoinColumn(name = "farm_id", referencedColumnName = "id")
+    private EFarm farm;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,10 +46,6 @@ public class ETransaction implements Serializable{
     private String reference;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shop_id", referencedColumnName = "id")
-    private EShop shop;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id", referencedColumnName = "id")
     private EStatus status;
 
@@ -62,4 +55,11 @@ public class ETransaction implements Serializable{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_type_id", referencedColumnName = "id")
     private ETransactionType transactionType;
+
+    @Column(name = "updated_on")
+    private LocalDateTime updatedOn;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private EUser user;
 }

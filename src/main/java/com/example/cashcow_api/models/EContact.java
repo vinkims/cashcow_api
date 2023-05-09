@@ -1,6 +1,7 @@
 package com.example.cashcow_api.models;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,6 +27,9 @@ public class EContact implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contact_type_id", referencedColumnName = "id")
     private EContactType contactType;
+
+    @Column(name = "created_on")
+    private LocalDateTime createdOn;
 
     @Id
     @Column(name = "value")

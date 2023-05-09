@@ -12,14 +12,17 @@ import com.example.cashcow_api.exceptions.NotFoundException;
 import com.example.cashcow_api.models.ECow;
 import com.example.cashcow_api.models.EMilkProduction;
 import com.example.cashcow_api.models.EMilkingSession;
+import com.example.cashcow_api.models.EStatus;
 import com.example.cashcow_api.models.EUser;
 import com.example.cashcow_api.repositories.MilkProductionDAO;
 import com.example.cashcow_api.services.cow.ICow;
+import com.example.cashcow_api.services.status.IStatus;
 import com.example.cashcow_api.services.user.IUser;
 import com.example.cashcow_api.specifications.SpecBuilder;
 import com.example.cashcow_api.specifications.SpecFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -29,20 +32,26 @@ import org.springframework.stereotype.Service;
 @Service
 public class SMilkProduction implements IMilkProduction {
 
-    @Autowired
-    private ICow sCow;
+    @Value(value = "${default.value.status.complete-id}")
+    private Integer completeStatusId;
 
     @Autowired
-    private MilkProductionDAO productionDAO;
+    private ICow sCow;
 
     @Autowired
     private IMilkingSession sMilkingSession;
 
     @Autowired
-    private SpecFactory specFactory;
+    private IStatus sStatus;
 
     @Autowired
     private IUser sUser;
+
+    @Autowired
+    private MilkProductionDAO productionDAO;
+
+    @Autowired
+    private SpecFactory specFactory;
 
     @Override
     public EMilkProduction create(MilkProductionDTO productionDTO) {
@@ -53,6 +62,8 @@ public class SMilkProduction implements IMilkProduction {
         setCow(production, productionDTO.getCowId());
         setMilkingSession(production, productionDTO.getSessionId());
         setUser(production, productionDTO.getUserId());
+        Integer statusId = productionDTO.getStatusId() == null ? completeStatusId : productionDTO.getStatusId();
+        setStatus(production, statusId);
 
         save(production);
         return production;
@@ -61,6 +72,15 @@ public class SMilkProduction implements IMilkProduction {
     @Override
     public Optional<EMilkProduction> getById(Integer productionId) {
         return productionDAO.findById(productionId);
+    }
+
+    @Override
+    public EMilkProduction getById(Integer productionId, Boolean handleException) {
+        Optional<EMilkProduction> production = getById(productionId);
+        if (!production.isPresent() && handleException) {
+            throw new NotFoundException("milk production with specified id not found", "milkProductionId");
+        }
+        return production.get();
     }
 
     @Override
@@ -100,31 +120,48 @@ public class SMilkProduction implements IMilkProduction {
     }
 
     public void setCow(EMilkProduction production, Integer cowId){
-        
         if(cowId == null){ return; }
-        Optional<ECow> cow = sCow.getById(cowId);
-        if (!cow.isPresent()){
-            throw new NotFoundException("cow with specified id not found", "cowId");
-        }
-        production.setCow(cow.get());
+
+        ECow cow = sCow.getById(cowId, true);
+        production.setCow(cow);
     }
 
     public void setMilkingSession(EMilkProduction production, Integer sessionId){
+        if (sessionId == null) { return; }
 
-        Optional<EMilkingSession> session = sMilkingSession.getById(sessionId);
-        if (!session.isPresent()){
-            throw new NotFoundException("session with specified id not found", "sessionId");
-        }
-        production.setMilkingSession(session.get());
+        EMilkingSession session = sMilkingSession.getById(sessionId, true);
+        production.setMilkingSession(session);
+    }
+
+    public void setStatus(EMilkProduction production, Integer statusId) {
+        if (statusId == null) { return; }
+
+        EStatus status = sStatus.getById(statusId, true);
+        production.setStatus(status);
     }
 
     public void setUser(EMilkProduction production, Integer userId){
+        if (userId == null) { return; }
 
-        Optional<EUser> user = sUser.getById(userId);
-        if (!user.isPresent()){
-            throw new NotFoundException("user with specified id not found", "userId");
+        EUser user = sUser.getById(userId, true);
+        production.setUser(user);
+    }
+
+    @Override
+    public EMilkProduction update(Integer productionId, MilkProductionDTO productionDTO) {
+
+        EMilkProduction production = getById(productionId, true);
+        if (productionDTO.getQuantity() != null) {
+            production.setQuantity(productionDTO.getQuantity());
         }
-        production.setUser(user.get());
+        production.setUpdatedOn(LocalDateTime.now());
+        setCow(production, productionDTO.getCowId());
+        setMilkingSession(production, productionDTO.getSessionId());
+        setStatus(production, productionDTO.getStatusId());
+        setUser(production, productionDTO.getUserId());
+
+        save(production);
+        return production;
     }
     
 }

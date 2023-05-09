@@ -22,21 +22,28 @@ public class EShop implements Serializable{
     
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, updatable = false, name = "id")
-    private Integer id;
+    @Column(name = "created_on")
+    private LocalDateTime createdOn;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "farm_id", referencedColumnName = "id")
     private EFarm farm;
 
-    @Column(name = "name")
-    private String name;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, updatable = false, name = "id")
+    private Integer id;
 
     @Column(name = "location")
     private String location;
 
-    @Column(name = "created_on")
-    private LocalDateTime createdOn;
+    @Column(name = "name")
+    private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_id", referencedColumnName = "id")
+    private EStatus status;
+    
+    @Column(name = "updated_on")
+    private LocalDateTime updatedOn;
 }

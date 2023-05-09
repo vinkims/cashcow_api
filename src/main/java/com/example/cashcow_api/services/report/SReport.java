@@ -1,5 +1,6 @@
 package com.example.cashcow_api.services.report;
 
+import com.example.cashcow_api.services.cow.ICowWeight;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,16 +18,13 @@ import com.example.cashcow_api.dtos.milk.MilkSaleSummaryDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTotalDTO;
 import com.example.cashcow_api.dtos.milk.MilkSaleTypeDTO;
 import com.example.cashcow_api.dtos.report.ReportDTO;
-import com.example.cashcow_api.dtos.transaction.EmployeeTransactionDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionSummaryDTO;
 import com.example.cashcow_api.dtos.user.SummaryUserDTO;
-import com.example.cashcow_api.models.EWeight;
 import com.example.cashcow_api.services.milk.IMilkConsumption;
 import com.example.cashcow_api.services.milk.IMilkProduction;
 import com.example.cashcow_api.services.milk.IMilkSale;
 import com.example.cashcow_api.services.transaction.ITransaction;
 import com.example.cashcow_api.services.user.IUser;
-import com.example.cashcow_api.services.weight.IWeight;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,7 +48,7 @@ public class SReport implements IReport {
     private IUser sUser;
 
     @Autowired
-    private IWeight sWeight;
+    private ICowWeight sCowWeight;
 
     @Override
     public List<MilkSaleSummaryDTO> getCurrentWeekShopSale(Integer shopId){
@@ -90,12 +88,6 @@ public class SReport implements IReport {
         LocalDateTime startDate = today.withHour(0).withMinute(0).withSecond(0).withNano(0);
         LocalDateTime endDate = today.withHour(23).withMinute(59).withSecond(59).withNano(999999999);
         return sMilkProduction.getDailyCowProduction(startDate, endDate, cowId);
-    }
-
-    @Override
-    public List<EmployeeTransactionDTO> getEmployeeExpenses(DateParamDTO dateParamDTO, Integer employeeId){
-        if (dateParamDTO == null){ return null; }
-        return sTransaction.getEmployeeExpenses(dateParamDTO.getStartDate(), dateParamDTO.getEndDate(), employeeId);
     }
 
     @Override
@@ -204,7 +196,6 @@ public class SReport implements IReport {
     @Override
     public ReportDTO getUsersSummaryReport(DateParamDTO dateParamDTO, Integer userId){
         ReportDTO reportDTO = new ReportDTO();
-        reportDTO.setEmployeeExpenses(getEmployeeExpenses(dateParamDTO, userId));
         reportDTO.setUserSummary(getUsersReport());
         return reportDTO;
     }

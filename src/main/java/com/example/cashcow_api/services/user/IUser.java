@@ -19,7 +19,11 @@ public interface IUser {
 
     Optional<EUser> getById(Integer userId);
 
+    EUser getById(Integer userId, Boolean handleException);
+
     Optional<EUser> getByIdOrContact(String userValue);
+
+    EUser getByIdOrContact(String userValue, Boolean handleException);
 
     Page<EUser> getPaginatedList(PageDTO pageDTO, List<String> allowableFields);
 
@@ -29,6 +33,6 @@ public interface IUser {
 
     void save(EUser user);
 
-    EUser update(EUser user, UserDTO userDTO) throws IllegalAccessException, 
+    EUser update(String userValue, UserDTO userDTO) throws IllegalAccessException, 
         IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.cashcow_api.dtos.general.PageDTO;
-import com.example.cashcow_api.dtos.transaction.EmployeeTransactionDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionDTO;
 import com.example.cashcow_api.dtos.transaction.TransactionSummaryDTO;
 import com.example.cashcow_api.models.ETransaction;
@@ -20,7 +19,7 @@ public interface ITransaction {
 
     Optional<ETransaction> getById(Integer transactionId);
 
-    List<EmployeeTransactionDTO> getEmployeeExpenses(LocalDateTime startDate, LocalDateTime endDate, Integer userId);
+    ETransaction getById(Integer transactionId, Boolean handleException);
 
     Page<ETransaction> getPaginatedList(PageDTO pageDTO, List<String> allowableFields);
 
@@ -28,5 +27,5 @@ public interface ITransaction {
 
     void save(ETransaction transaction);
 
-    ETransaction update(ETransaction transaction, TransactionDTO transactionDTO);
+    ETransaction update(Integer transactionId, TransactionDTO transactionDTO);
 }

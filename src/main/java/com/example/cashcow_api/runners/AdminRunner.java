@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import com.example.cashcow_api.dtos.contact.ContactDTO;
 import com.example.cashcow_api.dtos.user.UserDTO;
-import com.example.cashcow_api.dtos.user.UserProfileDTO;
 import com.example.cashcow_api.models.EUser;
 import com.example.cashcow_api.services.user.IUser;
 
@@ -47,9 +46,6 @@ public class AdminRunner implements CommandLineRunner{
             return;
         }
 
-        UserProfileDTO userProfileDTO = new UserProfileDTO();
-        userProfileDTO.setPasscode(password);
-
         List<ContactDTO> contacts = new ArrayList<>();
         ContactDTO contactDTO = new ContactDTO();
         contactDTO.setContactTypeId(emailTypeId);
@@ -60,7 +56,7 @@ public class AdminRunner implements CommandLineRunner{
         userDTO.setContacts(contacts);
         userDTO.setFirstName(firstName);
         userDTO.setLastName(lastName);
-        userDTO.setProfile(userProfileDTO);
+        userDTO.setPasscode(password);
         userDTO.setRoleId(systemAdminRoleId);
 
         EUser admin = sUser.create(userDTO);

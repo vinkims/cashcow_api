@@ -15,9 +15,11 @@ public interface ICowService {
 
     Optional<ECowService> getById(Integer cowServiceId);
 
+    ECowService getById(Integer cowServiceId, Boolean handleException);
+
     Page<ECowService> getPaginatedList(PageDTO pageDTO, List<String> allowableFields);
 
     void save(ECowService cowService);
 
-    ECowService update(ECowService cowService, CowServiceDTO cowServiceDTO);
+    ECowService update(Integer cowServiceId, CowServiceDTO cowServiceDTO);
 }

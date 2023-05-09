@@ -1,8 +1,11 @@
 package com.example.cashcow_api.dtos.milk;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.example.cashcow_api.dtos.sales.SaleTypeDTO;
 import com.example.cashcow_api.dtos.shop.ShopBasicDTO;
+import com.example.cashcow_api.dtos.status.StatusDTO;
 import com.example.cashcow_api.dtos.user.UserBasicDTO;
 import com.example.cashcow_api.models.EMilkSale;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -17,8 +20,10 @@ import lombok.NoArgsConstructor;
 @JsonInclude(value = Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MilkSaleDTO {
+
+    private Integer id;
     
-    private Float amount;
+    private BigDecimal amount;
 
     private UserBasicDTO attendant;
 
@@ -26,19 +31,20 @@ public class MilkSaleDTO {
 
     private LocalDateTime createdOn;
 
+    private LocalDateTime updatedOn;
+
     private UserBasicDTO customer;
 
     private Integer customerId;
 
     private Integer paymentChannelId;
 
-    private Float pricePerLitre;
+    private BigDecimal unitCost;
 
     private Float quantity;
 
-    private Integer saleId;
-
-    private String saleType;
+    @JsonIgnoreProperties("description")
+    private SaleTypeDTO saleType;
 
     private Integer saleTypeId;
 
@@ -46,7 +52,8 @@ public class MilkSaleDTO {
 
     private Integer shopId;
 
-    private String status;
+    @JsonIgnoreProperties("description")
+    private StatusDTO status;
 
     private Integer statusId;
 
@@ -59,12 +66,13 @@ public class MilkSaleDTO {
         if (sale.getCustomer() != null){
             setCustomer(new UserBasicDTO(sale.getCustomer()));
         }
-        setSaleId(sale.getId());
+        setId(sale.getId());
         if (sale.getSaleType() != null){
-            setSaleType(sale.getSaleType().getName());
+            setSaleType(new SaleTypeDTO(sale.getSaleType()));
         }
         setShop(new ShopBasicDTO(sale.getShop()));
-        setStatus(sale.getStatus().getName());
+        setStatus(new StatusDTO(sale.getStatus()));
         setQuantity(sale.getQuantity());
+        setUpdatedOn(sale.getUpdatedOn());
     }
 }

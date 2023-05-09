@@ -15,7 +15,11 @@ public interface IExpense {
 
     Optional<EExpense> getById(Integer id);
 
+    EExpense getById(Integer id, Boolean handleException);
+
     Page<EExpense> getPaginatedList(PageDTO pageDTO, List<String> allowableFields);
 
     void save(EExpense expense);
+
+    EExpense update(Integer id, ExpenseDTO expenseDTO);
 }

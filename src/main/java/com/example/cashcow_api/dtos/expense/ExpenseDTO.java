@@ -1,9 +1,10 @@
 package com.example.cashcow_api.dtos.expense;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.example.cashcow_api.dtos.cow.CowBasicDTO;
-import com.example.cashcow_api.dtos.user.UserBasicDTO;
+import com.example.cashcow_api.dtos.farm.FarmDTO;
+import com.example.cashcow_api.dtos.status.StatusDTO;
 import com.example.cashcow_api.models.EExpense;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -18,42 +19,41 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ExpenseDTO {
     
-    private Float amount;
+    private Integer id;
 
-    private CowBasicDTO cow;
-
-    private Integer cowId;
-
-    private LocalDateTime createdOn;
-
-    private String description;
-
+    @JsonIgnoreProperties(value = {"createdOn", "updatedOn", "description", "farm", "status"})
     private ExpenseTypeDTO expenseType;
 
     private Integer expenseTypeId;
+    
+    private BigDecimal amount;
 
-    private Integer id;
+    private LocalDateTime createdOn;
 
-    private String status;
+    private LocalDateTime updatedOn;
 
-    private Integer statusId;
-
-    private UserBasicDTO user;
+    private Integer cowId;
 
     private Integer userId;
 
+    private String description;
+
+    @JsonIgnoreProperties(value = {"createdOn", "updatedOn", "status"})
+    private FarmDTO farm;
+
+    private Integer farmId;
+
+    @JsonIgnoreProperties("description")
+    private StatusDTO status;
+
+    private Integer statusId;
+
     public ExpenseDTO(EExpense expense){
         setAmount(expense.getAmount());
-        if (expense.getCow() != null){
-            setCow(new CowBasicDTO(expense.getCow()));
-        }
         setCreatedOn(expense.getCreatedOn());
-        if (expense.getDescription() != null){
-            setDescription(expense.getDescription());
-        }
+        setDescription(expense.getDescription());
         setExpenseType(new ExpenseTypeDTO(expense.getExpenseType()));
         setId(expense.getId());
-        setStatus(expense.getStatus().getName());
-        setUser(new UserBasicDTO(expense.getUser()));
+        setStatus(new StatusDTO(expense.getStatus()));
     }
 }

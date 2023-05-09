@@ -1,5 +1,7 @@
 package com.example.cashcow_api.dtos.transaction;
 
+import java.math.BigDecimal;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,11 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TransactionSummaryDTO {
     
-    private Double amount;
+    private BigDecimal amount;
 
     private String transactionType;
 
-    public TransactionSummaryDTO(Double amount, String transactionType){
+    public TransactionSummaryDTO(BigDecimal amount, String transactionType){
         setAmount(amount);
         setTransactionType(transactionType);
     }
