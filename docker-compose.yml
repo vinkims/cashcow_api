@@ -1,0 +1,83 @@
+version: '3.8'
+services:
+  cashcow:
+    container_name: cashcow
+    build: .
+    ports:
+      - "8000:8000"
+      - "4568:4568"
+    environment:
+      - DATABASE_URL=jdbc:postgresql://pgsqlserver:5432/cashcow
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=vinny
+    volumes:
+      - ./:/app
+    depends_on:
+      - pgsqlserver
+      - flyway_cashcow
+  
+  flyway_cashcow:
+    container_name: flyway_cashcow
+    image: flyway/flyway:6.3.1
+    command: -url=jdbc:postgresql://pgsqlserver:5432/cashcow -schemas=public -user=postgres -password=vinny -locations=filesystem:/flyway/sql -connectRetries=60 migrate
+    environment:
+      - FLYWAY_USER=postgres
+      - FLYWAY_PASSWORD=vinny
+      - FLYWAY_URL=jdbc:postgresql://pgsqlserver:5432/cashcow
+      - FLYWAY_HOST=pgsqlserver
+    volumes:
+      - ./src/main/resources/db/migration:/flyway/sql
+    depends_on:
+      pgsqlserver:
+        condition: service_healthy
+
+  pgsqlserver:
+    image: postgres:12
+    ports:
+      - "5436:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=vinny
+      - POSTGRES_DB=cashcow
+    volumes:
+      - pgsql_data:/var/lib/postgresql
+      - pgsql_config:/etc/postgresql/conf.d
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-U", "postgres"]
+      interval: 5s
+      timeout: 1s
+      retries: 2
+      start_period: 10s
+
+volumes:
+  pgsql_data:
+  pgsql_config:
+
+  # api:
+  #   image: 'cashcow_api.jar'
+  #   ports:
+  #     - "4568:4568"
+  #   depends_on:
+  #     PostgreSQL:
+  #       condition: service_healthy
+  #   environment:
+  #     - SPRING_DATASOURCE.DRIVERCLASSNAME=org.postgresql.Driver
+  #     - SPRING_DATASOURCE_URL=jdbc:postgresql://PostgreSQL:5432/cashcow
+  #     - SPRING_DATASOURCE_USERNAME=postgres
+  #     - SPRING_DATASOURCE_PASSWORD=vinny
+  #     - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+  # PostgreSQL:
+  #   image: postgres
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     - POSTGRES_PASSWORD=vinny
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_DB=cashcow
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U postgres"]
+  #     interval: 1m30s
+  #     timeout: 30s
+  #     retries: 5
+  #     start_period: 30s
