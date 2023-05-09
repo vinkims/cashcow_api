@@ -1,5 +1,6 @@
 package com.example.cashcow_api.services.cow;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.example.cashcow_api.dtos.cow.CowDTO;
 import com.example.cashcow_api.dtos.cow.CowDeathDTO;
 import com.example.cashcow_api.dtos.general.PageDTO;
 import com.example.cashcow_api.exceptions.NotFoundException;
@@ -28,6 +30,9 @@ public class SCowDeath implements ICowDeath {
 
     @Value(value = "${default.value.status.active-id}")
     private Integer activeStatusId;
+
+    @Value(value = "${default.value.status.dead-id}")
+    private Integer deadStatusId;
 
     @Autowired
     private CowDeathDAO cowDeathDAO;
@@ -98,6 +103,8 @@ public class SCowDeath implements ICowDeath {
 
         ECow cow = sCow.getById(cowId, true);
         cowDeath.setCow(cow);
+
+        updateCowStatus(cowId);
     }
 
     public void setStatus(ECowDeath cowDeath, Integer statusId) {
@@ -120,6 +127,18 @@ public class SCowDeath implements ICowDeath {
 
         save(cowDeath);
         return cowDeath;
+    }
+
+    public void updateCowStatus(Integer cowId) {
+        
+        CowDTO cowDTO = new CowDTO();
+        cowDTO.setStatusId(deadStatusId);
+        try {
+            sCow.update(cowId, cowDTO);
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+                | SecurityException e) {
+            e.printStackTrace();
+        }
     }
     
 }

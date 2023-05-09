@@ -180,7 +180,6 @@ public class SCowSale implements ICowSale {
             sCow.update(cowId, cowDTO);
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
                 | SecurityException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

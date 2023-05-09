@@ -42,7 +42,7 @@ public class SAuditEventType implements IAuditEventType {
 
     @Override
     public Optional<EAuditEventType> getByName(String name) {
-        return auditEventTypeDAO.findyName(name);
+        return auditEventTypeDAO.findByName(name);
     }
 
     @Override
