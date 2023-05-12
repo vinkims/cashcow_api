@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +37,7 @@ public class CBreed {
     private IBreed sCowBreed;
     
     @PostMapping(path = "", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<SuccessResponse> createBreed(@RequestBody BreedDTO cowBreedDTO) throws URISyntaxException {
+    public ResponseEntity<SuccessResponse> createBreed(@Valid @RequestBody BreedDTO cowBreedDTO) throws URISyntaxException {
 
         EBreed cowBreed = sCowBreed.create(cowBreedDTO);
 
@@ -72,7 +74,7 @@ public class CBreed {
     }
 
     @PatchMapping(path = "/{breedId}", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<SuccessResponse> updateBreed(@PathVariable Integer breedId, @RequestBody BreedDTO cowBreedDTO) {
+    public ResponseEntity<SuccessResponse> updateBreed(@PathVariable Integer breedId, @Valid @RequestBody BreedDTO cowBreedDTO) {
 
         EBreed cowBreed = sCowBreed.update(breedId, cowBreedDTO);
 

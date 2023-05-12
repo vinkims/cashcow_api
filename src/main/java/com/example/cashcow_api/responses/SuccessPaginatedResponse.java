@@ -19,11 +19,11 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(value = { "contentMap" })
 public class SuccessPaginatedResponse {
 
-    private Object content;
+    private int status = 200;
 
     private String message;
 
-    private int status = 200;
+    private Object content;
 
     Map<String, Object> contentMap = new HashMap<>();
 

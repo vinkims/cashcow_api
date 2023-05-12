@@ -2,6 +2,7 @@ package com.example.cashcow_api.dtos.cow;
 
 import java.time.LocalDateTime;
 
+import com.example.cashcow_api.annotations.IsBreedNameValid;
 import com.example.cashcow_api.dtos.status.StatusDTO;
 import com.example.cashcow_api.models.EBreed;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -19,6 +20,7 @@ public class BreedDTO {
 
     private LocalDateTime createdOn;
 
+    @IsBreedNameValid
     private String name;
 
     private String description;
