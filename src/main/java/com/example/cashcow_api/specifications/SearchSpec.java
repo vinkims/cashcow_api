@@ -1,8 +1,8 @@
 package com.example.cashcow_api.specifications;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -54,37 +54,44 @@ public class SearchSpec<T> implements Specification<T> {
             }
         }
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        formatter.setLenient(false);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         try {
-            value = keyType == Date.class ? formatter.parse((String) value) : value;
-        } catch(ParseException e){
-            log.error("\n[LOCATION] - specifications.SearchSpec.toPredicate() \n[MSG] - {}",
-                e.getLocalizedMessage());
+            value = keyType == LocalDateTime.class ? LocalDate.parse((String) value, dateTimeFormatter).atStartOfDay() : value;
+        } catch (Exception ex) {
+            log.error("\n[LOCATION] - specifications.SearchSpec.toPredicate()\n[MSG] - {}", ex.getLocalizedMessage());
             return null;
         }
 
         if (operation.equalsIgnoreCase("GT")){
-            predicate = keyType == Date.class ?
-                criteriaBuilder.greaterThanOrEqualTo(root.<Date> get(key), (Date) value) :
+            predicate = keyType == LocalDateTime.class ?
+                criteriaBuilder.greaterThanOrEqualTo(root.<LocalDateTime> get(key), (LocalDateTime) value) :
                 criteriaBuilder.greaterThanOrEqualTo(root.<String> get(key), value.toString());
         } else if (operation.equalsIgnoreCase("LT")){
-            predicate = keyType == Date.class ?
-                criteriaBuilder.lessThanOrEqualTo(root.<Date> get(key), (Date) value) :
+            predicate = keyType == LocalDateTime.class ?
+                criteriaBuilder.lessThanOrEqualTo(root.<LocalDateTime> get(key), (LocalDateTime) value) :
                 criteriaBuilder.lessThanOrEqualTo(root.<String> get(key), value.toString());
         } else if (fieldJoin != null && operation.equalsIgnoreCase("EQ")){
+            query.distinct(true);
             String maxKeysValue = keys[keys.length - 1];
             predicate = keyType == String.class ?
                 criteriaBuilder.like(criteriaBuilder.lower(fieldJoin.<String> get(maxKeysValue)), "%" + ((String) value).toLowerCase() + "%") :
                 criteriaBuilder.equal(fieldJoin.<String> get(maxKeysValue), value);
         } else if (operation.equalsIgnoreCase("EQ")){
+            query.distinct(true);
             predicate = keyType == String.class ?
                 criteriaBuilder.like(criteriaBuilder.lower(root.<String> get(key)), "%" + ((String) value).toLowerCase() + "%") :
                 criteriaBuilder.equal(root.get(key), value);
+        } else if (fieldJoin != null && operation.equalsIgnoreCase("NEQ")) {
+            String maxKeysValue = keys[keys.length - 1];
+            predicate = keyType == String.class 
+                ? criteriaBuilder.notEqual(fieldJoin.<String>get(maxKeysValue), "%s" + ((String) value).toLowerCase() + "%") 
+                : criteriaBuilder.notEqual(fieldJoin.<String>get(maxKeysValue), value);
+        } else if (operation.equalsIgnoreCase("NEQ")) {
+            predicate = keyType == String.class 
+                ? criteriaBuilder.notEqual(root.<String>get(key), "%" + ((String) value).toLowerCase() + "%") 
+                : criteriaBuilder.notEqual(root.get(key), value);
         }
 
         return predicate;
     }
 }
-
-// TODO: Complete this
