@@ -162,20 +162,15 @@ public class SCow implements ICow {
     public void setCowCategory(ECow cow, Integer categoryId){
         if (categoryId == null){ return; }
 
-        Optional<ECowCategory> category = sCowCategory.getById(categoryId);
-        if (!category.isPresent()){
-            throw new NotFoundException("cow category with specified id not found", "categoryId");
-        }
-        cow.setCategory(category.get());
+        ECowCategory category = sCowCategory.getById(categoryId, true);
+        cow.setCategory(category);
     }
 
     public void setFarm(ECow cow, Integer farmId){
+        if (farmId == null) { return; }
         
-        Optional<EFarm> farm = sFarm.getById(farmId);
-        if (!farm.isPresent()){
-            throw new NotFoundException("farm with specified id not found", "farmId");
-        }
-        cow.setFarm(farm.get());
+        EFarm farm = sFarm.getById(farmId, true);
+        cow.setFarm(farm);
     }
 
     public void setImage(ECow cow, Integer imageId) {
@@ -186,23 +181,17 @@ public class SCow implements ICow {
     }
 
     public void setParent(ECow cow, Integer parentId){
-
         if (parentId == null) { return; }
-        Optional<ECow> parent = getById(parentId);
-        if (!parent.isPresent()){
-            throw new NotFoundException("parent not found", "parentId");
-        }
-        cow.setParent(parent.get());
+
+        ECow parent = getById(parentId, true);
+        cow.setParent(parent);
     }
 
     public void setStatus(ECow cow, Integer statusId){
-
         if (statusId == null){ return; }
-        Optional<EStatus> status = sStatus.getById(statusId);
-        if (!status.isPresent()){
-            throw new NotFoundException("status with specified id not found", "statusId");
-        }
-        cow.setStatus(status.get());
+
+        EStatus status = sStatus.getById(statusId, true);
+        cow.setStatus(status);
     }
 
     @Override

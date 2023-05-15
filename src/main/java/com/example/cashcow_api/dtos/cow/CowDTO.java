@@ -29,6 +29,13 @@ public class CowDTO {
 
     private List<CowDTO> calves = new ArrayList<>();
 
+    private Integer id;
+
+    private LocalDateTime createdOn;
+
+    private LocalDateTime updatedOn;
+
+    @JsonIgnoreProperties("description")
     private ECowCategory category;
 
     private Integer categoryId;
@@ -38,12 +45,6 @@ public class CowDTO {
     @JsonIgnoreProperties(value = {"createdOn", "updatedOn", "status"})
     private FarmDTO farm;
 
-    private Integer id;
-
-    private LocalDateTime createdOn;
-
-    private LocalDateTime updatedOn;
-
     @NotBlank
     @IsCowNameValid
     private String name;
@@ -52,6 +53,7 @@ public class CowDTO {
 
     private String gender;
 
+    @JsonIgnoreProperties(value = {"status", "createdOn"})
     private BreedDTO breed;
 
     private Integer breedId;

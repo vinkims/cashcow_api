@@ -69,7 +69,7 @@ public class CContactType {
 
         return ResponseEntity
             .ok()
-            .body(new SuccessResponse(200, "successfully fetched contact types", new ContactTypeDTO(contactType)));
+            .body(new SuccessResponse(200, "successfully fetched contact type", new ContactTypeDTO(contactType)));
     }
 
     @PatchMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
