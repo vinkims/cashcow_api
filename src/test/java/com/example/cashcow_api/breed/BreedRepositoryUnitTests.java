@@ -1,9 +1,12 @@
 package com.example.cashcow_api.breed;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,39 +51,55 @@ public class BreedRepositoryUnitTests {
 
     // @Test
     public void testFindById() {
-        // EBreed breed = new EBreed();
-        // breed.setId(20);
-        // breed.setDescription("Drought resistant");
-        // breed.setName("Gurnsey");
-        EBreed breed = getBreed();
+        EBreed breed = new EBreed();
+        breed.setId(5);
+        breed.setName("Kienyeji");
+        breed.setDescription("Disease and drought resistant");
         breedDAO.save(breed);
 
         EBreed result = breedDAO.findById(breed.getId()).get();
-        assertEquals(breed.getId(), result.getId());
+        assertThat(result.getId()).isEqualTo(breed.getId());
     }
 
     @Test
-    public void testFindAll() {
-        EBreed breed = getBreed();
-        breedDAO.save(breed);
-        List<EBreed> result = new ArrayList<>();
-        breedDAO.findAll().forEach(b -> result.add(b));
-        assertEquals(result.size(), 3);
+    public void testFindAll_success() {
+        List<EBreed> breedList = breedDAO.findAll();
+        assertThat(breedList.size()).isEqualTo(2);
+        assertThat(breedList.get(0).getId()).isNotNegative();
+        assertThat(breedList.get(0).getName()).isEqualTo("Fresian");
+    }
+
+    @Test
+    public void testExistsByName() {
+        Boolean breedExists = breedDAO.existsByName("Fresian");
+        Boolean breed2 = breedDAO.existsByName("Kienyeji");
+
+        assertThat(breedExists).isEqualTo(true);
+        assertThat(breed2).isEqualTo(false);
     }
 
     @Test
     public void testSave() {
-        EBreed breed = getBreed();
-        breedDAO.save(breed);
-        EBreed result = breedDAO.findById(breed.getId()).get();
-        assertEquals(breed.getId(), result.getId());
-    }
-
-    private EBreed getBreed() {
         EBreed breed = new EBreed();
-        breed.setId(10);
-        breed.setDescription("Produces lots of milk");
-        breed.setName("Gurnsey");
-        return breed;
+        breed.setId(3);
+        breed.setName("Ayrshire");
+        breed.setDescription("High milk production potential");
+
+        EBreed breed2 = new EBreed();
+        breed2.setId(4);
+        breed2.setName("Guernsey");
+        breed2.setDescription("Adaptable to all climates");
+
+        List<EBreed> breeds = Arrays.asList(breed, breed2);
+        Iterable<EBreed> allBreeds = breedDAO.saveAll(breeds);
+        
+        AtomicInteger validFound = new AtomicInteger();
+        allBreeds.forEach(br -> {
+            if (br.getId() > 0) {
+                validFound.getAndIncrement();
+            }
+        });
+
+        assertThat(validFound.intValue()).isEqualTo(2);
     }
 }

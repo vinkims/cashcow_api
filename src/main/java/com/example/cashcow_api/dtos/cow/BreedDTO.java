@@ -34,6 +34,8 @@ public class BreedDTO {
         setDescription(breed.getDescription());
         setId(breed.getId());
         setName(breed.getName());
-        setStatus(new StatusDTO(breed.getStatus()));
+        if (breed.getStatus() != null) {
+            setStatus(new StatusDTO(breed.getStatus()));
+        }
     }
 }

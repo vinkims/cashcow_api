@@ -56,6 +56,11 @@ public class SBreed implements IBreed {
     }
 
     @Override
+    public List<EBreed> getAll() {
+        return cowBreedDAO.findAll();
+    }
+
+    @Override
     public Optional<EBreed> getById(Integer breedId) {
         return cowBreedDAO.findById(breedId);
     }

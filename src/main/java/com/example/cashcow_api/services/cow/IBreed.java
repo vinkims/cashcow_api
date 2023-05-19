@@ -15,6 +15,8 @@ public interface IBreed {
 
     EBreed create(BreedDTO cowBreedDTO);
 
+    List<EBreed> getAll();
+
     Optional<EBreed> getById(Integer breedId);
 
     EBreed getById(Integer breedId, Boolean handleException);
