@@ -43,7 +43,7 @@ public class CBreed {
 
         return ResponseEntity
             .created(new URI("/" + cowBreed.getId()))
-            .body(new SuccessResponse(200, "successfully created cow breed", new BreedDTO(cowBreed)));
+            .body(new SuccessResponse(201, "successfully created cow breed", new BreedDTO(cowBreed)));
     }
 
     @GetMapping(path = "", produces = "application/json")
