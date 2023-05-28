@@ -49,7 +49,7 @@ public class BreedRepositoryUnitTests {
         breedDAO.deleteAll();
     }
 
-    // @Test
+    @Test
     public void testFindById() {
         EBreed breed = new EBreed();
         breed.setId(5);
