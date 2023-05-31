@@ -134,6 +134,7 @@ public class SCow implements ICow {
     }
 
     public void recordWeight(Integer cowId, Float weight){
+        if (weight == null) { return; }
 
         CowWeightDTO weightDTO = new CowWeightDTO();
         weightDTO.setCowId(cowId);

@@ -83,7 +83,9 @@ public class CowDTO {
     private Float weight;
 
     public CowDTO(ECow cow){
-        setBreed(new BreedDTO(cow.getBreed()));
+        if (cow.getBreed() != null) {
+            setBreed(new BreedDTO(cow.getBreed()));
+        }
         setCalvesList(cow.getCalves());
         setCategory(cow.getCategory());
         setColor(cow.getColor());
@@ -94,14 +96,18 @@ public class CowDTO {
         setDateOfBirth(cow.getDateOfBirth());
         setGender(cow.getGender());
         setId(cow.getId());
-        setFarm(new FarmDTO(cow.getFarm()));
+        if (cow.getFarm() != null) {
+            setFarm(new FarmDTO(cow.getFarm()));
+        }
         if (cow.getParent() != null){
             setParent(cow.getParent());
         }
         setName(cow.getName());
         setOtherDetails(cow.getOtherDetails());
         setServicesData(cow.getServices());
-        setStatus(new StatusDTO(cow.getStatus()));
+        if (cow.getStatus() != null) {
+            setStatus(new StatusDTO(cow.getStatus()));
+        }
         setUpdatedOn(cow.getUpdatedOn());
     }
 

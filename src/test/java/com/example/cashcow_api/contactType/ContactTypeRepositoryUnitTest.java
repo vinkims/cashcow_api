@@ -23,7 +23,6 @@ import com.example.cashcow_api.repositories.ContactTypeDAO;
 @ExtendWith(SpringExtension.class)
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class ContactTypeRepositoryUnitTest {
-    
 
     @Autowired
     private ContactTypeDAO contactTypeDAO;

@@ -102,7 +102,7 @@ public class ContactTypeControllerUnitTest {
             new NotFoundException("contact type with specified id not found", "contactTypeId")
         );
 
-        mockMvc.perform(get("/contact/type/1"))
+        mockMvc.perform(get("/contact/type/100"))
             .andDo(print())
             .andExpect(status().isNotFound());
     }
